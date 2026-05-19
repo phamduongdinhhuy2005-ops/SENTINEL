@@ -101,16 +101,20 @@ const CoverageNotes: React.FC<{ notes?: string[]; mode: 'url-scan' | 'project-sc
   const visibleNotes = (notes || []).filter(Boolean).slice(0, 4);
   const [open, setOpen] = useState(false);
   if (visibleNotes.length === 0) return null;
+  const summary = mode === 'url-scan'
+    ? 'URL Scan kiểm tra header, response và endpoint công khai; chưa bao phủ đăng nhập, vai trò và luồng nghiệp vụ.'
+    : 'Project Scan đọc source, config và dependency; chưa xác minh runtime, exploit thực tế hoặc dữ liệu production.';
+  const scopeLabel = mode === 'url-scan' ? 'URL Scan' : 'Project Scan';
 
   return (
     <div className={`coverage-notes ${open ? 'is-open' : 'is-collapsed'}`}>
       <div className="coverage-notes-head">
         <div className="coverage-notes-title-row">
-          <div className="coverage-notes-title">Lưu ý về phạm vi phát hiện</div>
-          <span className="coverage-notes-badge">Có thể còn thiếu</span>
-          {!open && (
-            <span className="coverage-notes-compact">Tóm tắt: {visibleNotes.length} lưu ý</span>
-          )}
+          <span className="coverage-notes-badge">{scopeLabel}</span>
+          <div>
+            <div className="coverage-notes-title">Lưu ý về phạm vi phát hiện</div>
+            <div className="coverage-notes-summary">{summary}</div>
+          </div>
         </div>
         <button
           type="button"
@@ -123,11 +127,6 @@ const CoverageNotes: React.FC<{ notes?: string[]; mode: 'url-scan' | 'project-sc
       </div>
 
       <div className="coverage-notes-content">
-        <div className="coverage-notes-subtitle">
-          {mode === 'url-scan'
-            ? 'URL Scan không thay thế kiểm thử có đăng nhập và kịch bản nghiệp vụ.'
-            : 'Project Scan không thay thế kiểm thử runtime và xác minh khai thác.'}
-        </div>
         <ul className="coverage-notes-list">
           {visibleNotes.map((note, index) => (
             <li key={index}>{note}</li>
@@ -397,12 +396,12 @@ const FindingsTable: React.FC<{
     <table className="findings-table">
       <thead>
         <tr>
-          <th style={{ width: 128 }}>Mức độ</th>
+          <th>Mức độ</th>
           <th>Lỗ hổng</th>
-          <th style={{ width: 210 }}>Danh mục</th>
-          <th style={{ width: 190 }}>Vị trí</th>
-          <th style={{ width: 128 }}>Trạng thái</th>
-          <th style={{ width: 96 }}>Hành động</th>
+          <th>Danh mục</th>
+          <th>Vị trí</th>
+          <th>Trạng thái</th>
+          <th>Hành động</th>
         </tr>
       </thead>
       <tbody>
@@ -553,7 +552,7 @@ export const ResultsPanel: React.FC = () => {
             <span className="rp-guide-num">3</span> Cập nhật trạng thái xử lý
           </span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div className="rp-guide-actions">
           <ReportExportButton />
           <button
             className="btn-secondary rp-overview-btn"

@@ -179,6 +179,7 @@ interface AppState {
   loadHistory: () => Promise<void>;
   saveToHistory: (result: ScanResult) => Promise<void>;
   restoreFromHistory: (id: string) => void;
+  removeHistoryEntry: (id: string) => Promise<void>;
   clearHistory: () => Promise<void>;
   showHistoryDropdown: boolean;
   setShowHistoryDropdown: (show: boolean) => void;
@@ -289,6 +290,12 @@ export const useStore = create<AppState>((set, get) => ({
         set({ projectScanResult: entry.scanResult, activeTab: 'project', error: null, showHistoryDropdown: false });
       }
     }
+  },
+
+  removeHistoryEntry: async (id) => {
+    const updated = get().history.filter((entry) => entry.id !== id);
+    set({ history: updated });
+    await saveHistoryToDB(updated);
   },
 
   clearHistory: async () => {

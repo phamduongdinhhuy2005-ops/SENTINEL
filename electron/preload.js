@@ -10,6 +10,8 @@ contextBridge.exposeInMainWorld('owaspWorkbench', {
   stopScan:     ()           => ipcRenderer.invoke('scan:stop'),
   aiFetch:      (payload)    => ipcRenderer.invoke('ai:fetch', payload),
   getAIProviders: ()         => ipcRenderer.invoke('ai:providers'),
+  getAIConfig:   ()          => ipcRenderer.invoke('ai:config:get'),
+  saveAIConfig:  (payload)   => ipcRenderer.invoke('ai:config:save', payload),
 
   // Real-time progress streaming
   // FIX: store listener ref so we can remove *exactly* that listener (not all listeners)

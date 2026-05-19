@@ -14,6 +14,17 @@ interface ExtendedAIChatMessage extends AIChatMessage {
   latencyMs?: number;
 }
 
+type AIProviderId = 'groq' | 'gemini' | 'openrouter' | 'together' | 'huggingface';
+type AIConfigProvider = { configured: boolean; stored?: boolean; envKeys?: string[] };
+
+const AI_PROVIDER_OPTIONS: Array<{ id: AIProviderId; label: string; hint: string }> = [
+  { id: 'groq',        label: 'Groq',        hint: 'GROQ_API_KEY - nhanh, hợp để chat bảo mật' },
+  { id: 'gemini',      label: 'Gemini',      hint: 'GEMINI_API_KEY - dùng Google AI Studio' },
+  { id: 'openrouter',  label: 'OpenRouter',  hint: 'OPENROUTER_API_KEY - nhiều model qua một key' },
+  { id: 'together',    label: 'Together AI', hint: 'TOGETHER_API_KEY' },
+  { id: 'huggingface', label: 'HuggingFace', hint: 'HF_API_KEY hoặc HUGGINGFACE_API_KEY' },
+];
+
 // ── Bộ render Markdown ────────────────────────────────────────────────────────
 function renderMd(raw: string): string {
   let text = raw
@@ -227,6 +238,12 @@ const IconCopy = () => (
     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
   </svg>
 );
+const IconSettings = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="3"/>
+    <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1A2 2 0 1 1 7.1 4l.1.1a1.7 1.7 0 0 0 1.9.3h.1a1.7 1.7 0 0 0 .9-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 .9 1.5h.1a1.7 1.7 0 0 0 1.9-.3l.1-.1A2 2 0 1 1 19.9 7l-.1.1a1.7 1.7 0 0 0-.3 1.9v.1a1.7 1.7 0 0 0 1.5.9h.1a2 2 0 1 1 0 4H21a1.7 1.7 0 0 0-1.6 1z"/>
+  </svg>
+);
 const BotAvatar = () => (
   <div className="ai-avatar ai-avatar--bot">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -295,6 +312,36 @@ async function hasConfiguredLlmProvider(): Promise<boolean> {
   }
 }
 
+async function fetchAIConfig(): Promise<{ providers: Record<string, AIConfigProvider>; userDataPath?: string }> {
+  const bridge = (globalThis as {
+    owaspWorkbench?: {
+      getAIConfig?: () => Promise<{
+        ok: boolean;
+        providers?: Record<string, AIConfigProvider>;
+        userDataPath?: string;
+      }>;
+    };
+  }).owaspWorkbench;
+  if (!bridge?.getAIConfig) return { providers: {} };
+  const result = await bridge.getAIConfig();
+  return { providers: result.providers || {}, userDataPath: result.userDataPath };
+}
+
+async function saveAIConfig(keys: Record<string, string>) {
+  const bridge = (globalThis as {
+    owaspWorkbench?: {
+      saveAIConfig?: (payload: { keys: Record<string, string> }) => Promise<{
+        ok: boolean;
+        error?: string;
+        providers?: Record<string, AIConfigProvider>;
+        userDataPath?: string;
+      }>;
+    };
+  }).owaspWorkbench;
+  if (!bridge?.saveAIConfig) throw new Error('Không tìm thấy cầu nối cấu hình AI.');
+  return bridge.saveAIConfig({ keys });
+}
+
 interface ResolvedAssistantAnswer {
   answer: string;
   llmStatus: 'online' | 'offline';
@@ -361,8 +408,14 @@ export function AIChatWidget() {
   const [inputFocused, setInputFocused]       = useState(false);
   const [showFirstOpenTip, setShowFirstOpenTip] = useState(false);
   const [copiedMsgId, setCopiedMsgId]         = useState<string | null>(null);
-  const [, setLlmStatus]                      = useState<'online' | 'offline'>('offline');
+  const [llmStatus, setLlmStatus]             = useState<'online' | 'offline'>('offline');
   const [expandedDebugId, setExpandedDebugId] = useState<string | null>(null);
+  const [aiProviders, setAIProviders]         = useState<Record<string, AIConfigProvider>>({});
+  const [aiUserDataPath, setAIUserDataPath]   = useState('');
+  const [showAISettings, setShowAISettings]   = useState(false);
+  const [aiKeyDrafts, setAIKeyDrafts]         = useState<Record<string, string>>({});
+  const [aiConfigSaving, setAIConfigSaving]   = useState(false);
+  const [aiConfigMessage, setAIConfigMessage] = useState<string | null>(null);
   // Từ khóa tìm kiếm trong panel gợi ý
   const [suggestionSearch, setSuggestionSearch] = useState('');
 
@@ -378,10 +431,25 @@ export function AIChatWidget() {
   const conversationHistoryRef = useRef<{ role: 'user' | 'assistant'; content: string }[]>([]);
 
   const { hint: placeholderHint, visible: hintVisible } = useRotatingPlaceholder(INPUT_PLACEHOLDER_HINTS);
+  const configuredProviderCount = AI_PROVIDER_OPTIONS.filter(p => aiProviders[p.id]?.configured).length;
+  const hasAnyConfiguredKey = configuredProviderCount > 0;
+
+  const refreshAIConfig = useCallback(async () => {
+    try {
+      const config = await fetchAIConfig();
+      setAIProviders(config.providers);
+      setAIUserDataPath(config.userDataPath || '');
+      const configured = Object.values(config.providers).some(provider => provider.configured);
+      setLlmStatus(configured ? 'online' : 'offline');
+    } catch {
+      setAIProviders({});
+      setLlmStatus('offline');
+    }
+  }, []);
 
   // Reserve safe space so the floating AI button doesn't cover content
   useEffect(() => {
-    const safe = fabMode === 'hidden' ? '16px' : '96px';
+    const safe = fabMode === 'hidden' ? '16px' : '56px';
     document.documentElement.style.setProperty('--ai-fab-safe-bottom', safe);
     return () => { /* keep last value */ };
   }, [fabMode]);
@@ -396,12 +464,12 @@ export function AIChatWidget() {
   }, [messages]);
 
   useEffect(() => {
-    let alive = true;
-    void hasConfiguredLlmProvider().then(configured => {
-      if (alive) setLlmStatus(configured ? 'online' : 'offline');
-    });
-    return () => { alive = false; };
-  }, []);
+    void refreshAIConfig();
+  }, [refreshAIConfig]);
+
+  useEffect(() => {
+    if (isOpen) void refreshAIConfig();
+  }, [isOpen, refreshAIConfig]);
 
   // Focus ô nhập và xóa badge chưa đọc
   useEffect(() => {
@@ -706,8 +774,8 @@ export function AIChatWidget() {
   }, [ensureWelcome, isTyping, finalizeAssistantReply]);
 
   const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); sendMessage(input); };
-  const handleOpen   = () => { setAIChatOpen(true); ensureWelcome(); };
-  const handleClose  = () => { setAIChatOpen(false); setShowSuggestions(false); };
+  const handleOpen   = () => { setAIChatOpen(true); ensureWelcome(); void refreshAIConfig(); };
+  const handleClose  = () => { setAIChatOpen(false); setShowSuggestions(false); setShowAISettings(false); };
   
   const handleStop = useCallback(() => {
     if (abortControllerRef.current) {
@@ -721,7 +789,7 @@ export function AIChatWidget() {
   const handleClear  = () => {
     handleStop();
     requestSeqRef.current += 1;
-    void hasConfiguredLlmProvider().then(configured => setLlmStatus(configured ? 'online' : 'offline'));
+    void refreshAIConfig();
     initializedRef.current = false;
     conversationHistoryRef.current = [];
     messagesRef.current = [];
@@ -752,6 +820,43 @@ export function AIChatWidget() {
     copyText(renderMd(msg.content));
     setCopiedMsgId(msg.id);
     setTimeout(() => setCopiedMsgId(null), 1800);
+  };
+
+  const handleSaveAIConfig = async () => {
+    setAIConfigSaving(true);
+    setAIConfigMessage(null);
+    try {
+      const result = await saveAIConfig(aiKeyDrafts);
+      if (!result.ok) throw new Error(result.error || 'Không lưu được cấu hình AI.');
+      setAIProviders(result.providers || {});
+      setAIUserDataPath(result.userDataPath || aiUserDataPath);
+      setAIKeyDrafts({});
+      const configured = Object.values(result.providers || {}).some(provider => provider.configured);
+      setLlmStatus(configured ? 'online' : 'offline');
+      setAIConfigMessage('Đã lưu API key và áp dụng ngay cho AI.');
+    } catch (err) {
+      setAIConfigMessage((err as Error).message || 'Không lưu được cấu hình AI.');
+    } finally {
+      setAIConfigSaving(false);
+    }
+  };
+
+  const handleRemoveAIProviderKey = async (providerId: AIProviderId) => {
+    setAIConfigSaving(true);
+    setAIConfigMessage(null);
+    try {
+      const result = await saveAIConfig({ [providerId]: '' });
+      if (!result.ok) throw new Error(result.error || 'Không xóa được key.');
+      setAIProviders(result.providers || {});
+      setAIKeyDrafts(prev => ({ ...prev, [providerId]: '' }));
+      const configured = Object.values(result.providers || {}).some(provider => provider.configured);
+      setLlmStatus(configured ? 'online' : 'offline');
+      setAIConfigMessage('Đã xóa API key đã lưu cho provider này.');
+    } catch (err) {
+      setAIConfigMessage((err as Error).message || 'Không xóa được key.');
+    } finally {
+      setAIConfigSaving(false);
+    }
   };
 
   const totalFindings = (urlScanResult?.findings?.length || 0) + (projectScanResult?.findings?.length || 0);
@@ -801,7 +906,7 @@ export function AIChatWidget() {
       {/* ── Panel chat ───────────────────────────────────────────── */}
       {isOpen && (
         <div
-          className="ai-panel"
+          className={`ai-panel${showAISettings ? ' ai-panel--setup' : ''}`}
           id="ai-chat-panel"
           role="dialog"
           aria-label="AI Security Assistant"
@@ -816,8 +921,8 @@ export function AIChatWidget() {
               <div>
                 <div className="ai-panel-name">Trợ lý bảo mật</div>
                 <div className="ai-panel-sub">
-                  <span className="ai-online-dot" />
-                  <span>KB cục bộ · LLM khi có API key</span>
+                  <span className={`ai-online-dot${llmStatus === 'offline' ? ' ai-online-dot--offline' : ''}`} />
+                  <span>{llmStatus === 'online' ? `LLM sẵn sàng · ${configuredProviderCount} key` : 'KB cục bộ · thiếu API key'}</span>
                   {totalFindings > 0 && (
                     <span className="ai-findings-badge">{totalFindings} kết quả</span>
                   )}
@@ -825,6 +930,15 @@ export function AIChatWidget() {
               </div>
             </div>
             <div className="ai-header-right">
+              <button
+                className={`ai-config-pill${hasAnyConfiguredKey ? ' ai-config-pill--ok' : ' ai-config-pill--warn'}`}
+                onClick={() => { setShowAISettings(v => !v); setAIConfigMessage(null); }}
+                title="Cấu hình API key cho AI"
+                type="button"
+              >
+                <IconSettings />
+                {hasAnyConfiguredKey ? 'AI Online' : 'Cấu hình AI'}
+              </button>
               <button className="ai-icon-btn" onClick={handleClear} title="Xóa lịch sử chat">
                 <IconTrash />
               </button>
@@ -834,8 +948,88 @@ export function AIChatWidget() {
             </div>
           </div>
 
-          {/* Danh sách tin nhắn */}
-          <div className="ai-messages" id="ai-messages-list">
+          {showAISettings && (
+            <div className="ai-config-panel">
+              <div className="ai-config-head">
+                <div>
+                  <div className="ai-config-title">Cấu hình API key</div>
+                  <div className="ai-config-sub">
+                    Key được lưu trong userData của app, áp dụng ngay sau khi lưu.
+                  </div>
+                </div>
+                <span className={`ai-config-status${hasAnyConfiguredKey ? ' ok' : ' warn'}`}>
+                  {hasAnyConfiguredKey ? `${configuredProviderCount} provider sẵn sàng` : 'Chưa có key'}
+                </span>
+              </div>
+
+              <div className="ai-config-grid">
+                {AI_PROVIDER_OPTIONS.map(provider => {
+                  const current = aiProviders[provider.id];
+                  return (
+                    <label key={provider.id} className="ai-config-field">
+                      <span className="ai-config-provider-row">
+                        <span className="ai-config-provider-name">{provider.label}</span>
+                        <span className="ai-config-provider-actions">
+                          <span className={`ai-config-provider-state${current?.configured ? ' ok' : ''}`}>
+                            {current?.configured ? (current.stored ? 'Đã lưu' : '.env') : 'Trống'}
+                          </span>
+                          {current?.stored && (
+                            <button
+                              type="button"
+                              className="ai-config-remove"
+                              onClick={() => void handleRemoveAIProviderKey(provider.id)}
+                              disabled={aiConfigSaving}
+                            >
+                              Xóa
+                            </button>
+                          )}
+                        </span>
+                      </span>
+                      <input
+                        type="password"
+                        value={aiKeyDrafts[provider.id] || ''}
+                        onChange={e => setAIKeyDrafts(prev => ({ ...prev, [provider.id]: e.target.value }))}
+                        placeholder={current?.configured ? 'Nhập key mới hoặc để trống để giữ nguyên' : 'Dán API key tại đây'}
+                        autoComplete="off"
+                      />
+                      <span className="ai-config-hint">{provider.hint}</span>
+                    </label>
+                  );
+                })}
+              </div>
+
+              <div className="ai-config-footer">
+                <div className="ai-config-path" title={aiUserDataPath}>
+                  {aiUserDataPath ? `Lưu tại: ${aiUserDataPath}` : 'Sẽ lưu trong userData của ứng dụng'}
+                </div>
+                <button
+                  type="button"
+                  className="btn-secondary ai-config-save"
+                  onClick={handleSaveAIConfig}
+                  disabled={aiConfigSaving || !Object.values(aiKeyDrafts).some(v => v.trim())}
+                >
+                  {aiConfigSaving ? 'Đang lưu...' : 'Lưu & áp dụng'}
+                </button>
+              </div>
+              {aiConfigMessage && <div className="ai-config-message">{aiConfigMessage}</div>}
+            </div>
+          )}
+
+          {!showAISettings && (
+          <>
+            {/* Danh sách tin nhắn */}
+            <div className="ai-messages" id="ai-messages-list">
+            {!hasAnyConfiguredKey && (
+              <div className="ai-config-banner">
+                <div>
+                  <strong>AI nâng cao chưa được bật</strong>
+                  <span>Ứng dụng vẫn trả lời bằng knowledge base cục bộ. Thêm Groq/Gemini/OpenRouter key để dùng LLM.</span>
+                </div>
+                <button type="button" className="btn-link" onClick={() => setShowAISettings(true)}>
+                  Cấu hình ngay
+                </button>
+              </div>
+            )}
             {showFirstOpenTip && !conversationStarted && !showSuggestions && !isTyping && (
               <div className="onboarding-banner" style={{ margin: '8px 10px 6px' }}>
                 <div className="onboarding-banner-title">Mẹo nhanh</div>
@@ -959,11 +1153,11 @@ export function AIChatWidget() {
                 </div>
               </div>
             )}
-            <div ref={messagesEndRef} />
-          </div>
+              <div ref={messagesEndRef} />
+            </div>
 
-          {/* Panel câu hỏi gợi ý */}
-          {showSuggestions && !isTyping && (
+            {/* Panel câu hỏi gợi ý */}
+            {showSuggestions && !isTyping && (
             <div className="ai-quickqs">
               <div className="ai-quickqs-header">
                 <span className="ai-quickqs-label">Câu hỏi gợi ý</span>
@@ -1023,10 +1217,10 @@ export function AIChatWidget() {
                 )}
               </div>
             </div>
-          )}
+            )}
 
-          {/* Chip gợi ý trước khi hội thoại bắt đầu */}
-          {!conversationStarted && !showSuggestions && !isTyping && (
+            {/* Chip gợi ý trước khi hội thoại bắt đầu */}
+            {!conversationStarted && !showSuggestions && !isTyping && (
             <div className="ai-quickqs ai-quickqs--welcome">
               <div className="ai-quickqs-header">
                 <span className="ai-quickqs-label">Gợi ý bắt đầu</span>
@@ -1039,13 +1233,13 @@ export function AIChatWidget() {
                 ))}
               </div>
             </div>
-          )}
+            )}
 
-          {/* Hàng nhập câu hỏi */}
-          <form
+            {/* Hàng nhập câu hỏi */}
+            <form
             className={`ai-input-row${inputFocused ? ' ai-input-row--focused' : ''}`}
             onSubmit={handleSubmit}
-          >
+            >
             <button
               type="button"
               id="ai-suggestions-toggle"
@@ -1105,7 +1299,9 @@ export function AIChatWidget() {
                 <IconSend />
               </button>
             )}
-          </form>
+            </form>
+          </>
+          )}
         </div>
       )}
     </>

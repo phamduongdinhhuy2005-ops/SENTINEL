@@ -2,6 +2,7 @@
   "name": "sentinel-v2",
   "version": "2.0.0",
   "description": "OWASP 2025 Security Workbench",
+  "author": "SENTINEL",
   "main": "dist-electron/main.js",
   "packageManager": "npm@11.6.2",
   "engines": {
@@ -55,5 +56,30 @@
     "vite-plugin-electron": "^0.29.1",
     "vite-plugin-electron-renderer": "^0.14.7",
     "vitest": "^4.1.6"
+  },
+  "build": {
+    "appId": "com.sentinel.workbench",
+    "productName": "SENTINEL v2",
+    "copyright": "Copyright (c) 2026 SENTINEL",
+    "directories": {
+      "output": "dist"
+    },
+    "icon": "build/icon.ico",
+    "files": [
+      "dist-electron/**/*",
+      "engine/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "icon": "build/icon.ico",
+      "artifactName": "SENTINEL.${ext}",
+      "signAndEditExecutable": false
+    },
+    "portable": {
+      "artifactName": "SENTINEL.${ext}"
+    }
   }
 }

@@ -140,6 +140,18 @@ declare global {
         timeoutMs?: number;
       }) => Promise<{ ok: boolean; status: number; body: string; headers?: Record<string, string>; error?: string }>;
       getAIProviders: () => Promise<Record<string, { configured: boolean }>>;
+      getAIConfig: () => Promise<{
+        ok: boolean;
+        userDataPath?: string;
+        providers?: Record<string, { configured: boolean; stored: boolean; envKeys: string[] }>;
+        error?: string;
+      }>;
+      saveAIConfig: (payload: { keys: Record<string, string> }) => Promise<{
+        ok: boolean;
+        userDataPath?: string;
+        providers?: Record<string, { configured: boolean; stored: boolean }>;
+        error?: string;
+      }>;
       onScanProgress: (cb: (event: ScanProgressEvent) => void) => unknown;
       offScanProgress: (listener?: unknown) => void;
     };

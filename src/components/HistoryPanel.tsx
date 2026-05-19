@@ -19,7 +19,7 @@ function riskScoreColor(score?: number): string {
 }
 
 export const HistoryPanel: React.FC<{ onOpenShortcuts?: () => void }> = ({ onOpenShortcuts: _onOpenShortcuts }) => {
-  const { history, restoreFromHistory, clearHistory, setShowHistoryDropdown } = useStore();
+  const { history, restoreFromHistory, removeHistoryEntry, clearHistory, setShowHistoryDropdown } = useStore();
   const [query, setQuery]           = useState('');
   const [modeFilter, setModeFilter] = useState<'all' | 'url-scan' | 'project-scan'>('all');
   const [confirmClear, setConfirmClear] = useState(false);
@@ -49,9 +49,9 @@ export const HistoryPanel: React.FC<{ onOpenShortcuts?: () => void }> = ({ onOpe
               <button
                 className="btn-history-clear"
                 onClick={() => setConfirmClear(true)}
-                title="Xoá toàn bộ — không thể hoàn tác"
+                title="Xóa toàn bộ - không thể hoàn tác"
               >
-                Xoá tất cả
+                Xóa tất cả
               </button>
             )}
             {confirmClear && (
@@ -61,13 +61,13 @@ export const HistoryPanel: React.FC<{ onOpenShortcuts?: () => void }> = ({ onOpe
                   style={{ background: 'var(--crit-bg)', borderColor: 'var(--crit-b)', color: 'var(--crit)' }}
                   onClick={() => { clearHistory(); setConfirmClear(false); }}
                 >
-                  Xác nhận xoá
+                  Xác nhận xóa
                 </button>
                 <button
                   className="btn-history-clear"
                   onClick={() => setConfirmClear(false)}
                 >
-                  Huỷ
+                  Hủy
                 </button>
               </div>
             )}
@@ -77,7 +77,7 @@ export const HistoryPanel: React.FC<{ onOpenShortcuts?: () => void }> = ({ onOpe
               title="Đóng"
               aria-label="Đóng"
             >
-              ✕
+              ×
             </button>
           </div>
         </div>
@@ -105,7 +105,7 @@ export const HistoryPanel: React.FC<{ onOpenShortcuts?: () => void }> = ({ onOpe
         {/* Empty state */}
         {history.length === 0 ? (
           <div className="hist-empty">
-            <div style={{ fontSize: 22, opacity: 0.25 }}>◷</div>
+            <div style={{ fontSize: 22, opacity: 0.25 }}>▷</div>
             <div>Chưa có lịch sử quét</div>
             <div style={{ fontSize: 10 }}>Kết quả sẽ được lưu sau khi quét xong</div>
           </div>
@@ -114,12 +114,12 @@ export const HistoryPanel: React.FC<{ onOpenShortcuts?: () => void }> = ({ onOpe
             {visible.map((entry) => {
               const { bySeverity, total } = entry.summary;
               return (
-                <button
-                  key={entry.id}
-                  className="hist-entry"
-                  onClick={() => restoreFromHistory(entry.id)}
-                  title={entry.target}
-                >
+                <div key={entry.id} className="hist-entry-row">
+                  <button
+                    className="hist-entry"
+                    onClick={() => restoreFromHistory(entry.id)}
+                    title={entry.target}
+                  >
                   {/* Top row: mode badge + target + time */}
                   <div className="hist-entry-top">
                     <span className={`hist-entry-mode-badge ${entry.mode === 'url-scan' ? 'mode-url' : 'mode-proj'}`}>
@@ -147,7 +147,16 @@ export const HistoryPanel: React.FC<{ onOpenShortcuts?: () => void }> = ({ onOpe
                       </div>
                     )}
                   </div>
-                </button>
+                  </button>
+                  <button
+                    className="hist-entry-delete"
+                    onClick={() => { void removeHistoryEntry(entry.id); }}
+                    title="Xóa mục này"
+                    aria-label="Xóa mục lịch sử này"
+                  >
+                    x
+                  </button>
+                </div>
               );
             })}
           </div>
@@ -156,7 +165,7 @@ export const HistoryPanel: React.FC<{ onOpenShortcuts?: () => void }> = ({ onOpe
         {/* Footer */}
         {history.length > 0 && (
           <div className="hist-footer">
-            {visible.length}/{history.length} mục · nhấn để khôi phục
+            {visible.length}/{history.length} mục - click để khôi phục, x để xóa
           </div>
         )}
 

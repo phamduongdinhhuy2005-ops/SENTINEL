@@ -90,7 +90,7 @@ function App() {
     <div className="app-shell">
       <header className="app-header">
         <div className="app-logo">
-          <div className="logo-icon">S</div>
+          <img className="logo-icon" src="./app-icon.png" alt="" aria-hidden="true" />
           <div>
             <div className="logo-text">SENTINEL</div>
             <div className="logo-sub">OWASP 2025</div>
