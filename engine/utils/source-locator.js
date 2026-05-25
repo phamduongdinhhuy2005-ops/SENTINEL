@@ -110,8 +110,8 @@ function evidenceWithLocation(evidence, locator) {
   if (!locator) return lines;
   return [
     ...lines,
-    `Dong nghi van: ${locator.lineStart}`,
-    `Doan code lien quan:\n${locator.snippet}`,
+    `Dòng nghi vấn: ${locator.lineStart}`,
+    `Đoạn code liên quan:\n${locator.snippet}`,
   ];
 }
 
@@ -126,11 +126,11 @@ function buildSourceRemediationPlan({ filePath, locator, summary, suggestedFrom,
     confidenceNote:
       'Đề xuất này được suy luận từ pattern source code và chỉ mang tính tham khảo; hãy phân tích kỹ ngữ cảnh trước khi sửa.',
     suggestedChange: {
-      from: suggestedFrom || locator?.matchedText || 'Đoạn code khớp pattern trong snippet.',
+      from: suggestedFrom || locator?.matchedText || 'Đoạn code khớp mẫu lỗi trong snippet.',
       to: suggestedTo || summary,
     },
     steps: [
-      `Mở ${lineHint} và đối chiếu snippet/evidence với luồng xử lý thực tế.`,
+      `Mở ${lineHint} và đối chiếu snippet/bằng chứng với luồng xử lý thực tế.`,
       summary,
       'Sau khi sửa, chạy lại scan và test liên quan để xác nhận không phát sinh lỗi chức năng.',
     ],

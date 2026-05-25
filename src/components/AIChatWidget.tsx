@@ -144,7 +144,7 @@ const QUICK_QS = [
   { label: 'Xuất báo cáo',           q: 'Cách export báo cáo?',               category: 'Công cụ' },
   { label: 'Lịch sử scan',           q: 'Cách xem lịch sử scan?',             category: 'Công cụ' },
   { label: 'Collector',              q: 'Collector trong Findings là gì?',    category: 'Công cụ' },
-  { label: 'False positive',         q: 'Khi nào findings có thể là false positive?', category: 'Công cụ' },
+  { label: 'False positive',         q: 'Khi nào phát hiện có thể là false positive?', category: 'Công cụ' },
   { label: 'Risk Score',             q: 'Risk Score được tính như thế nào?',  category: 'Công cụ' },
   { label: 'Checklist',              q: 'Tab Checklist dùng để làm gì?',      category: 'Công cụ' },
   { label: 'Scan chậm?',             q: 'Tại sao scan chạy chậm?',            category: 'Công cụ' },
@@ -491,7 +491,7 @@ export function AIChatWidget() {
   const ensureWelcome = useCallback(() => {
     if (initializedRef.current) return;
     initializedRef.current = true;
-    const welcomeContent = `Xin chào! Tôi là **SENTINEL AI Assistant** — trợ lý bảo mật dựa trên knowledge base OWASP cục bộ và có thể mở rộng bằng LLM khi bạn cấu hình API key.\n\nTôi được xây dựng để giúp bạn:\n\n- Giải thích chi tiết các lỗ hổng bảo mật (XSS, SQL Injection, CSRF, IDOR, SSTI, SSRF...)\n- Hướng dẫn từng bước cách sử dụng SENTINEL\n- Phân tích và đề xuất cách khắc phục từng finding cụ thể\n- Giải thích các khái niệm OWASP A01–A10\n\nNhấn vào bất kỳ finding nào và chọn **"Hỏi AI"** để nhận phân tích tường tận, hoặc gõ câu hỏi bên dưới.`;
+    const welcomeContent = `Xin chào! Tôi là **SENTINEL AI Assistant** — trợ lý bảo mật dựa trên knowledge base OWASP cục bộ và có thể mở rộng bằng LLM khi bạn cấu hình API key.\n\nTôi được xây dựng để giúp bạn:\n\n- Giải thích chi tiết các lỗ hổng bảo mật (XSS, SQL Injection, CSRF, IDOR, SSTI, SSRF...)\n- Hướng dẫn từng bước cách sử dụng SENTINEL\n- Phân tích và đề xuất cách khắc phục từng phát hiện cụ thể\n- Giải thích các khái niệm OWASP A01–A10\n\nNhấn vào bất kỳ phát hiện nào và chọn **"Hỏi AI"** để nhận phân tích tường tận, hoặc gõ câu hỏi bên dưới.`;
     const welcome: AIChatMessage = {
       id: genMsgId(), role: 'assistant', content: welcomeContent, ts: Date.now(),
     };
@@ -595,7 +595,7 @@ export function AIChatWidget() {
     }
   }, [isOpen, scheduleAssistantReply]);
 
-  // Xử lý finding được gửi từ thẻ kết quả
+  // Xử lý phát hiện được gửi từ thẻ kết quả
   useEffect(() => {
     if (!pendingFinding) return;
     const findingKey = `${pendingFinding.ruleId}_${pendingFinding.title}`;
@@ -606,7 +606,7 @@ export function AIChatWidget() {
     setShowSuggestions(false);
     clearAIPendingFinding();
 
-    const question = `Giải thích finding: ${pendingFinding.title} (${pendingFinding.ruleId})`;
+    const question = `Giải thích phát hiện: ${pendingFinding.title} (${pendingFinding.ruleId})`;
     const remediationPlan = pendingFinding.remediationPlan || buildRemediationPlan(pendingFinding);
     const findingCtx = {
       ruleId: pendingFinding.ruleId,
@@ -1034,7 +1034,7 @@ export function AIChatWidget() {
               <div className="onboarding-banner" style={{ margin: '8px 10px 6px' }}>
                 <div className="onboarding-banner-title">Mẹo nhanh</div>
                 <div className="onboarding-banner-text">
-                  Nhấn nút gợi ý để xem câu hỏi mẫu. Bạn cũng có thể nhấn “Hỏi AI” trong từng finding để xem phân tích chi tiết.
+                  Nhấn nút gợi ý để xem câu hỏi mẫu. Bạn cũng có thể nhấn “Hỏi AI” trong từng phát hiện để xem phân tích chi tiết.
                 </div>
                 <button
                   className="btn-link"

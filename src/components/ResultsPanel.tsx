@@ -6,6 +6,8 @@ import { formatOwaspCategory } from '../utils/owasp';
 import { buildRemediationPlan } from '../utils/remediationPlan';
 import { ReportExportButton } from './ReportExportButton';
 import { RiskDashboard } from './RiskDashboard';
+import { SentenceText } from './SentenceText';
+import { renderEvidence } from './EvidenceRenderer';
 
 const confClass = (c: string) => c === 'high' ? 'conf-high' : c === 'medium' ? 'conf-medium' : 'conf-low';
 
@@ -18,38 +20,59 @@ type GroupedFinding = Finding & { groupedCount?: number; groupedItems?: Finding[
 
 const confidencePercent = (confidence: Finding['confidence']): number => CONF_ORDER[confidence] || 35;
 
+const severityLabel = (severity: string): string => {
+  if (severity === 'critical') return 'Nghiêm trọng';
+  if (severity === 'high') return 'Cao';
+  if (severity === 'medium') return 'Trung bình';
+  if (severity === 'low') return 'Thấp';
+  return severity;
+};
+
+const confidenceLabel = (confidence: Finding['confidence']): string => {
+  if (confidence === 'high') return 'Cao';
+  if (confidence === 'medium') return 'Trung bình';
+  if (confidence === 'potential') return 'Tiềm năng';
+  return 'Thấp';
+};
+
+const collectorBadgeLabel = (collector: Finding['collector']): string => {
+  if (collector === 'active-fuzzer') return 'Kiểm thử chủ động';
+  if (collector === 'source') return 'Mã nguồn';
+  return 'URL';
+};
+
 const collectorLabel = (collector: Finding['collector']): string => {
-  if (collector === 'active-fuzzer') return 'Active test: scanner đã gửi payload để thử khai thác có kiểm soát.';
-  if (collector === 'source') return 'Source scan: scanner đọc mã nguồn/config để tìm pattern rủi ro.';
-  return 'URL scan: scanner kiểm tra response, header và endpoint công khai.';
+  if (collector === 'active-fuzzer') return 'Kiểm thử chủ động: scanner đã gửi payload để thử khai thác có kiểm soát.';
+  if (collector === 'source') return 'Quét mã nguồn: scanner đọc mã nguồn và cấu hình để tìm mẫu rủi ro.';
+  return 'Quét URL: scanner kiểm tra response, header và endpoint công khai.';
 };
 
 const confidenceHelp = (confidence: Finding['confidence']): string => {
   if (confidence === 'high') return 'Khoảng 90%: bằng chứng khớp signature rõ ràng hoặc đã có bước xác minh nội dung. Nên ưu tiên kiểm tra và sửa.';
-  if (confidence === 'medium') return 'Khoảng 65%: có dấu hiệu đáng tin nhưng vẫn cần mở evidence để xác minh đúng ngữ cảnh ứng dụng.';
+  if (confidence === 'medium') return 'Khoảng 65%: có dấu hiệu đáng tin nhưng vẫn cần mở bằng chứng để xác minh đúng ngữ cảnh ứng dụng.';
   if (confidence === 'potential') return 'Khoảng 20%: mới là tín hiệu tiềm năng; cần tái hiện thủ công trước khi kết luận.';
-  return 'Khoảng 35%: heuristic yếu; dùng như gợi ý review, không xem là kết luận cuối cùng.';
+  return 'Khoảng 35%: heuristic yếu; dùng như gợi ý rà soát, không xem là kết luận cuối cùng.';
 };
 
 const categoryGuide = (finding: Finding): { checked: string; why: string; next: string } => {
   const rule = finding.ruleId;
   if (rule.includes('DIRLIST')) {
     return {
-      checked: 'Đã probe endpoint và xác minh nội dung giống directory listing.',
+      checked: 'Đã kiểm tra endpoint và xác minh nội dung giống directory listing.',
       why: 'Directory listing có thể làm lộ file nội bộ, backup hoặc tài liệu không nên public.',
-      next: 'Mở URL trong target, xác nhận file nào đang public, rồi tắt listing hoặc thêm xác thực.',
+      next: 'Mở URL mục tiêu, xác nhận file nào đang public, rồi tắt listing hoặc thêm xác thực.',
     };
   }
   if (rule.includes('CONFIG-EXPOSURE')) {
     return {
-      checked: 'Đã probe endpoint cấu hình và xác minh response JSON có trường config.',
+      checked: 'Đã kiểm tra endpoint cấu hình và xác minh response JSON có trường config.',
       why: 'Config public có thể lộ thông tin deployment, domain, tính năng và endpoint nội bộ.',
       next: 'Kiểm tra endpoint có cần public không; nếu không, bật authorization phía server.',
     };
   }
   if (finding.owaspCategory === 'A01') {
     return {
-      checked: 'Đã tìm endpoint/tài nguyên có vẻ truy cập được mà không thấy auth gate rõ ràng.',
+      checked: 'Đã tìm endpoint hoặc tài nguyên có vẻ truy cập được mà không thấy lớp chặn xác thực rõ ràng.',
       why: 'Broken Access Control có thể cho phép xem hoặc sửa dữ liệu ngoài quyền.',
       next: 'Xác minh với user chưa đăng nhập và user quyền thấp; thêm authorization phía server.',
     };
@@ -58,12 +81,12 @@ const categoryGuide = (finding: Finding): { checked: string; why: string; next: 
     return {
       checked: 'Đã kiểm tra header, cookie, file nhạy cảm và dấu hiệu cấu hình bảo mật yếu.',
       why: 'Cấu hình sai hoặc thiếu bảo vệ có thể làm lộ dữ liệu và tăng khả năng bị tấn công.',
-      next: 'Đối chiếu evidence, sửa cấu hình server/app, sau đó quét lại để xác nhận.',
+      next: 'Đối chiếu bằng chứng, sửa cấu hình server/app, sau đó quét lại để xác nhận.',
     };
   }
   if (finding.owaspCategory === 'A03') {
     return {
-      checked: 'Đã tìm dấu hiệu injection qua response, payload active hoặc pattern trong source.',
+      checked: 'Đã tìm dấu hiệu injection qua response, payload chủ động hoặc mẫu trong mã nguồn.',
       why: 'Injection có thể dẫn đến đọc/sửa dữ liệu trái phép hoặc thực thi lệnh.',
       next: 'Tái hiện bằng payload an toàn, sau đó dùng parameterized query và validate input.',
     };
@@ -76,9 +99,9 @@ const categoryGuide = (finding: Finding): { checked: string; why: string; next: 
     };
   }
   return {
-    checked: 'Đã chạy rule tương ứng và thu thập evidence bên dưới.',
-    why: 'Finding này cần được xác minh theo evidence và ngữ cảnh ứng dụng.',
-    next: 'Đọc evidence, tái hiện nếu cần, sửa theo remediation rồi quét lại.',
+    checked: 'Đã chạy rule tương ứng và thu thập bằng chứng bên dưới.',
+    why: 'Phát hiện này cần được xác minh theo bằng chứng và ngữ cảnh ứng dụng.',
+    next: 'Đọc bằng chứng, tái hiện nếu cần, sửa theo khuyến nghị rồi quét lại.',
   };
 };
 
@@ -103,7 +126,7 @@ const CoverageNotes: React.FC<{ notes?: string[]; mode: 'url-scan' | 'project-sc
   if (visibleNotes.length === 0) return null;
   const summary = mode === 'url-scan'
     ? 'URL Scan kiểm tra header, response và endpoint công khai; chưa bao phủ đăng nhập, vai trò và luồng nghiệp vụ.'
-    : 'Project Scan đọc source, config và dependency; chưa xác minh runtime, exploit thực tế hoặc dữ liệu production.';
+    : 'Project Scan đọc mã nguồn, cấu hình và dependency; chưa xác minh runtime, khai thác thực tế hoặc dữ liệu production.';
   const scopeLabel = mode === 'url-scan' ? 'URL Scan' : 'Project Scan';
 
   return (
@@ -113,7 +136,7 @@ const CoverageNotes: React.FC<{ notes?: string[]; mode: 'url-scan' | 'project-sc
           <span className="coverage-notes-badge">{scopeLabel}</span>
           <div>
             <div className="coverage-notes-title">Lưu ý về phạm vi phát hiện</div>
-            <div className="coverage-notes-summary">{summary}</div>
+            <div className="coverage-notes-summary"><SentenceText text={summary} /></div>
           </div>
         </div>
         <button
@@ -129,7 +152,7 @@ const CoverageNotes: React.FC<{ notes?: string[]; mode: 'url-scan' | 'project-sc
       <div className="coverage-notes-content">
         <ul className="coverage-notes-list">
           {visibleNotes.map((note, index) => (
-            <li key={index}>{note}</li>
+            <li key={index}><SentenceText text={note} /></li>
           ))}
         </ul>
       </div>
@@ -157,9 +180,9 @@ function groupFindings(findings: Finding[]): GroupedFinding[] {
       .map((item) => item.target || item.location)
       .filter(Boolean);
     const evidence = [
-      `Grouped ${items.length} findings with the same rule and risk type.`,
+      `Đã gom ${items.length} cảnh báo có cùng rule và cùng loại rủi ro.`,
       ...targets.slice(0, 12).map((target, index) => `${index + 1}. ${target}`),
-      targets.length > 12 ? `...and ${targets.length - 12} more locations.` : '',
+      targets.length > 12 ? `...và ${targets.length - 12} vị trí khác.` : '',
       ...items.flatMap((item) => item.evidence || []).slice(0, 8),
     ].filter(Boolean);
 
@@ -182,61 +205,6 @@ const STATUS_VI: Record<FindingStatus, string> = {
   mitigated: 'Đã khắc phục',
 };
 
-type CodeSnippetLine = { line: string; code: string; active: boolean };
-
-function parseEvidenceSnippet(evidence: string): CodeSnippetLine[] | null {
-  if (!/(?:Doan code lien quan|Đoạn code liên quan):/i.test(evidence)) return null;
-  const rawLines = evidence.split('\n').slice(1);
-  const rows = rawLines
-    .map((line) => {
-      const match = line.match(/^([ >])\s*(\d+)\s\|\s?(.*)$/);
-      if (!match) return null;
-      return {
-        active: match[1] === '>',
-        line: match[2],
-        code: match[3] || ' ',
-      };
-    })
-    .filter((row): row is CodeSnippetLine => Boolean(row));
-  return rows.length ? rows : null;
-}
-
-function renderEvidence(evidence: string, index: number): React.ReactNode {
-  const snippet = parseEvidenceSnippet(evidence);
-  if (snippet) {
-    const activeLine = snippet.find((line) => line.active)?.line;
-    return (
-      <div key={index} className="detail-code-snippet">
-        <div className="code-snippet-head">
-          <span>Đoạn code liên quan</span>
-          {activeLine && <strong>Dòng lỗi: {activeLine}</strong>}
-        </div>
-        <pre className="code-snippet-body">
-          {snippet.map((row) => (
-            <span key={`${row.line}-${row.code}`} className={`code-snippet-row${row.active ? ' is-active' : ''}`}>
-              <span className="code-snippet-marker">{row.active ? '!' : ''}</span>
-              <span className="code-snippet-line">{row.line}</span>
-              <span className="code-snippet-code">{row.code}</span>
-            </span>
-          ))}
-        </pre>
-      </div>
-    );
-  }
-
-  const lineMatch = evidence.match(/Dong nghi van:\s*(\d+)/i) || evidence.match(/Dòng nghi vấn:\s*(\d+)/i);
-  if (lineMatch) {
-    return (
-      <div key={index} className="detail-line-callout">
-        <span>Dòng cần kiểm tra</span>
-        <strong>{lineMatch[1]}</strong>
-      </div>
-    );
-  }
-
-  return <div key={index} className="detail-evidence">{evidence}</div>;
-}
-
 // ── Finding Drawer ────────────────────────────────────────────────────────────
 const FindingDrawer: React.FC<{ finding: Finding | null; onClose: () => void }> = ({ finding, onClose }) => {
   const { setAIPendingFinding, setAIChatOpen } = useAIStore();
@@ -255,7 +223,7 @@ const FindingDrawer: React.FC<{ finding: Finding | null; onClose: () => void }> 
         {/* Head */}
         <div className="finding-drawer-head">
           <div className="finding-drawer-title-wrap">
-            <span className={`sev-tag tag-${finding.severity}`}>{finding.severity}</span>
+            <span className={`sev-tag tag-${finding.severity}`}>{severityLabel(finding.severity)}</span>
             <div className="finding-drawer-title">{finding.title}</div>
           </div>
           <button className="btn-secondary finding-drawer-close" onClick={onClose}>Đóng ✕</button>
@@ -265,7 +233,7 @@ const FindingDrawer: React.FC<{ finding: Finding | null; onClose: () => void }> 
         <div className="finding-drawer-meta">
           <span className="badge badge-cat">{formatOwaspCategory(finding.owaspCategory)}</span>
           {isFuzzer && <span className="badge badge-fuzzer">Fuzzer</span>}
-          <span className="badge badge-collector">{finding.collector}</span>
+          <span className="badge badge-collector">{collectorBadgeLabel(finding.collector)}</span>
           <span className={`conf-badge ${confClass(finding.confidence)}`}>
             Độ tin cậy: {confidencePercent(finding.confidence)}%
           </span>
@@ -276,15 +244,15 @@ const FindingDrawer: React.FC<{ finding: Finding | null; onClose: () => void }> 
           <section className="finding-section finding-guide finding-section-wide">
             <div>
               <div className="detail-label">Scanner đã làm gì?</div>
-              <div className="guide-text">{guide.checked}</div>
+              <div className="guide-text"><SentenceText text={guide.checked} /></div>
             </div>
             <div>
               <div className="detail-label">Vì sao cần quan tâm?</div>
-              <div className="guide-text">{guide.why}</div>
+              <div className="guide-text"><SentenceText text={guide.why} /></div>
             </div>
             <div>
               <div className="detail-label">Bước tiếp theo</div>
-              <div className="guide-text">{guide.next}</div>
+              <div className="guide-text"><SentenceText text={guide.next} /></div>
             </div>
           </section>
 
@@ -293,7 +261,7 @@ const FindingDrawer: React.FC<{ finding: Finding | null; onClose: () => void }> 
             <div className="finding-info-grid">
               <div>
                 <div className="detail-label">Cách scanner phát hiện</div>
-                <div className="detail-note">{collectorLabel(finding.collector)}</div>
+                <div className="detail-note"><SentenceText text={collectorLabel(finding.collector)} /></div>
               </div>
               <div>
                 <div className="detail-label">Tìm thấy tại</div>
@@ -317,19 +285,19 @@ const FindingDrawer: React.FC<{ finding: Finding | null; onClose: () => void }> 
             <section className="finding-section finding-section-evidence">
               <div className="detail-label">Dữ liệu phát hiện</div>
               <div className="evidence-list">
-                {evidenceLines.map((e, i) => renderEvidence(e, i))}
+                {evidenceLines.map((e, i) => renderEvidence(e, i, { path: finding.location || finding.target }))}
               </div>
             </section>
           )}
 
           <section className="finding-section finding-section-fix">
             <div className="detail-label">Cách khắc phục</div>
-            <div className="detail-fix">{finding.remediation}</div>
+            <div className="detail-fix"><SentenceText text={finding.remediation} /></div>
           </section>
 
           <section className="finding-section remediation-plan finding-section-remediation">
             <div className="detail-label">Đề xuất vị trí và thay đổi cần kiểm tra</div>
-            <div className="remediation-plan-note">{remediationPlan.confidenceNote}</div>
+            <div className="remediation-plan-note"><SentenceText text={remediationPlan.confidenceNote} /></div>
             <div className="remediation-plan-location">{remediationPlan.locationHint}</div>
             {remediationPlan.suggestedChange && (
               <div className="remediation-change">
@@ -347,7 +315,7 @@ const FindingDrawer: React.FC<{ finding: Finding | null; onClose: () => void }> 
             )}
             <ol className="remediation-steps">
               {remediationPlan.steps.map((step, index) => (
-                <li key={index}>{step}</li>
+                <li key={index}><SentenceText text={step} /></li>
               ))}
             </ol>
           </section>
@@ -356,19 +324,19 @@ const FindingDrawer: React.FC<{ finding: Finding | null; onClose: () => void }> 
             <div className="detail-label">Độ tin cậy nghĩa là gì?</div>
             <div className="confidence-meter" aria-label={`Độ tin cậy ${confidencePercent(finding.confidence)} phần trăm`}>
               <div className="confidence-meter-top">
-                <span>{finding.confidence}</span>
+                <span>{confidenceLabel(finding.confidence)}</span>
                 <strong>{confidencePercent(finding.confidence)}%</strong>
               </div>
               <div className="confidence-track">
                 <div className={`confidence-fill ${confClass(finding.confidence)}`} style={{ width: `${confidencePercent(finding.confidence)}%` }} />
               </div>
             </div>
-            <div className="detail-note">{confidenceHelp(finding.confidence)}</div>
+            <div className="detail-note"><SentenceText text={confidenceHelp(finding.confidence)} /></div>
           </section>
 
-          <div className="finding-action-row finding-section-wide">
+          <div className="finding-drawer-action-row finding-section-wide">
             <button
-              className="btn-ask-ai"
+              className="btn-ask-ai btn-ask-ai--detail"
               onClick={(e) => {
                 e.stopPropagation();
                 setAIPendingFinding(finding);
@@ -412,7 +380,7 @@ const FindingsTable: React.FC<{
             <tr key={`${key}-${idx}`} className="finding-row">
               <td>
                 <div className="severity-cell">
-                  <span className={`sev-tag tag-${f.severity}`}>{f.severity}</span>
+                  <span className={`sev-tag tag-${f.severity}`}>{severityLabel(f.severity)}</span>
                   <ConfidenceInline confidence={f.confidence} />
                 </div>
               </td>
@@ -503,7 +471,7 @@ export const ResultsPanel: React.FC = () => {
           </div>
         </div>
         <p className="rp-empty-hint">
-          Cài đặt mặc định phù hợp cho hầu hết trường hợp - không cần thay đổi gì thêm.
+          <SentenceText as="span" text="Cài đặt mặc định phù hợp cho hầu hết trường hợp. Bạn không cần thay đổi gì thêm nếu chỉ muốn kiểm tra nhanh." />
         </p>
       </div>
     );
@@ -583,7 +551,7 @@ export const ResultsPanel: React.FC = () => {
                 className={`sev-filter-btn sev-filter-${s} ${filterSev === s ? 'active' : ''}`}
                 onClick={() => setFilterSev(s)}
               >
-                {s === 'all' ? 'Tất cả' : s.charAt(0).toUpperCase() + s.slice(1)}
+                {s === 'all' ? 'Tất cả' : severityLabel(s)}
                 {s !== 'all' && cnt(s) > 0 && (
                   <span className="sev-filter-count">{cnt(s)}</span>
                 )}

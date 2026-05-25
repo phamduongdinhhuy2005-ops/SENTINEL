@@ -4,7 +4,7 @@
  * Đây là tầng dự phòng được gọi khi LLMRouter (qua hybridOrchestrator) không
  * khả dụng, hoặc khi cần một lệnh gọi đơn giản không qua pipeline đầy đủ.
  *
- * NANG CAP v2:
+ * NÂNG CẤP v2:
  *  - SYSTEM_PROMPT mo rong va chi tiet hon
  *  - scoreAnswer() cải tiến: nhận biết câu trả lời né tránh, thiếu nội dung
  *  - buildPrompt(): thêm hướng dẫn output structure
@@ -97,10 +97,10 @@ function buildDebugInfo(
   };
 }
 
-// NANG CAP: Groq dung dau (nhanh nhat + free), Gemini thu 2
+// NÂNG CẤP: Groq đứng đầu (nhanh nhất + miễn phí), Gemini thứ 2
 const DEFAULT_PROVIDER_ORDER: ProviderId[] = ['groq', 'gemini', 'openrouter', 'together', 'huggingface'];
 
-// NANG CAP: Cap nhat model list voi cac model moi hon, manh hon
+// NÂNG CẤP: Cập nhật danh sách model với các model mới hơn, mạnh hơn
 const DEFAULT_MODELS: Record<ProviderId, string[]> = {
   groq: [
     'llama-3.3-70b-versatile',
@@ -127,25 +127,27 @@ const DEFAULT_MODELS: Record<ProviderId, string[]> = {
   ],
 };
 
-// NANG CAP: System prompt chi tiet hon, huong dan cu the hon
+// NÂNG CẤP: System prompt chi tiết hơn, hướng dẫn cụ thể hơn
 const SYSTEM_PROMPT = [
   'Bạn là SENTINEL AI — chuyên gia bảo mật web và OWASP cấp cao, tích hợp trong SENTINEL OWASP Security Workbench.',
   '',
-  '**QUY TAC BAT BUOC:**',
+  '**QUY TẮC BẮT BUỘC:**',
   '1. Luôn trả lời bằng tiếng Việt chuyên nghiệp, tự nhiên, có dấu đầy đủ (trừ khi được yêu cầu khác). Không trả lời kiểu tiếng Việt không dấu.',
+  '1b. Khi chuyển sang ý độc lập, phải xuống đoạn bằng một dòng trống. Không dồn nhiều câu không bổ trợ nhau vào cùng một đoạn dài.',
   '2. KHÔNG BAO GIỜ nói "Tôi không có đủ thông tin" hay "Câu hỏi này khá phức tạp" mà không giải thích.',
   '3. KHÔNG viết câu trả lời quá ngắn (dưới 150 từ) với câu hỏi kỹ thuật.',
-  '4. Với câu hỏi về lỗ hổng: giải thích cơ chế + ví dụ PoC minh họa (không phải exploit thực tế) + cách fix.',
+  '4. Với câu hỏi về lỗ hổng: giải thích cơ chế + ví dụ PoC minh họa (không phải exploit thực tế) + cách khắc phục.',
   '5. Với câu hỏi so sánh: dùng bảng hoặc danh sách có cấu trúc rõ ràng.',
   '6. Với câu hỏi "là gì": định nghĩa + ví dụ thực tế + tầm quan trọng.',
-  '7. Với câu hỏi "cách fix": liệt kê từng bước, kèm code snippet nếu phù hợp.',
+  '7. Với câu hỏi "cách khắc phục": liệt kê từng bước, kèm code snippet nếu phù hợp.',
   '',
   '**DINH DANG:**',
   '- Dùng Markdown: ## tiêu đề, **in đậm**, `code`, danh sách -.',
   '- Emoji vừa phải: ⚠️ 🔴 ✅ 🛡️ để highlight ý chính.',
   '- Code snippet: dùng ```language ... ``` khi có ví dụ code.',
+  '- Ưu tiên đoạn ngắn 1-2 câu. Mỗi bước/hành động nên nằm ở dòng riêng hoặc bullet riêng.',
   '',
-  '**GIOI HAN AN TOAN:**',
+  '**GIỚI HẠN AN TOÀN:**',
   '- KHÔNG cung cấp payload exploit có thể chạy ngay để tấn công thực tế.',
   '- Chỉ dùng PoC minh họa ngắn gọn để giáo dục phòng thủ.',
 ].join('\n');
@@ -233,7 +235,7 @@ function getProviderOrder(): ProviderId[] {
   return valid.length ? valid : DEFAULT_PROVIDER_ORDER;
 }
 
-// NANG CAP: buildPrompt them huong dan output structure dua tren loai cau hoi
+// NÂNG CẤP: buildPrompt thêm hướng dẫn cấu trúc đầu ra dựa trên loại câu hỏi
 function buildPrompt(payload: SentinelAskPayload): string {
   const sections: string[] = [];
   const q = payload.question.trim();
@@ -275,7 +277,7 @@ function buildPrompt(payload: SentinelAskPayload): string {
     );
   } else if (qLower.includes('fix') || qLower.includes('khac phuc') || qLower.includes('phong')) {
     instructions.push(
-      '- Liệt kê các bước fix theo thứ tự ưu tiên.',
+      '- Liệt kê các bước khắc phục theo thứ tự ưu tiên.',
       '- Kèm code snippet minh họa nếu phù hợp.',
       '- Đề cập cả server-side và client-side nếu liên quan.',
     );
@@ -347,14 +349,14 @@ function normalizeWhitespace(text: string): string {
   return text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim();
 }
 
-// NANG CAP: scoreAnswer cai tien dang ke
+// NÂNG CẤP: scoreAnswer cải tiến đáng kể
 function scoreAnswer(question: string, answer: string): number {
   if (!answer.trim()) return 0;
 
   const text = answer.toLowerCase();
   const len  = answer.length;
 
-  // Phat hien cau tra loi ne tranh -> diem rat thap
+  // Phát hiện câu trả lời né tránh -> điểm rất thấp
   const evasiveMarkers = [
     'tôi không có đủ thông tin',
     'câu hỏi này khá phức tạp',
@@ -380,7 +382,7 @@ function scoreAnswer(question: string, answer: string): number {
   if (len > 800)  score += 0.08;
   if (len > 1200) score += 0.05;
 
-  // Diem noi dung bao mat
+  // Điểm nội dung bảo mật
   if (text.includes('owasp'))   score += 0.06;
   if (text.includes('cwe-'))    score += 0.05;
   if (text.includes('```'))     score += 0.08;
@@ -413,11 +415,11 @@ function scoreAnswer(question: string, answer: string): number {
   return Math.max(0, Math.min(1, score));
 }
 
-// NANG CAP: Nguong chat luong thuc te hon
+// NÂNG CẤP: Ngưỡng chất lượng thực tế hơn
 function targetScore(question: string): number {
   const q = question.toLowerCase();
 
-  // Cau hoi phuc tap can cau tra loi chi tiet hon
+  // Câu hỏi phức tạp cần câu trả lời chi tiết hơn
   if (q.includes('tai sao') || q.includes('why') || q.includes('co che') || q.includes('so sanh')) {
     return 0.52;
   }
@@ -427,7 +429,7 @@ function targetScore(question: string): number {
   if (q.includes('cach fix') || q.includes('khac phuc') || q.includes('how to fix')) {
     return 0.50;
   }
-  // Cau hoi ngan/chao hoi
+  // Câu hỏi ngắn/chào hỏi
   if (question.trim().length < 20) {
     return 0.38;
   }
@@ -481,7 +483,7 @@ async function callOpenAiCompatible(
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), provider.timeoutMs);
 
-  // NANG CAP: max_tokens tang len 2048 mac dinh
+  // NÂNG CẤP: max_tokens tăng lên 2048 mặc định
   const body = {
     model,
     temperature: 0.3,

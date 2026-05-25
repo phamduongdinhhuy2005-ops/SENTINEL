@@ -6,7 +6,7 @@ SENTINEL v2 là ứng dụng desktop dùng Electron + React, hỗ trợ rà soá
 
 ## Tính năng chính
 
-- **URL Scan**: quét website/endpoint để kiểm tra header bảo mật, cookie, CORS, TLS, endpoint nhạy cảm và một số dấu hiệu rủi ro thường gặp.
+- **URL Scan**: quét website/endpoint online hoặc môi trường nội bộ như `localhost`, `127.0.0.1`, `::1`, `192.168.x.x` để kiểm tra header bảo mật, cookie, CORS, TLS, endpoint nhạy cảm và một số dấu hiệu rủi ro thường gặp.
 - **Project Scan**: đọc source/config/dependency/CI để phát hiện pattern rủi ro như secret bị commit, dependency cũ, thiếu SRI, cấu hình bảo mật yếu.
 - **Bảng findings**: gom nhóm theo OWASP, hiển thị mức độ, độ tin cậy, vị trí, trạng thái xử lý và chi tiết khuyến nghị.
 - **Checklist**: tạo danh sách việc cần làm từ findings để theo dõi quá trình xử lý.
@@ -148,6 +148,7 @@ SENTINEL v2 hỗ trợ rà soát và gợi ý khắc phục, nhưng không thay 
 Một số giới hạn cần biết:
 
 - URL Scan không thể hiểu hết logic nghiệp vụ hoặc luồng đăng nhập phức tạp nếu không có cấu hình phù hợp.
+- URL Scan mặc định cho phép quét cả target nội bộ và online. Nếu muốn chặn private/reserved target trong môi trường production, đặt `SENTINEL_ALLOW_PRIVATE_TARGETS=false`.
 - Project Scan phát hiện pattern rủi ro trong source/config/dependency, nhưng không luôn chứng minh được exploit thực tế.
 - Findings có độ tin cậy khác nhau, nên cần đọc phần chi tiết trước khi kết luận.
 - Không dùng công cụ để quét hệ thống bạn không có quyền kiểm tra.

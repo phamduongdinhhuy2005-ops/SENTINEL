@@ -445,7 +445,7 @@ async function runUrlScan(inputUrl, options = {}) {
 
   onProgress({ stage: 'crawl', msg: `Khởi tạo: ${inputUrl}`, level: 'info', ts: Date.now() });
 
-  const allowPrivateTargets = process.env.SENTINEL_ALLOW_PRIVATE_TARGETS === 'true';
+  const allowPrivateTargets = process.env.SENTINEL_ALLOW_PRIVATE_TARGETS !== 'false';
   const parsed      = await validatePublicHttpUrl(inputUrl, { allowPrivate: allowPrivateTargets });
   const auth        = options.auth  || {};
   const maxDepth    = options.maxDepth  ?? 1;

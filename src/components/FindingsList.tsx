@@ -12,6 +12,28 @@ const severityColor = (sev: string) => {
   }
 };
 
+const severityLabel = (sev: string) => {
+  switch (sev) {
+    case 'critical': return 'Nghiêm trọng';
+    case 'high': return 'Cao';
+    case 'medium': return 'Trung bình';
+    default: return 'Thấp';
+  }
+};
+
+const confidenceLabel = (confidence: Finding['confidence']) => {
+  if (confidence === 'high') return 'Cao';
+  if (confidence === 'medium') return 'Trung bình';
+  if (confidence === 'potential') return 'Tiềm năng';
+  return 'Thấp';
+};
+
+const collectorLabel = (collector: Finding['collector']) => {
+  if (collector === 'source') return 'Quét mã nguồn';
+  if (collector === 'active-fuzzer') return 'Kiểm thử chủ động';
+  return 'Quét URL';
+};
+
 export const FindingsList: React.FC = () => {
   const { urlScanResult, projectScanResult, activeTab, error, isLoading } = useStore();
   const scanResult = activeTab === 'url' ? urlScanResult : projectScanResult;
@@ -60,18 +82,18 @@ export const FindingsList: React.FC = () => {
       </div>
 
       <div className="summary-stats">
-        <div className="stat">Tổng findings: <strong>{summary.total}</strong></div>
+        <div className="stat">Tổng phát hiện: <strong>{summary.total}</strong></div>
         <div className="stat-categories">
           {Object.entries(summary.bySeverity).map(([sev, count]) => (
             <span key={sev} className={`stat-badge ${severityColor(sev)}`}>
-              {sev}: {count}
+              {severityLabel(sev)}: {count}
             </span>
           ))}
         </div>
       </div>
 
       {findings.length === 0 ? (
-        <p className="no-findings">✅ No security issues detected (based on heuristics).</p>
+        <p className="no-findings">✅ Không phát hiện vấn đề bảo mật nào theo các heuristic hiện tại.</p>
       ) : (
         <div className="findings-list">
           {findings.map((finding: Finding, idx: number) => (
@@ -83,20 +105,20 @@ export const FindingsList: React.FC = () => {
               </div>
               <div className="finding-meta">
                 <span>OWASP: {formatOwaspCategory(finding.owaspCategory)}</span>
-                <span>Confidence: {finding.confidence}</span>
-                <span>Collector: {finding.collector}</span>
+                <span>Độ tin cậy: {confidenceLabel(finding.confidence)}</span>
+                <span>Nguồn quét: {collectorLabel(finding.collector)}</span>
               </div>
               <div className="finding-location">📍 {finding.location || finding.target}</div>
               {finding.evidence.length > 0 && (
                 <div className="finding-evidence">
-                  <strong>Evidence:</strong>
+                  <strong>Bằng chứng:</strong>
                   <ul>
                     {finding.evidence.slice(0, 3).map((e: string, i: number) => <li key={i}>{e}</li>)}
                   </ul>
                 </div>
               )}
               <div className="finding-remediation">
-                <strong>Remediation:</strong> {finding.remediation}
+                <strong>Khuyến nghị:</strong> {finding.remediation}
               </div>
             </div>
           ))}

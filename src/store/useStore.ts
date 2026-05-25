@@ -132,15 +132,28 @@ export function isLocalUrl(url: string): boolean {
 export function mergeFindings(urlFindings: Finding[], projectFindings: Finding[]): Finding[] {
   const seen = new Set<string>();
   const result: Finding[] = [];
-  const makeKey = (f: Finding) => `${f.ruleId}||${f.owaspCategory}||${f.severity}`;
+  const normalizeFindingForUi = (f: Finding): Finding => ({
+    ...f,
+    owaspCategory: f.owaspCategory || (f as Finding & { category?: string }).category || 'OTHER',
+  });
+  const makeKey = (f: Finding) => [
+    f.ruleId,
+    f.owaspCategory || (f as Finding & { category?: string }).category || 'OTHER',
+    f.severity,
+    f.confidence,
+    f.collector,
+    f.target,
+    f.location,
+    f.title,
+  ].join('||');
 
   for (const f of urlFindings) {
     const key = makeKey(f);
-    if (!seen.has(key)) { seen.add(key); result.push(f); }
+    if (!seen.has(key)) { seen.add(key); result.push(normalizeFindingForUi(f)); }
   }
   for (const f of projectFindings) {
     const key = makeKey(f);
-    if (!seen.has(key)) { seen.add(key); result.push(f); }
+    if (!seen.has(key)) { seen.add(key); result.push(normalizeFindingForUi(f)); }
   }
   return result;
 }

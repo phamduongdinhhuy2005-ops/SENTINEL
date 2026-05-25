@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useStore } from '../store/useStore';
 import { Finding } from '../types';
 import { normalizeOwaspCategory, OWASP_2025_CATEGORIES } from '../utils/owasp';
+import { SentenceText } from './SentenceText';
 
 const SEV_ORDER: Record<string, number> = { critical: 4, high: 3, medium: 2, low: 1 };
 
@@ -24,28 +25,28 @@ const OWASP_CATS = Object.entries(OWASP_2025_CATEGORIES).map(([id, name]) => ({
 
 export const CONTEXT_ITEM_DETAILS: Record<string, { todos: string[]; recommend: string }> = {
   'ctx-node-deps': {
-    todos: ['Chạy npm audit trong CI', 'Cập nhật dependency có critical/high', 'Ghim lockfile và review package mới'],
-    recommend: 'Dùng Dependabot hoặc Snyk để tự động cảnh báo dependency risk.',
+    todos: ['Chạy npm audit trong CI', 'Cập nhật dependency có mức nghiêm trọng/cao', 'Ghim lockfile và rà soát package mới'],
+    recommend: 'Dùng Dependabot hoặc Snyk để tự động cảnh báo rủi ro dependency.',
   },
   'ctx-node-secrets': {
-    todos: ['Tìm secret hardcode trong source và .env', 'Không commit .env', 'Rotate key nếu đã lộ trong build/log/git'],
-    recommend: 'Secret đã vào git/build artifact nên được xem là compromised.',
+    todos: ['Tìm secret hardcode trong mã nguồn và .env', 'Không commit .env', 'Rotate key nếu đã lộ trong build/log/git'],
+    recommend: 'Secret đã đi vào git hoặc build artifact nên được xem là đã bị lộ.',
   },
   'ctx-web-cors': {
-    todos: ['Dùng origin allowlist rõ ràng', 'Không dùng wildcard với credentials', 'Test CORS trên endpoint có auth'],
-    recommend: 'Tránh reflect Origin header nếu không validate trước.',
+    todos: ['Dùng danh sách origin được phép rõ ràng', 'Không dùng wildcard với credentials', 'Kiểm thử CORS trên endpoint có xác thực'],
+    recommend: 'Tránh phản hồi lại Origin header nếu chưa validate trước.',
   },
   'ctx-java-actuator': {
-    todos: ['Khóa /actuator/env và /heapdump', 'Chỉ expose health/info khi cần', 'Đặt auth cho management endpoint'],
-    recommend: 'Actuator production nên được giới hạn bằng Spring Security và network policy.',
+    todos: ['Khóa /actuator/env và /heapdump', 'Chỉ mở health/info khi cần', 'Đặt xác thực cho endpoint quản trị'],
+    recommend: 'Actuator trên production nên được giới hạn bằng Spring Security và network policy.',
   },
   'ctx-php-debug': {
     todos: ['Đặt APP_DEBUG=false', 'Tắt display_errors', 'Chặn debugbar/telescope public'],
-    recommend: 'Debug mode có thể lộ stack trace, query và credentials.',
+    recommend: 'Debug mode có thể lộ stack trace, query và thông tin xác thực.',
   },
   'ctx-generic-design': {
-    todos: ['Review auth/authz boundary', 'Kiểm tra input validation', 'Lập kế hoạch fix theo severity'],
-    recommend: 'Dùng Checklist này như backlog bảo mật nhỏ sau mỗi lần scan.',
+    todos: ['Rà soát ranh giới xác thực/phân quyền', 'Kiểm tra validate input', 'Lập kế hoạch sửa theo mức độ rủi ro'],
+    recommend: 'Dùng Checklist này như backlog bảo mật nhỏ sau mỗi lần quét.',
   },
 };
 
@@ -65,10 +66,18 @@ export function sevBg(sev: string | null): string {
   return 'var(--bg-input)';
 }
 
+export function sevLabel(sev: string | null): string {
+  if (sev === 'critical') return 'Nghiêm trọng';
+  if (sev === 'high') return 'Cao';
+  if (sev === 'medium') return 'Trung bình';
+  if (sev === 'low') return 'Thấp';
+  return 'Chưa rõ';
+}
+
 export function buildChecklistFromFindings(findings: Finding[]) {
   const byCategory: Record<string, Finding[]> = {};
   for (const finding of findings) {
-    const category = normalizeOwaspCategory(finding.owaspCategory);
+    const category = normalizeOwaspCategory(finding.owaspCategory || (finding as Finding & { category?: string }).category);
     byCategory[category] = [...(byCategory[category] || []), finding];
   }
 
@@ -143,14 +152,18 @@ export const ChecklistItem: React.FC<ChecklistItemProps> = ({
             <div className="chk-detail-section">
               <div className="chk-detail-label">Việc cần làm</div>
               <ul className="chk-todo-list">
-                {todos.map((todo, index) => <li key={index} className="chk-todo-item">{todo}</li>)}
+                {todos.map((todo, index) => (
+                  <li key={index} className="chk-todo-item">
+                    <SentenceText text={todo} />
+                  </li>
+                ))}
               </ul>
             </div>
           )}
           {recommend && (
             <div className="chk-detail-section">
               <div className="chk-detail-label">Khuyến nghị</div>
-              <div className="chk-recommend-text">{recommend}</div>
+              <div className="chk-recommend-text"><SentenceText text={recommend} /></div>
             </div>
           )}
         </div>
@@ -200,7 +213,7 @@ export const ChecklistPanel: React.FC = () => {
           </div>
           <div className="empty-state-step">
             <span className="empty-state-step-num">2</span>
-            <span>Checklist sẽ được tạo từ findings và tech stack</span>
+            <span>Checklist sẽ được tạo từ các phát hiện và công nghệ nhận diện</span>
           </div>
         </div>
       </div>
@@ -231,7 +244,7 @@ export const ChecklistPanel: React.FC = () => {
           <div className="chk-coverage-track">
             <div className="chk-coverage-fill" style={{ width: `${(covered / total) * 100}%` }} />
           </div>
-          <div className="chk-coverage-label">{covered === 0 ? 'Chưa có category nào có finding.' : `${covered} category cần review.`}</div>
+          <div className="chk-coverage-label">{covered === 0 ? 'Chưa có danh mục nào có phát hiện.' : `${covered} danh mục cần rà soát.`}</div>
         </div>
 
         <div className="checklist-grid-adv">
@@ -249,7 +262,7 @@ export const ChecklistPanel: React.FC = () => {
               </div>
               <div className="chk-name">{cat.name}</div>
               <div className="chk-desc">{cat.desc}</div>
-              {cat.severity && <div className="chk-sev" style={{ color: sevColor(cat.severity) }}>{cat.severity}</div>}
+              {cat.severity && <div className="chk-sev" style={{ color: sevColor(cat.severity) }}>{sevLabel(cat.severity)}</div>}
             </div>
           ))}
         </div>
@@ -265,19 +278,19 @@ export const ChecklistPanel: React.FC = () => {
         <div className="checklist-tech-stack">
           {techStack.length > 0
             ? techStack.map((tech) => <span key={tech} className="checklist-tech-chip">{tech}</span>)
-            : <span className="checklist-muted">Chưa nhận diện tech stack.</span>}
+            : <span className="checklist-muted">Chưa nhận diện được công nghệ.</span>}
         </div>
         <div className="chk-items-list">
           {hasNode && (
             <>
               <ChecklistItem id="ctx-node-deps" label="Kiểm tra dependency Node.js" hideCompleted={hideCompleted} {...CONTEXT_ITEM_DETAILS['ctx-node-deps']} />
-              <ChecklistItem id="ctx-node-secrets" label="Kiểm tra secret trong source và build" hideCompleted={hideCompleted} {...CONTEXT_ITEM_DETAILS['ctx-node-secrets']} />
-              <ChecklistItem id="ctx-web-cors" label="Review CORS và API boundary" hideCompleted={hideCompleted} {...CONTEXT_ITEM_DETAILS['ctx-web-cors']} />
+              <ChecklistItem id="ctx-node-secrets" label="Kiểm tra secret trong mã nguồn và build" hideCompleted={hideCompleted} {...CONTEXT_ITEM_DETAILS['ctx-node-secrets']} />
+              <ChecklistItem id="ctx-web-cors" label="Rà soát CORS và ranh giới API" hideCompleted={hideCompleted} {...CONTEXT_ITEM_DETAILS['ctx-web-cors']} />
             </>
           )}
           {hasJava && <ChecklistItem id="ctx-java-actuator" label="Khóa Spring Actuator và endpoint quản trị" hideCompleted={hideCompleted} {...CONTEXT_ITEM_DETAILS['ctx-java-actuator']} />}
           {hasPHP && <ChecklistItem id="ctx-php-debug" label="Tắt debug tooling trên production" hideCompleted={hideCompleted} {...CONTEXT_ITEM_DETAILS['ctx-php-debug']} />}
-          <ChecklistItem id="ctx-generic-design" label="Review cấu hình bảo mật tổng quát" hideCompleted={hideCompleted} {...CONTEXT_ITEM_DETAILS['ctx-generic-design']} />
+          <ChecklistItem id="ctx-generic-design" label="Rà soát cấu hình bảo mật tổng quát" hideCompleted={hideCompleted} {...CONTEXT_ITEM_DETAILS['ctx-generic-design']} />
         </div>
       </div>
 

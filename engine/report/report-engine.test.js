@@ -323,9 +323,9 @@ describe('buildHtmlReport', () => {
     expect(r).toContain('&lt;script&gt;');
   });
 
-  it('shows "Không có finding nào" when findings are empty', () => {
+  it('shows "Không có phát hiện nào" when findings are empty', () => {
     const r = buildHtmlReport({ findings: [] });
-    expect(r).toContain('Không phát hiện finding nào');
+    expect(r).toContain('Không có phát hiện nào');
   });
 
   it('handles null input gracefully', () => {

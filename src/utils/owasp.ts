@@ -18,24 +18,24 @@ export type ScanCoverageItem = {
 };
 
 export const URL_SCAN_COVERAGE: ScanCoverageItem[] = [
-  { id: 'A01', name: OWASP_2025_CATEGORIES.A01, summary: 'IDOR, forced browsing, auth bypass, privilege escalation.' },
-  { id: 'A02', name: OWASP_2025_CATEGORIES.A02, summary: 'HTTPS/TLS, cookie flags, weak crypto hints, sensitive data over transport.' },
-  { id: 'A03', name: OWASP_2025_CATEGORIES.A03, summary: 'XSS, SQLi, command injection, SSTI, XXE, LDAP/XPath patterns.' },
-  { id: 'A04', name: OWASP_2025_CATEGORIES.A04, summary: 'Attack-surface and security-design review heuristics.' },
-  { id: 'A05', name: OWASP_2025_CATEGORIES.A05, summary: 'Default pages, directory listing, GraphQL/API exposure, version disclosure.' },
-  { id: 'A07', name: OWASP_2025_CATEGORIES.A07, summary: 'Account enumeration, session fixation, reset flow, MFA/OAuth/session hints.' },
-  { id: 'A08', name: OWASP_2025_CATEGORIES.A08, summary: 'Deserialization and response-side integrity indicators.' },
-  { id: 'A10', name: OWASP_2025_CATEGORIES.A10, summary: 'SSRF checks currently stay in the URL scanner path.' },
+  { id: 'A01', name: OWASP_2025_CATEGORIES.A01, summary: 'IDOR, ép duyệt đường dẫn, bỏ qua xác thực và leo thang đặc quyền.' },
+  { id: 'A02', name: OWASP_2025_CATEGORIES.A02, summary: 'HTTPS/TLS, cờ cookie, dấu hiệu mã hóa yếu và dữ liệu nhạy cảm trên đường truyền.' },
+  { id: 'A03', name: OWASP_2025_CATEGORIES.A03, summary: 'XSS, SQLi, command injection, SSTI, XXE và mẫu LDAP/XPath injection.' },
+  { id: 'A04', name: OWASP_2025_CATEGORIES.A04, summary: 'Heuristic rà soát bề mặt tấn công và thiết kế bảo mật.' },
+  { id: 'A05', name: OWASP_2025_CATEGORIES.A05, summary: 'Trang mặc định, directory listing, lộ GraphQL/API và lộ phiên bản.' },
+  { id: 'A07', name: OWASP_2025_CATEGORIES.A07, summary: 'Liệt kê tài khoản, session fixation, luồng đặt lại mật khẩu và dấu hiệu MFA/OAuth/session.' },
+  { id: 'A08', name: OWASP_2025_CATEGORIES.A08, summary: 'Deserialization và các dấu hiệu toàn vẹn ở phía response.' },
+  { id: 'A10', name: OWASP_2025_CATEGORIES.A10, summary: 'Kiểm tra SSRF hiện nằm trong luồng quét URL.' },
 ];
 
 export const PROJECT_SCAN_COVERAGE: ScanCoverageItem[] = [
-  { id: 'A02', name: OWASP_2025_CATEGORIES.A02, summary: 'Weak hashing/cipher/JWT/TLS patterns in source and config files.' },
-  { id: 'A03', name: OWASP_2025_CATEGORIES.A03, summary: 'Injection-prone source patterns and validation/escaping heuristics.' },
-  { id: 'A04', name: OWASP_2025_CATEGORIES.A04, summary: 'Missing threat model, missing abuse/rate-limit design, weak authorization-by-design.' },
-  { id: 'A05', name: OWASP_2025_CATEGORIES.A05, summary: 'Misconfiguration signals in config, API, framework/default exposure patterns.' },
-  { id: 'A06', name: OWASP_2025_CATEGORIES.A06, summary: 'npm/NuGet/framework version risk, lockfile and dependency hygiene.' },
-  { id: 'A08', name: OWASP_2025_CATEGORIES.A08, summary: 'SRI, untrusted config/data, deserialization, CI/CD pipeline integrity.' },
-  { id: 'A09', name: OWASP_2025_CATEGORIES.A09, summary: 'Sensitive data in logs and structured logging coverage.' },
+  { id: 'A02', name: OWASP_2025_CATEGORIES.A02, summary: 'Mẫu hashing/cipher/JWT/TLS yếu trong mã nguồn và file cấu hình.' },
+  { id: 'A03', name: OWASP_2025_CATEGORIES.A03, summary: 'Mẫu mã nguồn dễ bị injection và heuristic về validate/escape dữ liệu.' },
+  { id: 'A04', name: OWASP_2025_CATEGORIES.A04, summary: 'Thiếu threat model, thiếu thiết kế chống abuse/rate limit và authorization-by-design yếu.' },
+  { id: 'A05', name: OWASP_2025_CATEGORIES.A05, summary: 'Dấu hiệu cấu hình sai trong config, API, framework và mẫu lộ mặc định.' },
+  { id: 'A06', name: OWASP_2025_CATEGORIES.A06, summary: 'Rủi ro phiên bản npm/NuGet/framework, lockfile và vệ sinh dependency.' },
+  { id: 'A08', name: OWASP_2025_CATEGORIES.A08, summary: 'SRI, config/data không tin cậy, deserialization và toàn vẹn pipeline CI/CD.' },
+  { id: 'A09', name: OWASP_2025_CATEGORIES.A09, summary: 'Dữ liệu nhạy cảm trong log và mức bao phủ structured logging.' },
 ];
 
 export function normalizeOwaspCategory(category?: string): string {
@@ -46,7 +46,7 @@ export function normalizeOwaspCategory(category?: string): string {
 }
 
 export function getOwaspCategoryName(category?: string): string {
-  return OWASP_2025_CATEGORIES[normalizeOwaspCategory(category)] || 'Other / Custom Rule';
+  return OWASP_2025_CATEGORIES[normalizeOwaspCategory(category)] || 'Khác / Rule tùy chỉnh';
 }
 
 export function formatOwaspCategory(category?: string): string {

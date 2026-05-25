@@ -2,10 +2,10 @@
  * Giao dien nha cung cap LLM & Cac kieu du lieu dung chung
  *
  * Dinh nghia hop dong ma moi adapter cua nha cung cap phai trien khai,
- * cung voi doi tuong phan hoi chuan tra ve cho nguoi goi.
+ * cùng với đối tượng phản hồi chuẩn trả về cho người gọi.
  */
 
-// ── Trang thai suc khoe nha cung cap ───────────────────────────────────────────────────
+// ── Trạng thái sức khỏe nhà cung cấp ───────────────────────────────────────────────────
 export interface ProviderHealth {
   /** Diem so 0–1; 1 = hoan toan khoe manh */
   score: number;
@@ -13,9 +13,9 @@ export interface ProviderHealth {
   remainingQuota: number;
   /** Do tre trung binh tinh bang ms tu cac lenh goi gan day */
   avgLatencyMs: number;
-  /** Ty le loi trong N lenh goi gan nhat (0–1) */
+  /** Tỷ lệ lỗi trong N lệnh gọi gần nhất (0–1) */
   recentErrorRate: number;
-  /** Trang thai ngat mach (circuit-breaker) co dang mo hay khong */
+  /** Trạng thái ngắt mạch (circuit-breaker) có đang mở hay không */
   circuitOpen: boolean;
 }
 
@@ -23,29 +23,29 @@ export interface ProviderHealth {
 export interface LLMProvider {
   /** Dinh danh duy nhat, vi du: "groq", "together", "huggingface" */
   readonly id: string;
-  /** Nhan hien thi cho nguoi dung doc */
+  /** Nhãn hiển thị cho người dùng đọc */
   readonly label: string;
-  /** Nha cung cap nay co ho tro dau ra dang JSON goc hay khong */
+  /** Nhà cung cấp này có hỗ trợ đầu ra dạng JSON gốc hay không */
   readonly supportsJsonMode: boolean;
 
   /**
    * Tao phan hoi cho `prompt`.
    * @param prompt - Chuoi prompt da duoc lam sach.
    * @param options - Cac tuy chon ghi de (maxTokens, systemPrompt, jsonMode).
-   * @returns Phan hoi dang van ban tho.
-   * @throws {ProviderError} khi co loi cap API.
+   * @returns Phản hồi dạng văn bản thô.
+   * @throws {ProviderError} khi có lỗi cấp API.
    */
   generate(prompt: string, options?: GenerateOptions): Promise<string>;
 
   /**
    * Kiem tra nhanh trang thai hoat dong / han muc.
-   * Nen nhe nhang — ly tuong nhat la mot lenh goi sieu du lieu re hoac duoc cache.
+   * Nên nhẹ nhàng — lý tưởng nhất là một lệnh gọi siêu dữ liệu rẻ hoặc được cache.
    */
   health(): Promise<ProviderHealth>;
 
   /**
    * Tra ve uoc luong han muc con lai.
-   * Co the tra ve Infinity khi han muc khong xac dinh hoac khong gioi han.
+   * Có thể trả về Infinity khi hạn mức không xác định hoặc không giới hạn.
    */
   estimateCostOrQuota(): Promise<number>;
 }
@@ -57,7 +57,7 @@ export interface GenerateOptions {
   jsonMode?: boolean;
   /** Ghi de thoi gian cho o cap do request tinh bang ms */
   timeoutMs?: number;
-  /** AbortSignal de huy request dang chay */
+  /** AbortSignal để hủy request đang chạy */
   signal?: AbortSignal;
   /** Streaming token callback (neu nha cung cap ho tro) */
   onToken?: (token: string) => void;
@@ -86,19 +86,19 @@ export class ProviderError extends Error {
   }
 }
 
-// ── Phan hoi AI chuan muc ─────────────────────────────────────────────────────
+// ── Phản hồi AI chuẩn mực ─────────────────────────────────────────────────────
 export interface AiResponse {
-  /** Cau tra loi cuoi cung tra ve cho nguoi dung */
+  /** Câu trả lời cuối cùng trả về cho người dùng */
   answer: string;
   /** Diem do tin cay tu 0–1 */
   confidence: number;
   /** Tat ca cac nha cung cap da duoc thu */
   providersTried: string[];
-  /** Nha cung cap co cau tra loi cuoi cung duoc su dung */
+  /** Nhà cung cấp có câu trả lời cuối cùng được sử dụng */
   providerUsed: string;
-  /** Da thuc hien kiem tra cheo hay chua */
+  /** Đã thực hiện kiểm tra chéo hay chưa */
   crossChecked: boolean;
-  /** Cac canh bao khong nghiem trong (vi du: "nha cung cap X qua han, dung du phong") */
+  /** Các cảnh báo không nghiêm trọng (ví dụ: "nhà cung cấp X quá hạn, dùng dự phòng") */
   warnings: string[];
   /** Tong do tre thuc te tinh bang ms */
   latencyMs: number;
@@ -106,7 +106,7 @@ export interface AiResponse {
   source: 'knowledge_base' | 'llm' | 'synthesized';
 }
 
-// ── Cau hinh bo dinh tuyen ─────────────────────────────────────────────────────────────
+// ── Cấu hình bộ định tuyến ─────────────────────────────────────────────────────────────
 export interface RouterConfig {
   /**
    * ID cua cac nha cung cap theo thu tu uu tien.
@@ -144,20 +144,20 @@ export interface RouterConfig {
   /** Thoi gian duy tri trang thai ngat mach truoc khi thu lai, ms */
   circuitResetMs: number;
 
-  /** Thoi gian song (TTL) cho cac cau tra loi duoc cache, ms */
+  /** Thời gian sống (TTL) cho các câu trả lời được cache, ms */
   cacheTtlMs: number;
 
-  /** So luong muc toi da trong cache */
+  /** Số lượng mục tối đa trong cache */
   cacheMaxSize: number;
 
   /**
-   * Diem tin cay toi thieu tu mot nha cung cap de bo qua kiem tra cheo.
+   * Điểm tin cậy tối thiểu từ một nhà cung cấp để bỏ qua kiểm tra chéo.
    * Duoi nguong nay, nha cung cap thu hai cung se duoc truy van.
    */
   crossCheckThreshold: number;
 
   /**
-   * Cho phep hoac vo hieu hoa kiem tra cheo.
+   * Cho phép hoặc vô hiệu hóa kiểm tra chéo.
    * Co the duoc bat/tat theo moi truong thong qua bien moi truong.
    */
   crossCheckEnabled: boolean;
@@ -169,12 +169,12 @@ export interface RouterConfig {
   maxOutputTokens: number;
 }
 
-// ── Cau hinh mac dinh ─────────────────────────────────────────────────────────────
-// NANG CAP: maxOutputTokens tang tu 512 -> 2048 de co cau tra loi day du hon
-// NANG CAP: maxInputTokens tang tu 1500 -> 2500 de gui nhieu ngu canh hon
-// NANG CAP: timeoutMs tang tu 12s -> 20s de nha cung cap co du thoi gian tra loi
-// NANG CAP: crossCheckThreshold giam tu 0.65 -> 0.55 de kich hoat cross-check it thuong xuyen hon (tiet kiem quota)
-// NANG CAP: circuitBreakerThreshold tang tu 5 -> 6 de it bi ngat mach hon
+// ── Cấu hình mặc định ─────────────────────────────────────────────────────────────
+// NÂNG CẤP: maxOutputTokens tăng từ 512 -> 2048 để có câu trả lời đầy đủ hơn
+// NÂNG CẤP: maxInputTokens tăng từ 1500 -> 2500 để gửi nhiều ngữ cảnh hơn
+// NÂNG CẤP: timeoutMs tăng từ 12s -> 20s để nhà cung cấp có đủ thời gian trả lời
+// NÂNG CẤP: crossCheckThreshold giảm từ 0.65 -> 0.55 để kích hoạt cross-check ít thường xuyên hơn (tiết kiệm quota)
+// NÂNG CẤP: circuitBreakerThreshold tăng từ 5 -> 6 để ít bị ngắt mạch hơn
 export const DEFAULT_ROUTER_CONFIG: RouterConfig = {
   providerPriority: ['groq', 'gemini', 'openrouter', 'together', 'huggingface'],
   selectionWeights: { health: 0.35, quota: 0.25, latency: 0.25, errorRate: 0.15 },

@@ -68,7 +68,7 @@ export function buildLLMRouter(): LLMRouter {
     config.circuitResetMs,
   );
 
-  // NANG CAP: Groq dat dau tien (nhanh, mien phi, quota tot)
+  // NÂNG CẤP: Groq đặt đầu tiên (nhanh, miễn phí, quota tốt)
   const providers = [
     new GroqProvider(metrics),
     new GeminiProvider(metrics),
@@ -79,4 +79,3 @@ export function buildLLMRouter(): LLMRouter {
 
   return new LLMRouter(providers, metrics, config);
 }
-

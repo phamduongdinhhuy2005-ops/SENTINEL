@@ -8,7 +8,7 @@
   position: fixed;
   bottom: 16px;
   right: 18px;
-  z-index: 200;
+  z-index: 360;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -44,7 +44,7 @@
   position: fixed;
   bottom: 18px;
   right: 18px;
-  z-index: 200;
+  z-index: 360;
   height: 22px;
   padding: 0 10px;
   border-radius: 999px;
@@ -135,7 +135,7 @@
   position: fixed;
   bottom: 70px;
   right: 24px;
-  z-index: 199;
+  z-index: 355;
   width: min(500px, calc(100vw - 32px));
   max-height: min(760px, calc(100vh - 96px));
   display: flex;
@@ -817,10 +817,16 @@
 
 .btn-ask-ai--detail {
   font-size: 12px; padding: 7px 14px;
-  border-radius: var(--r-md); width: 100%;
+  border-radius: var(--r-md);
+  width: auto;
+  max-width: 100%;
   justify-content: center;
   border-color: var(--accent-border);
   background: var(--accent-dim); color: var(--accent); font-weight: 600;
+  white-space: normal;
+  line-height: 1.35;
+  text-align: center;
+  overflow-wrap: anywhere;
 }
 .btn-ask-ai--detail:hover {
   background: var(--accent-fill); border-color: var(--accent);

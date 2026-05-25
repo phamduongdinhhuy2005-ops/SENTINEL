@@ -1,6 +1,6 @@
 import type { Finding, RemediationPlan } from '../types';
 
-const DISCLAIMER = 'Đề xuất này được tạo tự động từ evidence của SENTINEL, chỉ mang tính tham khảo. Hãy đọc kỹ code, chạy test và review tác động bảo mật/nghiệp vụ trước khi sửa dự án.';
+const DISCLAIMER = 'Đề xuất này được tạo tự động từ bằng chứng của SENTINEL, chỉ mang tính tham khảo. Hãy đọc kỹ code, chạy kiểm thử và rà soát tác động bảo mật/nghiệp vụ trước khi sửa dự án.';
 
 function parseLine(text: string): number | undefined {
   const match =
@@ -94,27 +94,27 @@ export function buildRemediationPlan(finding: Finding): RemediationPlan {
   const locationHint = filePath
     ? line
       ? `Kiểm tra file ${filePath}, khoảng dòng ${line}.`
-      : `Kiểm tra file ${filePath}. Scanner chưa xác định được dòng chính xác, hãy tìm theo evidence/pattern bên dưới.`
+      : `Kiểm tra file ${filePath}. Scanner chưa xác định được dòng chính xác, hãy tìm theo bằng chứng hoặc mẫu lỗi bên dưới.`
     : url
-      ? `Kiểm tra endpoint ${url}, vị trí runtime: ${location || 'response/request'}. Nếu dự án có source code, tìm route/controller/middleware sinh ra response này.`
-      : `Kiểm tra vị trí: ${location || target || 'chưa xác định rõ từ evidence'}.`;
+      ? `Kiểm tra endpoint ${url}, vị trí runtime: ${location || 'response/request'}. Nếu dự án có mã nguồn, tìm route/controller/middleware sinh ra response này.`
+      : `Kiểm tra vị trí: ${location || target || 'chưa xác định rõ từ bằng chứng'}.`;
 
   const steps = [
     locationHint,
     finding.evidence.length
-      ? `Đối chiếu evidence: ${finding.evidence.slice(0, 2).join(' | ')}`
-      : 'Tái hiện lại finding trong môi trường kiểm thử để xác nhận đúng ngữ cảnh.',
+      ? `Đối chiếu bằng chứng: ${finding.evidence.slice(0, 2).join(' | ')}`
+      : 'Tái hiện lại phát hiện trong môi trường kiểm thử để xác nhận đúng ngữ cảnh.',
     suggestedChange?.from
       ? `Sửa từ: ${suggestedChange.from}`
-      : 'Xác định đoạn code/config sinh ra finding trước khi sửa.',
+      : 'Xác định đoạn code/config sinh ra phát hiện trước khi sửa.',
     suggestedChange
       ? `Đề xuất sửa thành: ${suggestedChange.to}`
-      : `Áp dụng remediation: ${finding.remediation || 'bổ sung kiểm soát bảo mật phù hợp.'}`,
-    'Chạy lại test/unit/integration và quét lại bằng SENTINEL để xác nhận finding đã giảm hoặc biến mất.',
+      : `Áp dụng khuyến nghị: ${finding.remediation || 'bổ sung kiểm soát bảo mật phù hợp.'}`,
+    'Chạy lại unit test, integration test và quét lại bằng SENTINEL để xác nhận phát hiện đã giảm hoặc biến mất.',
   ];
 
   return {
-    summary: finding.remediation || 'Cần xác minh evidence và áp dụng biện pháp khắc phục phù hợp.',
+    summary: finding.remediation || 'Cần xác minh bằng chứng và áp dụng biện pháp khắc phục phù hợp.',
     confidenceNote: DISCLAIMER,
     filePath,
     lineStart: line,

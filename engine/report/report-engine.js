@@ -58,14 +58,14 @@ function buildFallbackRemediationPlan(finding) {
   const locationHint = filePath
     ? line
       ? `Kiểm tra file ${filePath}, khoảng dòng ${line}.`
-      : `Kiểm tra file ${filePath}. Scanner chưa xác định được dòng chính xác, hãy tìm theo evidence/pattern.`
+      : `Kiểm tra file ${filePath}. Scanner chưa xác định được dòng chính xác, hãy tìm theo bằng chứng hoặc mẫu lỗi.`
     : url
       ? `Kiểm tra endpoint ${url}, vị trí runtime: ${finding.location || 'response/request'}.`
-      : `Kiểm tra vị trí: ${finding.location || finding.target || 'chưa xác định rõ từ evidence'}.`;
-  const suggestedTo = finding.remediation || 'Xác minh evidence và áp dụng biện pháp khắc phục phù hợp.';
+      : `Kiểm tra vị trí: ${finding.location || finding.target || 'chưa xác định rõ từ bằng chứng'}.`;
+  const suggestedTo = finding.remediation || 'Xác minh bằng chứng và áp dụng biện pháp khắc phục phù hợp.';
   return {
     summary: suggestedTo,
-    confidenceNote: 'Đề xuất này được tạo tự động từ evidence của SENTINEL, chỉ mang tính tham khảo. Hãy đọc kỹ code, chạy test và review tác động trước khi sửa dự án.',
+    confidenceNote: 'Đề xuất này được tạo tự động từ bằng chứng của SENTINEL, chỉ mang tính tham khảo. Hãy đọc kỹ code, chạy kiểm thử và rà soát tác động trước khi sửa dự án.',
     filePath: filePath || undefined,
     lineStart: line,
     lineEnd: line,
@@ -73,7 +73,7 @@ function buildFallbackRemediationPlan(finding) {
     locationHint,
     steps: [
       locationHint,
-      finding.evidence.length ? `Đối chiếu evidence: ${finding.evidence.slice(0, 2).join(' | ')}` : 'Tái hiện finding trong môi trường kiểm thử.',
+      finding.evidence.length ? `Đối chiếu bằng chứng: ${finding.evidence.slice(0, 2).join(' | ')}` : 'Tái hiện phát hiện trong môi trường kiểm thử.',
       `Đề xuất sửa: ${suggestedTo}`,
       'Chạy lại test và quét lại bằng SENTINEL để xác nhận.',
     ],
@@ -199,7 +199,7 @@ function buildFindingCardHtml(finding, idx) {
   const c = SEV_COLORS[finding.severity] || SEV_COLORS.low;
   const evidenceHtml = finding.evidence.length
     ? finding.evidence.map(e => `<li style="margin-bottom:4px;word-break:break-all;font-family:'JetBrains Mono',monospace;font-size:11px;color:#b2c0cc;line-height:1.6">${escapeHtml(e)}</li>`).join('')
-    : '<li style="color:#7f91a1;font-size:11px">Không có evidence.</li>';
+    : '<li style="color:#7f91a1;font-size:11px">Không có bằng chứng.</li>';
 
   const refsHtml = finding.references.length
     ? finding.references.map(r => `<li><a href="${escapeHtml(r)}" style="color:#4cb3ff;font-size:11px;word-break:break-all">${escapeHtml(r)}</a></li>`).join('')
@@ -226,11 +226,11 @@ function buildFindingCardHtml(finding, idx) {
     <div style="font-size:11px;color:#7f91a1;margin-bottom:10px;font-family:'JetBrains Mono',monospace">
       ${finding.target ? `<span>🎯 ${escapeHtml(finding.target)}</span>` : ''}
       ${finding.location ? ` &nbsp;·&nbsp; <span>${escapeHtml(finding.location)}</span>` : ''}
-      &nbsp;·&nbsp; Confidence: <strong style="color:#b2c0cc">${escapeHtml(finding.confidence)}</strong>
+      &nbsp;·&nbsp; Độ tin cậy: <strong style="color:#b2c0cc">${escapeHtml(finding.confidence)}</strong>
     </div>
     ${finding.evidence.length ? `
     <div style="margin-bottom:10px">
-      <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#7f91a1;margin-bottom:5px">Evidence</div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#7f91a1;margin-bottom:5px">Bằng chứng</div>
       <ul style="margin:0;padding-left:16px;background:#111921;border:1px solid #2b3945;border-radius:6px;padding:8px 12px;list-style:disc">${evidenceHtml}</ul>
     </div>` : ''}
     ${finding.remediation ? `
@@ -268,7 +268,7 @@ function buildHtmlReport(scanResult) {
 
   const findingCards = findings.length
     ? findings.map((f, i) => buildFindingCardHtml(f, i + 1)).join('')
-    : `<div style="background:#1b2630;border:1px solid #2b3945;border-radius:10px;padding:32px;text-align:center;color:#7f91a1;font-size:13px">✅ Không phát hiện finding nào.</div>`;
+    : `<div style="background:#1b2630;border:1px solid #2b3945;border-radius:10px;padding:32px;text-align:center;color:#7f91a1;font-size:13px">✅ Không có phát hiện nào.</div>`;
 
   const metaRows = [
     ['Chế độ scan', mode],
@@ -379,7 +379,7 @@ function buildHtmlReport(scanResult) {
       <div style="display:flex;align-items:center;gap:18px;margin-bottom:14px">
         <div class="total-badge">
           <span class="total-n">${summary.total}</span>
-          <span class="total-label">findings</span>
+          <span class="total-label">phát hiện</span>
         </div>
       </div>
       ${buildSeverityBreakdownHtml(summary.bySeverity || {})}
@@ -395,7 +395,7 @@ function buildHtmlReport(scanResult) {
     <div class="findings-hdr">
       <div>
         <div class="findings-count">${findings.length}</div>
-        <div class="findings-count-label">Findings (sắp xếp theo mức độ)</div>
+        <div class="findings-count-label">Phát hiện (sắp xếp theo mức độ)</div>
       </div>
     </div>
     ${findingCards}

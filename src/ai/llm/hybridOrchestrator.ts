@@ -91,9 +91,9 @@ export class HybridOrchestrator {
    * Diem truy cap chinh.
    *
    * Logic uu tien (v2):
-   * 1. KB tra loi cau don gian (chao/list topics) -> tra ve ngay, khong can LLM.
+   * 1. KB trả lời câu đơn giản (chào/list topics) -> trả về ngay, không cần LLM.
    * 2. Cau hoi "can giai thich sau" -> bo qua KB, di thang LLM.
-   * 3. KB co cau tra loi du dai (>200 ky tu) va khong phai OOS -> tra ve tu KB.
+   * 3. KB có câu trả lời đủ dài (>200 ký tự) và không phải OOS -> trả về từ KB.
    *    (Tuy chon: neu co LLM va cau tra loi ngan-vua, them context tu LLM)
    * 4. KB OOS hoac qua ngan -> dung LLM lam nguon chinh.
    * 5. Neu LLM cung that bai -> tra ve KB du chat luong kem.
@@ -103,7 +103,7 @@ export class HybridOrchestrator {
     const warnings: string[] = [];
     const question = payload.question ?? '';
 
-    // ── Lop 1a: Cau tra loi KB ─────────────────────────────────────────────────
+    // ── Lớp 1a: Câu trả lời KB ─────────────────────────────────────────────────
     const kbAnswer = routeQuery(payload);
 
     // Neu KB tra ve cau don gian (chao hoi, liet ke, v.v.) -> dung luon
