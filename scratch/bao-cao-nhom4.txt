@@ -1,0 +1,791 @@
+
+B? GIÁO D?C VÀ ÐÀO T?O
+TRU?NG Ð?I H?C CÔNG NGH? TP. HCM
+
+
+
+
+
+Ð? ÁN CO S?
+
+
+
+
+
+PHÁT TRI?N H? TH?NG KI?M TH? L? H?NG B?O M?T WEB T? Ð?NG THEO OWASP TOP 10
+
+
+
+Ngành: 	CÔNG NGH? THÔNG TIN
+Chuyên ngành: 	AN NINH M?NG
+
+
+Gi?ng viên hu?ng d?n	: TH.S Ðinh Phuong Nam
+Sinh viên th?c hi?n	:	
+1. Nguy?n An Khang	      MSSV: 2380600984	L?p: 23DTHD3
+2. Ph?m Duong Ðình Huy   MSSV: 2380600870	L?p: 23DTHD3
+3. Lê Phuong Nam	      MSSV: 2380614933	L?p: 23DTHD3
+4. Bùi Tr?ng Th?c	      MSSV: 2380602199	L?p: 23DTHD3
+
+
+
+
+TP. H? Chí Minh, 2026
+L?i C?m On
+Chúng em, nhóm 4, xin bày t? s? tôn tr?ng và lòng bi?t on sâu s?c d?n Th?y Ðinh Phuong Nam - gi?ng viên hu?ng d?n d? án co s?, ngu?i dã t?n tình d?nh hu?ng, góp ý chuyên môn và h? tr? nhóm trong su?t quá trình th?c hi?n d? án "SENTINEL" v?i d? tài "Phát tri?n h? th?ng ki?m th? l? h?ng b?o m?t web t? d?ng theo OWASP top 10". Nh? s? hu?ng d?n và nh?ng góp ý khoa h?c c?a th?y, nhóm chúng em dã có di?u ki?n hoàn thi?n d? tài này m?t cách h? th?ng, dúng d?nh hu?ng và d?m b?o ti?n d? theo yêu c?u h?c ph?n. Dù dã c? g?ng d?u tu th?i gian và n? l?c h?t mình, nhung do ki?n th?c và kinh nghi?m th?c ti?n còn h?n ch?, d? án này ch?c ch?n không th? tránh kh?i nh?ng thi?u sót. Nhóm chúng em r?t mong nh?n du?c nh?ng ý ki?n dóng góp quý báu t? th?y d? d? tài du?c hoàn thi?n hon. Bên c?nh dó, quá trình th?c hi?n d? án cung giúp chúng em rèn luy?n tu duy phân tích, tinh th?n làm vi?c nhóm và nh?n th?c rõ hon v? t?m quan tr?ng c?a trí tu? nhân t?o trong th?c ti?n. M?t l?n n?a, chúng em xin kính chúc th?y luôn kh?e m?nh, h?nh phúc và g?t hái du?c nhi?u thành công trong tuong lai.
+
+
+L?i Cam Ðoan
+Nhóm 4 xin cam doan toàn b? n?i dung c?a d? án "SENTINEL" là k?t qu? nghiên c?u và tri?n khai do chính các thành viên trong nhóm th?c hi?n. Các s? li?u, phân tích và k?t qu? trình bày d?u trung th?c, không sao chép t? b?t k? ngu?n nào khác. Trong tru?ng h?p có b?t k? sai sót ho?c vi ph?m liên quan d?n b?n quy?n hay tính trung th?c c?a d? án, nhóm xin hoàn toàn ch?u trách nhi?m t? Khoa/Vi?n.
+
+Nh?n xét c?a gi?ng viên
+...............................................................................................................
+.................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+
+	M?c L?c	
+CHUONG 1. T?NG QUAN	9
+1.1.	Gi?i thi?u d? tài	9
+1.2.	B?i c?nh b?o m?t ?ng d?ng web	10
+1.3.	T?ng quan v? h? th?ng SENTINEL	11
+1.4.	Tính c?p thi?t và lý do hình thành d? tài	12
+1.5.	Ý nghia khoa h?c và th?c ti?n	12
+1.5.1.	Ý nghia khoa h?c	12
+1.5.2 Ý nghia th?c ti?n	12
+1.6.1.	Ð?i tu?ng nghiên c?u	13
+1.6.2.	Ph?m vi nghiên c?u	13
+1.6.	Công ngh? s? d?ng trong d? án	14
+1.7.	D? li?u d?u vào và d?u ra c?a h? th?ng	15
+1.8.	Phuong pháp nghiên c?u	15
+1.9.	Nhi?m v? d? án	16
+CHUONG 2. CO S? LÝ THUY?T	17
+2.1.	Khái ni?m v? h? th?ng ?ng d?ng web và b?o m?t	17
+2.1.1.	Mô hình Client - Server và giao th?c HTTP	17
+2.1.2.	M?i de d?a và t?m quan tr?ng c?a an toàn thông tin ?ng d?ng Web	17
+2.2.	Các phuong th?c ki?m th? b?o m?t ?ng d?ng (Application Security Testing)	18
+2.2.1.	Ki?m th? b?o m?t t? d?ng (DAST - Dynamic Application Security Testing)	18
+2.2.2.	Ki?m th? mã ngu?n (SAST - Static Application Security Testing)	19
+2.2.3.	Phân tích thành ph?n ph?n m?m (SCA - Software Composition Analysis)	19
+2.3.	H? th?ng tiêu chu?n l? h?ng OWASP Top 10 (Phiên b?n 2025)	20
+2.4.	Công ngh? n?n t?ng và công c? phát tri?n ph?n m?m	26
+2.4.1.	Môi tru?ng th?c thi Node.js và ki?n trúc Event-Loop	26
+2.4.2.	Khung phát tri?n ?ng d?ng Desktop da n?n t?ng (Electron JS)	26
+2.4.3.	Công ngh? giao di?n ReactJS, Vite và Zustand	27
+CHUONG 3: K?T QU? TH?C NGHI?M	29
+3.1.	So d? Pipeline t?ng quan c?a d? án	29
+3.2.	Chu?n b? môi tru?ng và d? án th?c nghi?m	29
+3.2.1.	Chu?n b? môi tru?ng ch?y d? án	29
+3.2.2.	Chu?n b? mã ngu?n d? án	30
+3.2.3.	Cài d?t thu vi?n ph? thu?c	31
+3.2.4.	C?u hình bi?n môi tru?ng	31
+3.2.5.	Kh?i ch?y h? th?ng	32
+3.2.6.	Ki?m tra tr?ng thái d? án tru?c th?c nghi?m	32
+3.3.	Thi?t l?p th?c nghi?m	33
+3.3.1.	M?c tiêu th?c nghi?m	33
+3.3.2.	Ph?m vi và di?u ki?n th?c nghi?m	33
+3.3.3.	Ð?i tu?ng th?c nghi?m	34
+3.3.4.	K?ch b?n th?c nghi?m t?ng quát	34
+3.3.5.	Tiêu chí dánh giá	35
+3.4.	Th?c nghi?m quét website b?ng URL	35
+3.4.1.	Mô t? ch?c nang quét URL	35
+3.4.2.	Quy trình th?c hi?n quét URL	37
+3.4.3.	Các k?ch b?n áp d?ng cho th?c nghi?m quét URL	40
+3.4.4.	Phân tích k?t qu? th?c nghi?m quét URL	42
+3.5.	Th?c nghi?m quét mã ngu?n d? án	43
+3.5.1.	Mô t? ch?c nang quét mã ngu?n d? án	43
+3.5.2.	Quy trình th?c hi?n quét mã ngu?n d? án	44
+3.5.3.	Các k?ch b?n áp d?ng cho th?c nghi?m quét mã ngu?n d? án	46
+3.5.4.	Phân tích k?t qu? th?c nghi?m quét mã ngu?n d? án	48
+3.6.	Ðánh giá t?ng h?p k?t qu? th?c nghi?m	50
+3.6.1.	T?ng h?p k?t qu? d?t du?c	50
+3.6.2.	Ðánh giá d? án theo tiêu chí dã d? ra	52
+3.6.3.	Các h?n ch? trong quá trình th?c nghi?m	53
+3.6.4.	Hu?ng c?i thi?n c?a d? án	53
+CHUONG 4: K?T LU?N VÀ HU?NG PHÁT TRI?N	55
+4.1.	K?t qu? d?t du?c	55
+4.2.	H?n ch? c?a h? th?ng	56
+4.3.	Ð?nh hu?ng phát tri?n lên Ð? án chuyên ngành	56
+Tài Li?u Kham Kh?o	58
+
+																																																			
+             
+             M?c L?c ?nh		
+Hình 3.1.1: File .env.example c?a d? án	31
+Hình 3.1.2: Ch?y ?ng d?ng thông qua Terminal	31
+Hình 3.3.1: M? ?ng d?ng SENTINEL.exe dã du?c dóng gói	37
+Hình 3.3.2: Sau khi giao di?n hi?n th? b?m ch?n ch?c nang quét website b?ng URL	37
+Hình 3.3.3: Nh?p URL website, c?u hình ph?m vi và cu?ng d? quét	38
+Hình 3.3.4: Nh?p thông tin xác th?c n?u website yêu c?u	38
+Hình 3.3.5: Nh?n nút b?t d?u quét và theo dõi tr?ng thái x? lý	39
+Hình 3.3.6: Quan sát k?t qu? du?c tr? v? sau khi quét	39
+Hình 3.3.7: Th?c hi?n quét m?t URL h?p l? (TN01)	41
+Hình 3.3.8: Quét các website có form ho?c endpoint d?u vào (TN02)	41
+Hình 3.3.9: Quét website có thi?u ho?c c?u hình sai security headers (TN03)	41
+Hình 3.3.10: Xu?t báo cáo sau khi quét du?i d?ng HTML (TN06) (1)	42
+Hình 3.3.11: Xu?t báo cáo sau khi quét du?i d?ng HTML (TN06) (2)	42
+Hình 3.4.1: T?i giao di?n chính b?m ch?n quét mã ngu?n	45
+Hình 3.4.2: Nh?n ch?n thu m?c d? m? File Explorer và ch?n thu m?c c?n quét	46
+Hình 3.4.3: Nh?n nút B?t d?u phân tích mã ngu?n và ki?m tra k?t qu? quét	46
+Hình 3.4.4: Xem thông tin chi ti?t c?a findings và d? xu?t x? lý	47
+Hình 3.4.5: Th?c hi?n quét d? án mã ngu?n m?u OWASP Juice Shop (TN04)	48
+Hình 3.4.6: Quét d? án có thu vi?n ph? thu?c ho?c c?u hình r?i ro g?m A02, A03, A05, A07, A08, A09 (TN05) (1)	48
+Hình 3.4.7: Quét d? án có thu vi?n ph? thu?c ho?c c?u hình r?i ro g?m A02, A03, A05, A07, A08, A09 (TN05) (2)	48
+Hình 3.5.1: Checklist du?c t?o ra t? ngu?n d? li?u c?a hai ch?c nang	51
+Hình 3.5.2: Các nhóm l? h?ng có r?i ro cao s? luôn du?c uu tiên tru?c	52
+Hình 3.5.3: T?i t?ng nhóm checklist ngu?i dùng có th? xem chi ti?t và d? xu?t x? lý	52
+                    
+							
+
+M?c L?c B?ng
+B?ng 1.2.1: Các hu?ng ki?m th? du?c s? d?ng làm co s? cho SENTINEL	10
+B?ng 1.3.1: Các ch?c nang chính c?a h? th?ng SENTINEL	11
+B?ng 1.5.1: M?c tiêu nghiên c?u c?a d? tài	13
+B?ng 1.5.2: Ph?m vi ki?m th? c?a h? th?ng	14
+B?ng 1.6.1: Công ngh? s? d?ng trong h? th?ng SENTINEL	14
+B?ng 1.7.1: D? li?u d?u vào và d?u ra c?a h? th?ng	15
+B?ng 2.3.1: B?ng header cho l? h?ng A-02	21
+B?ng 3.2.1: B?ng môi tru?ng và công c? th?c nghi?m	30
+B?ng 3.2.2: B?ng mã ngu?n d? án	31
+B?ng 3.2 .3: B?ng thu vi?n và công ngh?	31
+B?ng 3.1.4: B?ng l?nh ki?m tra tr?ng thái	33
+B?ng 3.2.1: B?ng ph?m vi và di?u ki?n th?c nghi?m	33
+B?ng 3.2.2: B?ng k?ch b?n th?c nghi?m	35
+B?ng 3.2.3: B?ng tiêu chí dánh giá	35
+B?ng 3.3.1: B?ng k?ch b?n quét URL	38
+B?ng 3.3.2: B?ng k?t qu? quét URL	40
+B?ng 3.3.3: B?ng k?t qu? dánh giá	41
+B?ng 3.4.1: B?ng k?ch b?n quét mã ngu?n d? án	44
+B?ng 3.4.2: B?ng k?t qu? dánh giá	46
+B?ng 3.4.3: B?ng k?t qu? dánh giá	47
+B?ng 3.5.1: B?ng dánh giá tiêu chí	50
+B?ng 3.5.2: B?ng dánh giá h?n ch?	51
+	
+
+CHUONG 1. T?NG QUAN
+1.1. Gi?i thi?u d? tài
+Trong quá trình hoàn thi?n d? án, thì ph?n l?n h? th?ng d?u ho?t d?ng theo mô hình Client - Server và k?t n?i thông qua các giao th?c HTTP ho?c HTTPS. Ngu?i dùng s? d?ng và thao tác trình duy?t, d? li?u du?c dóng gói thành request r?i g?i d?n server d? x? lý, truy v?n co s? d? li?u và tr? k?t qu? v? giao di?n. Quá trình trao d?i d? li?u gi?a Client-Server làm có thêm nhi?u d?u vào URL, form, cookie, header và body request. N?u các di?m d?u vào không du?c ki?m soát t?t, h? th?ng có th? xu?t hi?n các r?i ro b?o m?t nhu Injection, Broken Access Control, làm l? d? li?u ho?c c?u hình sai.
+
+Trong quá trình h?c và làm bài t?p, nhóm nh?n th?y sinh viên thu?ng t?p trung nhi?u vào ph?n ch?c nang nhu dang nh?p, dang ký, qu?n lý ngu?i dùng, qu?n lý s?n ph?m, gi? hàng ho?c trang qu?n tr?. Nhung dôi khi quá t?p trung vào v? b? ngoài mà quên m?t ph?n b?o m?t dáng ra ph?i có trong t?ng do?n mã ngu?n (Ví d?: m?t trang c?a qu?n tr? viên mu?n b?m vào nút g?i api nhung phía sa chua d?y d? k?t n?i d? có th? kh?i ch?y).
+
+T? nh?ng v?n d? trên, nhóm ch?n d? tài "Phát tri?n h? th?ng ki?m th? l? h?ng b?o m?t web t? d?ng theo OWASP Top 10" nh?m tìm hi?u và xây d?ng m?t công c? h? tr? ki?m tra m?t s? r?i ro ph? bi?n trong ?ng d?ng web. Trong ph?m vi d? án, h? th?ng không hu?ng d?n thay th? các công c? b?o m?t chuyên nghi?p, mà t?p trung h? tr? quá trình h?c t?p, th?c hành và dánh giá ban d?u d?i v?i các project web.
+Ð? tài du?c th?c hi?n thông qua d? án SENTINEL, m?t công c? h? tr? ki?m tra b?o m?t ? m?c co b?n cho ?ng d?ng web. H? th?ng du?c d?nh hu?ng giúp ngu?i dùng phát hi?n s?m m?t s? d?u hi?u r?i ro nhu c?u hình chua an toàn, x? lý d? li?u d?u vào chua ch?t ch?, s? d?ng thu vi?n có l? h?ng ho?c các v?n d? liên quan d?n ph?n h?i c?a website khi ch?y th? nghi?m. Qua dó nhóm có th? v?n d?ng ki?n th?c v? b?o m?t ?ng d?ng web, ki?m th? ph?n m?m và phát tri?n h? th?ng vào m?t s?n ph?m c? th?.
+
+1.2. B?i c?nh b?o m?t ?ng d?ng web
+Hi?n nay,do th?i d?i h?i nh?p các công ngh? du?c t?o ra r?t nhi?u m?i ngày nhung cung t? dó khi?n m?i ngu?i luôn d?a vào các công ngh? m?i này nhu: API,các thu vi?n mã ngu?n m?, AI..., s? phát tri?n này giúp chúng ta hoàn thành công vi?c m?t cách nhanh ch?ng nhu t? s? nhanh ch?ng dó ch? ra m?t v?n d?,m?i s? d?p d? d?u ? bên ngoài còn bên trong các l? h?ng b?o m?t nhi?u không d?m h?t. 
+
+Th?c t? cho th?y hi?n nay các l?i web dang xu?t hi?n ngày càng ph? bi?n và bi?n t?u theo các chi?u hu?ng x?u.Theo OWASP Top 10:2021, các nhóm r?i ro nghiêm tr?ng thu?ng g?p g?m ki?m soát truy c?p không dúng, l?i injection, c?u hình b?o m?t chua an toàn và s? d?ng thành ph?n ph?n m?m có l? h?ng. Trong dó, l?i ki?m soát truy c?p du?c OWASP x?p ? v? trí A01 và du?c ghi nh?n xu?t hi?n trong 94% ?ng d?ng du?c ki?m th?. 
+
+Ngoài ra, báo cáo Verizon Data Breach Investigations Report 2024 cung cho th?y vi?c khai thác l? h?ng d? b?t d?u m?t v? xâm nh?p dã tang 180% so v?i nam tru?c. Các s? li?u này cho th?y m?t l?i nh? trong x? lý request, qu?n lý dang nh?p, phân quy?n ho?c c?u hình server d?u có th? ?nh hu?ng d?n d? li?u và ho?t d?ng c?a h? th?ng.
+
+T? các th?c tr?ng dó,nhóm nh?n th?y vai trò các công c? h? tr? ki?m tra b?o m?t là di?u t?t y?u, d?t bi?t là trong môi tru?ng h?c t?p m?i ngu?i d?u chua quá d? tâm d?n b?o m?t d? li?u.Vì v?y nhóm xây d?ng d? án SENTINEL v?i m?c tiêu h? tr? phát hi?n s?m các r?i ro v? b?o m?t.
+
+Hu?ng ki?m th?Vai trò D?u hi?u c?n ki?m traDAST - Dynamic Application Security TestingKi?m tra ?ng d?ng t? bên ngoài khi trang Web dang ch?y.Header b?o m?t, cookie, form, thông báo l?i, URL và d?u hi?u l?i c?u hình.SAST - Static Application Security TestingPhân tích  mã ngu?n ho?c c?u hình d? án.Tính an toàn c?a m?t kh?u; d? li?u nh?p vào có du?c ki?m tra k?; thông tin nh?y c?m b? ghi ra loggng  .SCA - Software Composition Analysiski?m tra thành ph?n ph?n m?m và ph? thu?c bên th? ba.Ki?m tra thu vi?n có cu không, có c?n c?p nh?t không; xem các file nhu package.json, package-lock.json.B?ng 1.2.1: Các hu?ng ki?m th? du?c s? d?ng làm co s? cho SENTINEL
+
+1.3. T?ng quan v? h? th?ng SENTINEL
+SENTINEL là ?ng d?ng desktop h? tr? ki?m th? b?o m?t web co b?n. H? th?ng du?c xây d?ng b?ng Electron d? dóng gói ?ng d?ng, React d? phát tri?n giao di?n, JavaScript cho logic x? lý, Vite d? h? tr? build nhanh và Node.js d? th?c hi?n các tác v? d?c file, g?i request, phân tích d? li?u và x? lý k?t qu?.
+
+Khi s? d?ng, ngu?i dùng có th? nh?p URL c?a Website c?n ki?m tra ho?c ch?n thu m?c c?a d? án c?n ki?m tra. V?i URL Scan, h? th?ng g?i request, d?c ph?n h?i t? server và ghi nh?n các d?u hi?u liên quan d?n runtime. V?i d? án Scan, h? th?ng duy?t mã ngu?n và các file c?u hình d? tìm nh?ng di?m c?n c?nh báo. K?t qu? t? hai hu?ng ki?m tra du?c t?ng h?p thành danh sách tìm ki?m, checklist OWASP Top 10 và th?ng kê các m?c d? nguy hi?m. 
+
+ V? co b?n, SENTINEL là công c? bán t? d?ng. M?t s? v?n d? có th? nh?n di?n không dúng hoàn toàn nhu thi?u security header, cookie chua có flag phù h?p ho?c source mã ngu?n có d?u hi?u ch?a các nguy co. Nhung, các l?i ph? thu?c vào logic nghi?p v? nhu Broken Access Control, Insecure Design ho?c SSRF ph?c t?p v?n c?n ngu?i dùng xác minh th? công. Vì v?y, k?t qu? c?a h? th?ng du?c xem là ki?m tra tham kh?o không ph?i dúng hoàn toàn.
+
+STTCh?c nangMô t?1Quét URL websiteNh?p URL website, g?i request và ki?m tra các d?u hi?u khi ch?y nhu header, cookie, form, l?i c?u hình.2Quét mã ngu?n c?a d? ánCh?n thu m?c ch?a mã ngu?n d? h? th?ng ki?m tra file c?u hình, ph? thu?c, logging và cách x? lý input.3ki?m tra ph? thu?cÐ?c file qu?n lý gói d? h? tr? nh?n di?n thành ph?n ph?n m?m có nguy co l?i th?i ho?c c?n ki?m tra thêm.4Checklist OWASP Top 10Gán tìm ki?m vào các nhóm A01-A10 d? ngu?i dùng theo dõi k?t qu? theo chu?n phân lo?i r?i ro.5Phân lo?i m?c d? nghiêm tr?ngS?p x?p tìm ki?m theo Critical, High, Medium và Low nh?m h? tr? uu tiên x? lý.6Dashboard t?ng quanHi?n th? s? lu?ng tìm ki?m, nhóm r?i ro n?i b?t và tr?ng thái checklist sau m?i l?n quét.7L?ch s? quétLuu l?i các l?n ki?m tra d? so sánh k?t qu? tru?c và sau khi s?a l?i.8Hu?ng d?n và tr? lý offlineGi?i thích ý nghia tìm ki?m, nhóm OWASP liên quan và hu?ng x? lý co b?n b?ng d? li?u n?i b?.9Xu?t báo cáoT?ng h?p k?t qu? ki?m th? thành báo cáo ph?c v? phân tích, thuy?t trình ho?c n?p bài.B?ng 1.3.1: Các ch?c nang chính c?a h? th?ng SENTINEL
+
+1.4. Tính c?p thi?t và lý do hình thành d? tài
+Hi?n nay, Hi?n nay, nhi?u website không ch? hi?n th? thông tin mà còn x? lý tài kho?n, d? li?u ngu?i dùng, don hàngvà nhi?u d? li?u quan tr?ng khác.Vì v?y n?u website có l?i b?o m?t, h? th?ng có th? b? t?n công mag l?i nhi?u h?u qu? khó lu?ng.Theo OWASP Top 10 các l?i nhu phân quy?n ,injection,c?u hình chua an toàn và s? d?ng thu vi?n có l? h?ng v?n là nh?ng r?i ro ph? bi?n trong ?ng d?ng web.
+
+Trong các d? án môn h?c sinh viên ch? t?p trung vào giao di?n cho d?p ch?c nang ph?i dúng yêu c?u,Nhung bên c?nh dó m?t trang web ch?y du?c không có nghia là an toàn b?t kh? xâm ph?m.Website có th? b? rò r? d? li?u,làm l? m?t kh?u, không ki?m tra k? phân quy?n,dùng các thu vi?n cu.Ðây là nh?ng l?i khó quan sát ngay c? gi?ng viên cung có th? khó nh?n ra.
+
+T? th?c tr?ng dó, nhóm ch?n xây d?ng SENTINEL d? h? tr? ki?m tra ban d?u m?t s? r?i ro b?o m?t thu?ng g?p trong project web. Công c? này không d?t m?c tiêu là thay th? các ph?n m?m ki?m th? chuyên nghi?p, mà là giúp ngu?i h?c nh?n ra các thi?u sót trong công cu?c b?o m?t d? án,hi?u rõ hon v? các l?i b?o m?t theo OWASP Top 10 và liên h? ki?n th?c lý thuy?t v?i mã ngu?n th?c t?.
+1.5. Ý nghia khoa h?c và th?c ti?n
+1.5.1. Ý nghia khoa h?c
+V? m?t khoa h?c, d? tài giúp h? th?ng hóa ki?n th?c b?o m?t ?ng d?ng web theo các khái ni?m n?n t?ng nhu mô hình Client - Server, HTTP/HTTPS, b? m?t t?n công, ki?m th? d?ng, phân tích tinh và phân tích thành ph?n ph?n m?m. Nh?ng ki?n th?c này là co s? d? gi?i thích vì sao m?t ?ng d?ng web c?n du?c ki?m tra ? c? tr?ng thái runtime l?n mã ngu?n.
+
+Ð? tài giúp nhóm bi?t cách nhìn d?u hi?u k? thu?t d? doán l?i b?o m?t. Ví d?, l?i server có th? do c?u hình sai, input x? lý chua k? có th? gây Injection, còn thu vi?n cu có th? có l? h?ng. Vi?c phân lo?i nhu v?y giúp nhóm ki?m tra và dánh giá d? hon.
+    1.5.2 Ý nghia th?c ti?n
+V? m?t th?c ti?n, SENTINEL h? tr? sinh viên và nhóm phát tri?n nh? ki?m tra ban d?u m?t s? r?i ro thu?ng g?p trong project web. Công c? có th? giúp ngu?i dùng xem l?i các v?n d? nhu thi?u header b?o m?t, cookie c?u hình chua t?t, mã ngu?n có d?u hi?u nh?y c?m ho?c thu vi?n ph? thu?c c?n du?c ki?m tra thêm.
+
+SENTINEL không thay th? ki?m th? b?o m?t th? công ho?c các công c? chuyên nghi?p, nhung có th? dóng vai trò nhu m?t bu?c rà soát ban d?u trong quá trình h?c t?p và phát tri?n project. Thông qua k?t qu? ki?m tra, ngu?i dùng d? nh?n bi?t l?i n?m ? nhóm r?i ro nào, m?c d? c?n uu tiên ra sao và c?n xem l?i ph?n nào trong h? th?ng.
+
+STTM?c tiêuN?i dung th?c hi?n1Tìm hi?u n?n t?ng b?o m?t webNghiên c?u mô hình Client - Server, HTTP/HTTPS, d? li?u request/response và các di?m phát sinh r?i ro.2Nghiên c?u OWASP Top 10Tìm hi?u các nhóm A01-A10 và ch?n n?i dung phù h?p d? ánh x? tìm ki?m trong h? th?ng.3Xây d?ng ki?m th? DAST co b?nCho phép nh?p URL, ki?m tra ph?n h?i runtime, header, cookie, form và d?u hi?u c?u hình.4Xây d?ng ki?m th? SAST co b?nÐ?c thu m?c mã ngu?n d? phát hi?n d?u hi?u liên quan d?n secret, logging, c?u hình và x? lý input.5B? sung hu?ng SCAKi?m tra file ph? thu?c nh?m h? tr? nh?n di?n thành ph?n ph?n m?m c?n ki?m tra ho?c c?p nh?t.6T?ng h?p và phân lo?i tìm ki?mGán tìm ki?m vào nhóm OWASP, phân m?c d? r?i ro và hi?n th? b?ng dashboard/checklist.7Ðánh giá k?t qu? th?c nghi?mCh?y th? trên d? án m?u, ghi nh?n k?t qu?, phân tích h?n ch? và d? xu?t hu?ng phát tri?n.B?ng 1.5.1: M?c tiêu nghiên c?u c?a d? tài
+
+1.6. 
+1.7. 
+1.8. 
+1.9. 
+1.10. 
+1.6.1. Ð?i tu?ng nghiên c?u
+Ð?i tu?ng nghiên c?u c?a d? tài là các r?i ro b?o m?t thu?ng g?p trong ?ng d?ng web, phuong pháp ki?m th? b?o m?t ?ng d?ng và cách t? ch?c k?t qu? ki?m th? theo OWASP Top 10. Trong ph?m vi s?n ph?m, nhóm t?p trung vào website dang ch?y, thu m?c mã ngu?n c?a d? án, ph? thu?c và danh sách tìm ki?m sinh ra sau quá trình phân tích.
+1. 
+2. 
+2.6. 
+1.6.2. Ph?m vi nghiên c?u
+Do ph?m vi môn h?c, h? th?ng du?c gi?i h?n ? m?c h? tr? phát hi?n d?u hi?u r?i ro và g?i ý ki?m tra. SENTINEL không th?c hi?n t?n công chuyên sâu, không dùng d? quét h? th?ng th?t khi chua du?c phép và không kh?ng d?nh m?i c?nh báo d?u ch?c ch?n chính xác là l? h?ng. V?i các l?i v? các d? án quan tr?ng, ngu?i dùng c?n phân tích th? công thêm.
+N?i dungPh?m vi th?c hi?nÐ?i tu?ng ki?m th?Website dang ch?y, thu m?c mã ngu?n d? án và file ph? thu?c liên quan.Hình th?c ki?m th?K?t h?p DAST co b?n, SAST co b?n và SCA ? m?c ki?m tra ban d?u.M?c d? t? d?ngBán t? d?ng: h? th?ng phát hi?n d?u hi?u, ngu?i dùng xác minh l?i các l?i ph? thu?c ng? c?nh.Chu?n tham chi?uOWASP Top 10, t?p trung vào các nhóm r?i ro A01-A10.M?c d? dánh giáCritical, High, Medium và Low.Môi tru?ng s? d?ng?ng d?ng desktop ch?y trên máy cá nhân, uu tiên Windows khi demo.Gi?i h?nKhông thay th? pentest chuyên sâu; không khai thác trái phép; ch? h? tr? h?c t?p và ki?m tra so b?.B?ng 1.5.2: Ph?m vi ki?m th? c?a h? th?ng
+
+1.6. Công ngh? s? d?ng trong d? án
+Nhóm ch?n phát tri?n SENTINEL du?i d?ng ?ng d?ng máy tính vì công c? c?n d?c mã ngu?n và các file d? án ngay trên máy ngu?i dùng. Electron du?c dùng d? dóng gói thành ?ng d?ng máy tính, Node.js h? tr? d?c file và x? lý d? li?u, còn React, Vite và Zustand du?c dùng d? xây d?ng giao di?n và qu?n lý d? li?u trong quá trình quét.
+
+STTThành ph?nCông ngh?/Công c?Vai trò trong h? th?ng1N?n t?ng ?ng d?ngElectronÐóng gói ?ng d?ng desktop, k?t h?p Chromium và Node.js.2Môi tru?ng th?c thiNode.jsG?i request, d?c file, x? lý d? li?u quét và h? tr? tác v? I/O b?t d?ng b?.3Giao di?n ngu?i dùngReactXây d?ng UI theo component và c?p nh?t dashboard/tìm ki?m hi?u qu?.4Ngôn ng? l?p trìnhTypeScript, JavaScriptCài d?t logic quét, rule, x? lý d? li?u và giao di?n.5Công c? buildViteTang t?c quá trình phát tri?n và build giao di?n.6Qu?n lý tr?ng tháiZustandChia s? k?t qu? quét gi?a dashboard, checklist, l?ch s? và báo cáo.7B?o v? n?i dung HTMLDOMPurifyGi?m r?i ro khi hi?n th? n?i dung có kh? nang ch?a HTML không an toàn.8HTTP client/runtimeUndiciH? tr? g?i request trong quá trình quét URL.9Ki?m th? và chu?n hóa mãVitest, ESLint, PrettierKi?m th?, lint và d?nh d?ng mã ngu?n.10Ðóng gói ?ng d?ngElectron BuilderT?o b?n cài d?t ho?c b?n ch?y cho môi tru?ng demo.B?ng 1.6.1: Công ngh? s? d?ng trong h? th?ng SENTINEL
+
+1.7. D? li?u d?u vào và d?u ra c?a h? th?ng
+SENTINEL l?y d? li?u t? URL website và thu m?c d? án. Ph?n m?m cung d?c các file qu?n lý thu vi?n d? ki?m tra các gói thu vi?n dang dùng. Sau khi quét, h? th?ng tr? v? th?ng kê r?i ro, l?ch s? quét và báo cáo.
+
+Thành ph?nD? li?u d?u vàoD? li?u d?u raQuét URLÐ?a ch? website, ví d? http://localhost:3000.D?u hi?u runtime liên quan d?n header, cookie, form, ph?n h?i l?i, URL và c?u hình server.Quét d? ánThu m?c mã ngu?n ?ng d?ng.tìm ki?m trong source mã ngu?n nhu secret, log nh?y c?m, c?u hình sai ho?c x? lý input chua an toàn.ki?m tra ph? thu?cFile qu?n lý gói nhu package.json, package-lock.json ho?c file c?u hình tuong ?ng.Danh sách ph? thu?c c?n ki?m tra thêm ho?c có nguy co l?i th?i.Checklist OWASPK?t qu? t? URL Scan, d? án Scan và ph? thu?c scan.B?ng t?ng h?p tìm ki?m theo t?ng nhóm A01-A10.DashboardDanh sách tìm ki?m sau phân tích.Th?ng kê s? l?i theo m?c d? và nhóm r?i ro.Báo cáoThông tin l?n quét, tìm ki?m và th?ng kê.Báo cáo ph?c v? phân tích, thuy?t trình ho?c d? xu?t kh?c ph?c.B?ng 1.7.1: D? li?u d?u vào và d?u ra c?a h? th?ng
+1.8. Phuong pháp nghiên c?u
+Ð? tài du?c th?c hi?n b?ng cách Nghiên c?u các l?i dã có theo d? li?u du?c công b?. Nhóm không ch? trình bày v? lý thuy?t mà còn áp d?ng vào quá trình làm SENTINEL, t? dó áp d?ng các ch?c nang c?n có nhu quét URL, d?c mã ngu?n, ki?m tra thu vi?n và phân lo?i l?i theo OWASP Top 10.
+
+ Tru?c tiên, nhóm tìm hi?u các ki?n th?c liên quan d?n ?ng d?ng Web, mô hình Client - Server, HTTP/HTTPS, DAST, SAST, SCA và OWASP Top 10. Vi?c này giúp nhóm hi?u các l?i b?o m?t thu?ng g?p và có thêm tu li?u d? thêm vào ph?n m?m
+Sau dó, nhóm phân tích yêu c?u c?a h? th?ng theo hu?ng giúp sinh viên nâng cao ch?t lu?ng ban d?u c?a d? án. Các ch?c nang ? ph?m vi g?i ý s?a ch?a tang cao tính b?o m?t, không t?p trung vào t?n công.
+
+Ti?p theo, nhóm xây d?ng các ch?c nang chính nhu quét website qua URL, d?c mã ngu?n trong thu m?c d? án, ki?m tra thu vi?n ph? thu?c, phân lo?i l?i theo OWASP Top 10 và hi?n th? k?t qu? trên giao di?n.
+Cu?i cùng, nhóm xây d?ng SENTINEL và ch?y th? trên d? án m?u. K?t qu? ch?y th? du?c dùng d? xem công c? phát hi?n du?c nh?ng r?i ro nào, giao di?n có d? dùng không và còn di?m nào c?n c?i thi?n.
+1.9. Nhi?m v? d? án
+     Ð? hoàn thành d? tài, nhóm th?c hi?n các nhi?m v? sau:
+* Tìm hi?u ki?n th?c co b?n v? ?ng d?ng Web, mô hình Client - Server, HTTP/HTTPS và cách request/response ho?t d?ng. 
+* Tìm hi?u OWASP Top 10 d? ch?n các nhóm l?i phù h?p. 
+* Xây d?ng ch?c nang ki?m tra website qua URL, d? tìm th?y các l?i v? header, cookie, l?i hi?n th? và các d?u hi?u c?u hình chua an toàn. 
+* Xây d?ng ch?c nang d?c mã ngu?n d? án d? ki?m tra các v?n d? v? b?o m?t. 
+* Xây d?ng ch?c nang ki?m tra thu vi?n ph? thu?c d? phát hi?n thu vi?n cu. 
+* Phân lo?i k?t qu? ki?m tra theo các nhóm OWASP Top 10 dánh giá m?c d? nguy hi?m c?a cá l? h?ng 
+* Xây d?ng giao di?n ?ng d?ng desktop b?ng Electron, React, Vite và Zustand. 
+* Ki?m th? h? th?ng trên d? th? nghi?m, ghi nh?n k?t qu?, dánh giá uu và nhu?c di?m d? có huong phát tri?n t?t hon trong tuong lai.
+
+CHUONG 2. CO S? LÝ THUY?T
+2. 
+2.1. Khái ni?m v? h? th?ng ?ng d?ng web và b?o m?t
+2.1.1. Mô hình Client - Server và giao th?c HTTP
+Ð? hi?u rõ v? ?ng d?ng web và b?o m?t, cung nhu là cách ho?t d?ng c?a các công c? ki?m th? nhu pentest, ... Ho?c s?n ph?m chính c?a d? án là SENTINEL thì chúng ta c?n ph?i hi?u rõ v? n?n t?ng c?a các ?ng d?ng web hi?n d?i. Ph?n l?n ?ng d?ng web d?u tuân theo mô hình Khách - Ch? (Client - Server).
+* Client (Máy khách): thu?ng s? dóng vai trò d?ch mã HTML, CSS và JavaScript d? t?o ra giao di?n cho ngu?i dùng (ví d?: Google Chorme, FireFox, Edge, ...). Client s? dóng gói d? li?u và g?i yêu c?u v? máy ch? khi ngu?i dùng thao tác nào dó (ví d?: b?m nút dang nh?p, thêm gi? hàng, ...).
+* Server (Máy ch?): H? th?ng máy tính t? xa ch?a mã ngu?n backend, k?t n?i v?i d? li?u trong database (co s? d? li?u). Server nh?n yêu c?u t? Client, th?c hi?n các logic nghi?p v? (ki?m tra d? li?u, tính toán d? li?u) và tr? k?t v? l?i Client.
+Xuong s?ng c?a quá trình giao ti?p này là giao th?c HTTP (Hypertext Transfer Protocol) và phiên b?o m?t c?a HTTP là HTTPS (Hypertext Transfer Protocol Security). M?t gói tin HTTP Request mang theo nhi?u thông tin nh?y c?m du?c c?u trúc bao g?m: phuong th?c Method (Get, Post, Put, Delete), URL dích, các tru?ng header (Cookie, Session Token, d?nh d?ng d? li?u) và ph?n thân Body. Các l? h?ng b?o m?t thu?ng phát sinh viên khi l?p trình viên quá tin tu?ng vào d? li?u mà Client g?i lên. Tin t?c có th? l?i d?ng di?u dó và s? d?ng các công c? b?t ch?n (proxy) d? ch?nh s?a các tru?ng trong HTTP Request tru?c khi nó d?n du?c Server và t? dó th?c thi các ý d? x?u.
+2.1.2. M?i de d?a và t?m quan tr?ng c?a an toàn thông tin ?ng d?ng Web
+Hi?n nay xu hu?ng chuy?n d?i s? ngày càng phát tri?n m?nh m?, các ?ng d?ng web gi? dây dóng vai trò nhu các c?ng thông tin luu tr? m?t lu?ng l?n d? li?u nh?y c?m d?i v?i ngu?i dùng (thông tin cá nhân, t?i chính h? so y t?, ...). Ði kèm v?i vi?c c?u trúc ?ng d?ng Web ngày càng ph?c t?p (chuy?n sang mô hình Microservices, s? d?ng API tích h?p t? nhi?u bên) dã vô tình m? r?ng "b? m?t t?n công" (Attack Surface) c?a h? th?ng.
+H?u qu? c?a m?t v? xâm nh?p thành công không ch? d?ng l?i ? vi?c h? th?ng b? gián do?n ho?t d?ng mà còn gây thi?t h?i n?ng n? v? m?t tài chính và uy tín thuong hi?u c?a t? ch?c do d? li?u b? dánh c?p. Vi?c ?ng d?ng các k? thu?t ki?m th? b?o m?t (Security Testing) s?m trong vòng d?i phát tri?n ph?n m?m (SDLC) là gi?i pháp b?t bu?c d? rà soát và tri?t tiêu các di?m y?u tru?c khi dua h? th?ng vào ph?c v? ngu?i dùng.
+2.2. Các phuong th?c ki?m th? b?o m?t ?ng d?ng (Application Security Testing)
+2. 
+Trong th?c ti?n k? thu?t ph?n m?m, không có m?t công c? don l? nào có th? tìm ra 100% m?i loai l? h?ng. Qúa trình ki?m th? b?o m?t dòi h?i s? k?t h?p c?a nhi?u phuong pháp khác nhau d? d?t d? bao ph? l?n nh?t. ?ng d?ng SENTINEL du?c xây d?ng d?a trên s? tích h?p c?a ba phuong pháp c?t lõi: DAST, SAST và SCA.
+2.2.1. Ki?m th? b?o m?t t? d?ng (DAST - Dynamic Application Security Testing)
+DAST dánh giá ?ng d?ng t? bên ngoài khi h? th?ng dang ? tr?ng thái ho?t d?ng th?c t? (Runtime). Phuong pháp này tuân theo phuong pháp ti?p c?n h?p den (Blackbox Testing), nghia là công c? quét hoàn toàn không bi?t gì v? ki?n trúc bên trong c?a h? th?ng m?c tiêu.
+* Co ch? ho?t d?ng: m?t module DAST thu?ng ho?t d?ng qua hai giai do?n chính. Ð?u tiên giai do?n do thám (Crawling/Spidering), công c? mô hình t? d?ng mô ph?ng hành vi c?a m?t ngu?i dùng	 th?c d? thu th?p toàn b? các URL, bi?u m?u (form) và tham s? có th? tuong tác du?c trên website. Ti?p theo là giai do?n t?n công (Scanning), công c? t?o ra hàng ngàn các HTTP Request du?c tùy bi?n, chèn thêm các Payload d?c h?i (các chu?i mã hóa, mã script) vào các di?m d?u vào (Input Vectors) r?i g?i ? ?t d?n máy ch? (Server).
+* Phân tích d?u hi?u l? h?ng: Khi nh?n du?c HTTP Request tr? v? t? máy ch? (Server), DAST s? phân tích n?i dung. N?u server tr? v? thông báo l?i cú pháp co s? d? li?u (bi?u hi?n c?a SQL Injection), ho?c n?i dung ph?n h?i hi?n th? nguyên b?n do?n mã Script v?a chèn vào (bi?n hi?n c?a Cross-site Scripting - XSS), ho?c th?i gian ph?n h?i thay d?i m?t cách b?t thu?ng (Time-based Attacks), DAST s? d?i chi?u v?i co s? d? li?u m?u và ghi nh?n dó là m?t l? h?ng th?c t?.
+* Uu di?m và gi?i h?n: Uu di?m l?n nh?t c?a DAST là có th? ki?m tra du?c toàn b? h? th?ng th?c t?, bao g?m c? các l?i do c?u hình server sai (Web Server Misconfiguration) hay qu?n lý phiên d?ng nh?p l?ng l?o. Tuy nhiên, nó không th? ch? ra chính xác dòng code nào trong mã ngu?n dang gây ra l?i, khi?n vi?c kh?c ph?c dôi khi t?n nhi?u th?i gian.
+2.2.2. Ki?m th? mã ngu?n (SAST - Static Application Security Testing)
+Ngu?c l?i hoàn toàn v?i DAST, SAST là phuong pháp ki?m th? h?p tr?ng (Whitebox Testing). K? thu?t này phân tích tr?c ti?p vào mã ngu?n c?a d? án (Source Code) ngay khi h? th?ng chua du?c biên d?ch hay kh?i ch?y.
+* Phân tích thông qua Cây cú pháp tr?u tu?ng (AST): Khác v?i con ngu?i d?c code theo t?ng dòng ch?, máy tính không hi?u van b?n thu?n túy. Ð? phân tích tinh, các công c? SAST s? d?ng các trình phân tích cú pháp (Parser) d? chuy?n toàn b? mã ngu?n thành m?t c?u trúc d? li?u g?i là Cây cú pháp tr?u tu?ng (Abstract Syntax Tree - AST). AST bi?u di?n câu l?nh, hàm, bi?n du?i d?ng các nút (node) trong m?t cây logic.
+* Truy v?t lu?ng d? li?u (Data Flow Analysis): Thông qua AST, SAST có th? theo dõi vòng d?i c? m?t bi?n d? li?u k? t? khi nó du?c nh?p vào (Source) du?c n?i tr?c ti?p vào 	m?t câu l?nh th?c thi vào co s? d? li?u (Sink) mà không di qua b?t k? b? l?c làm s?ch nào (Sanitization) trên du?ng di, nó s? gióng lên c?nh báo r?i ro ngay l?p t?c.
+* Gía tr? mang l?i: SAST có th? tìm ra chính xác thu m?c, t?p tin và s? dòng code ch?a l?i. Ði?u này giúp l?p trình viên s?a l?i c?c k? nhanh chóng. Hon th? n?a, SAST có th? tích h?p tr?c ti?p vào môi tru?ng vi?t code (IDE) d? t?o ra thói quen code an toàn ngay t? d?u. Tuy nhiên, do ch? phân tích tinh, SAST thu?ng sinh ra các c?nh báo gi? (Fale Positive) ki dánh giá sai v? m?c d? an toàn c?a m?t hàm dóng gói.
+2.2.3. Phân tích thành ph?n ph?n m?m (SCA - Software Composition Analysis)
+Ph?n l?n ph?n m?m hi?n nay không du?c vi?t t? d?u (form scratch) mà d?a vào vi?c tái s? d?ng hàng ch?c, th?m chí hàng tram thu vi?n mã ngu?n m? có s?n. M?t l? h?ng trong thu vi?n nh? có th? dánh s?p toàn b? h? th?ng kh?ng l? s? d?ng nó.
+* Nguyên lý rà soát: SCA t?p trung vào vi?c giám sát các thành ph?n bên th? ba. Công c? này d?c các t?p c?u hình qu?n lý gói c?a d? án (ví d?: package.json và package-lock.json c?a Node.js, pom.xml c?a Java, hay Requirements.txt c?a Python) d? xây d?ng ra m?t danh sách (BOM - Bill of Materials) ch?a tên và phiên b?n chính xác c?a t?ng thu vi?n.
+* Ð?i chi?u co s? d? li?u: Danh sách phiên b?n này s? du?c d?i chi?u liên t?c v?i các co s? d? li?u l? h?ng toàn c?u, ch?ng h?n nhu H? th?ng d? li?u l? h?ng qu?c gia c?a Hoa K? (NVD - National Vulnerabilities and Exposures). N?u nhu ?ng d?ng dang dùng m?t thu vi?n ch?a CVE m?c d? nghiêm tr?ng (Critical), SCA s? báo cáo và d? xu?t l?p trình viên nâng c?p thu vi?n lên phiên b?n vá l?i (Patch).
+2.3. H? th?ng tiêu chu?n l? h?ng OWASP Top 10 (Phiên b?n 2025)
+OWASP (Open Worldwide Application Security Project) là t? ch?c phi l?i nhu?n uy tín nh?t toàn c?u chuyên nghiên c?u v? an ninh ph?n m?m. Danh sách OWASP Top 10 du?c phát hành d?nh k?, li?t kê 10 lo?i r?i ro b?o m?t ph? bi?n và nguy hi?m nh?t. Ðây là phân tích chi ti?t b? tiêu chu?n OWASP 2025, cùng chính là co s? lý thuy?t d? xây d?ng các rules (các lu?t) cho d? án và công c? SENTINEL.
+Vào d?u nam 2026 (d? li?u c?p nh?t cho b?n 2025), OWASP dã công b? phiên b?n Top 10 m?i nh?t. Khác v?i giai do?n tru?c, b?ng x?p h?ng l?n này ph?n ánh s? d?ch chuy?n rõ r?t c?a các m?i de d?a t? l?i mã ngu?n thu?n túy sang các v?n d? nghiêm tr?ng v? ki?n trúc dám mây và chu?i cung ?ng ph?n m?m. B?ng x?p h?ng c? th? nhu sau:
+A-01: Broken Access Control (H?ng ki?m soát truy c?p) Nhóm l?i này v?n ti?p t?c gi? v?ng v? trí s? m?t. V?n d? c?t lõi xu?t phát t? vi?c máy ch? không ki?m tra ch?t ch? d?c quy?n c?a ngu?i dùng tru?c khi c?p phát tài nguyên. Ði?u quan tr?ng nh?t trong phiên b?n 2025 là l? h?ng gi? m?o yêu câu máy ch? (SSRF - Server-Side Request Forgery) dã chính th?c b? sáp nh?p vào h?ng m?c này thay vì d?ng riêng l?.
+Các d?ng khai thác di?n hình du?c ghi nh?n nhi?u nh?t bao g?m: 
+* Insecure Direct Reference (IDOR): K? t?n công thao túng tr?c ti?p các tham s? d?nh danh (nhu id = 123) trên URL ho?c body request d? ch?c vào d? li?u c?a ngu?i dùng khác. Ch?ng h?n, s?a GET/api/order?id=100 thành id = 101 d? ép server nh? ra thông tin don hàng không thu?c v? mình.
+* Forced Browing (Duy?t ép bu?c): Hành vi truy c?p th?ng vào các trang qu?n tr? ho?c tài nguyên n?i b? mà b? qua lu?ng di?u hu?ng h?p l?
+* Server-Side Request Forgery (SSRF): Ðánh l?a máy ch? th?c hi?n các câu truy v?n HTTP g?i t?i các h? th?ng m?ng n?i b?. K? t?n công thu?ng dùng SSRF d? d?c siêu d? li?u (metadata) c?a các máy ch? dám mây AWS, GCP ho?c Azure.
+Co ch? phân tích: SENTINEL x? lý nhóm này thông qua m?t co ch? dò quét t? d?ng khá toàn di?n. H? th?ng phân tích cú pháp các tham s? URL xem có d?ng d?nh danh s? (heuristics IDOR) hay không. Ð?ng th?i, công c? liên t?c nh? các payload d? th? truy c?p vào hon 60 du?ng d?n nh?y c?m ph? bi?n nh?m phát hi?n forced browsing và SSRF.
+A-02: Security Misconfiguration (C?u hình thi?u an toàn) S? chuy?n d?ch ? ?t sang ki?n trúc dám mây (cloud) và vi d?ch v? (microservices) dã d?y r?i ro c?u hình sai lên v? trí th? 2. H?u h?t các s? c? kh?i ngu?n t? nh?ng sai sót r?t nh? g?n: d? quên m?t kh?u m?c d?nh c?a database, l? t?p .env, hay don gi?n là không t?t tính nang hi?n th? danh sách thu m?c (directory listing) trên máy ch? web.
+Thêm vào dó, vi?c c?u hình sai ho?c thi?u h?t hoàn toàn các tiêu d? b?o m?t HTTP (Security Headers) là ngòi n? cho các d?t t?n công XSS ho?c Clickjacking. Ð? gi?i quy?t, quá trình quét tinh c?a h? th?ng s? ti?n hành rà soát b?t bu?c các nhóm header t?i quan tr?ng sau:
+Tên HeaderM?c dích b?o v?Strict-Transport-Security (HSTS)Ép bu?c trình duy?t ch? giao ti?p qua HTTPSContent-Security-Policy (CSP)Ch?n d?ng XSS b?ng cách ki?m soát ngu?n t?i tài nguyênX-Frame-OptionsNgan ch?n vi?c nhúng trang web vào th? iframe (ch?ng Clickjacking)X-Content-Type-OptionsC?m trình duy?t t? d?ng suy doán ki?u t?p (MIME sniffing)Referrer-PolicyGi?i h?n vi?c rò r? du?ng d?n khi ngu?i dùng b?m sang trang khácPermissions-PolicySi?t ch?t quy?n truy c?p camera, micro, GPS c?a trình duy?tB?ng 2.3.1: B?ng header cho l? h?ng A-02
+
+Cùng v?i vi?c quét header, SENTINEL dánh giá c?c k? g?t gao các thu?c tính b?o m?t c?a cookie (Secure, HttpOnly, SameSite) nh?m d?m b?o tuân th? tiêu chu?n RFC 6265.
+A-03: Software Supply Chain Failures (L?i chu?i cung ?ng ph?n m?m) Ðây là m?t h?ng m?c hoàn toàn m?i, xu?t hi?n d? ph?n ánh tình tr?ng l?m d?ng quá dà các thu vi?n mã ngu?n m?. Toàn b? logic ?ng d?ng c?a b?n có th? hoàn h?o, nhung h? th?ng v?n s? s?p d? n?u m?t gói thu vi?n ph? thu?c (dependency/package) mà b?n dang g?i t?i l?i ch?a mã d?c ho?c có CVE chua vá.
+Co ch? phân tích: Nh?n th?c du?c m?c d? nghiêm tr?ng này, ch?c nang quét tinh (Project Scan) c?a ph?n m?m du?c tích h?p sâu module Phân tích Thành ph?n Ph?n m?m (SCA). Co ch? ho?t d?ng bao g?m: 
+* Ð?c và phân tích cây ph? thu?c t? các t?p package.json, package-lock.json (d?i v?i Node.js) ho?c .csproj (d?i v?i .NET). 
+* So kh?p tr?c ti?p phiên b?n c?a t?ng thu vi?n v?i co s? d? li?u l? h?ng n?i b?. 
+* C?nh báo tình tr?ng không nh?t quán (inconsistency) gi?a t?p khai báo và t?p lock, m?t d?u hi?u rõ ràng c?a r?i ro chu?i cung ?ng.
+A-04: Cryptographic Failures (Ði?m y?u m?t mã h?c) V?n d? này t?p trung vào khâu b?o v? d? li?u nh?y c?m (m?t kh?u, khóa API, th? tín d?ng). L?i ph? bi?n nh?t v?n là s? so su?t khi truy?n t?i d? li?u qua HTTP thay vì HTTPS. K? d?n là vi?c s? d?ng các thu?t toán bam (hash) dã b? phá v? t? lâu (nhu MD5, SHA1) d? luu tr? m?t kh?u, hay thi?t l?p c?u hình CORS (Cross-Origin Resource Sharing) quá l?ng l?o (ch?ng h?n dùng th? * cho Access-Control-Allow-Origin kèm ch?ng th?c).
+A-05: Injection (T?n công tiêm nhi?m) Nhóm Injection gi? dây dã t?t xu?ng v? trí s? 5 do s? ph? bi?n c?a các framework ORM giúp t? d?ng x? lý chu?i (escape). Dù v?y, v?i các truy v?n ph?c t?p ho?c mã ngu?n cu, SQL Injection và XSS v?n là bài toán nh?c nh?i. L? h?ng x?y ra khi lu?ng d? li?u d?u vào không du?c h? th?ng ki?m duy?t k? mà dã v?i vàng t?ng th?ng vào trình thông d?ch (interpreter).
+Co ch? phân tích: SENTINEL phát hi?n m?ng này b?ng cách tiêm lu?ng l?n payload vào m?i tham s?. Các k? thu?t nh?n di?n bao g?m: 
+* SQLi Error-based: Ð?c thông báo l?i tr? v? t? máy ch? (ví d?: You have an error in your SQL syntax hay ORA-\d{5}). 
+* SQLi Time-based blind: G?i các l?nh nhu SLEEP() d? ép máy ch? ph?n h?i ch?m di. Sau dó, ph?n m?m s? d?i chi?u d? tr? th?i gian v?i ngu?ng co s? (baseline) d? k?t lu?n. 
+* Cross-Site Scripting (XSS): Dùng k? thu?t marker-based, g?i các chu?i d?c t? (<script>alert(1337)</script>) và dò xem nó có b?t ngu?c tr? l?i (reflect) nguyên v?n trên màn hình HTML hay không. 
+* Command/Template Injection: Nh?m vào các shell h? di?u hành và các b? sinh mã giao di?n (SSTI).
+A-06: Vulnerable and Outdated Components (Thành ph?n có l? h?ng và l?i th?i) V?i s? phát tri?n c?a chu?i cung ?ng ph?n m?m (Software Supply Chain), các ?ng d?ng hi?n d?i thu?ng ph? thu?c vào r?t nhi?u thu vi?n c?a bên th? ba. L? h?ng A06 x?y ra khi h? th?ng s? d?ng các thành ph?n (framework, thu vi?n, module) dã h?t h?n h? tr? (End-of-Life) ho?c có ch?a l? h?ng b?o m?t dã bi?t (CVEs).
+Co ch? phân tích: Khác v?i các phuong pháp DAST truy?n th?ng, SENTINEL-v2 k?t h?p phân tích tinh (SCA - Software Composition Analysis) d?i v?i các t?p c?u hình package c?a d? án. Engine th?c hi?n ánh x? (remap) các d?u hi?u r?i ro t? nhóm qu?n lý thành ph?n (A03 cu) sang chu?n A06 hi?n t?i d? gi? s? th?ng nh?t:
+* NpmDependencyRisk & NugetDependencyRisk: Quét phân tích các t?p package.json, package-lock.json (d?i v?i Node.js) và *.csproj, packages.config (d?i v?i .NET) d? trích xu?t danh sách các dependency. Ð?i chi?u phiên b?n dang dùng v?i co s? d? li?u l? h?ng (NVD/CVE) d? tìm các thu vi?n l?i th?i ho?c nguy hi?m.
+* NodeEngineVersionRisk & DotnetFrameworkVersionRisk: Ðánh giá môi tru?ng runtime tr?c ti?p (nhu phiên b?n Node.js engine hay .NET Framework) d? c?nh báo n?u h? th?ng dang ch?y trên m?t n?n t?ng không còn du?c nh?n các b?n vá b?o m?t (End-of-Life).
+* SupplyChain Enhanced (TyposquattingRisk & PackageLockConsistency): Tính nang ki?m tra tính d?ng nh?t c?a lockfile và r?i ro chu?i cung ?ng. Thu?t toán phát hi?n Typosquatting s? c?nh báo các package có tên d? gây nh?m l?n v?i các thu vi?n ph? bi?n (ví d?: react-dom vs reactt-dom) nh?m ch?ng l?i các cu?c t?n công chèn mã d?c.
+A-07: Identification and Authentication Failures (L?i d?nh danh và xác th?c) Vi?c xác th?c (Authentication) và qu?n lý phiên (Session Management) y?u kém cho phép k? t?n công th?a hi?p m?t kh?u, key, session token d? gi? m?o danh tính c?a ngu?i dùng h?p l?. Quy t?c A07 t?p trung vào vi?c d?m b?o vòng d?i c?a m?t phiên làm vi?c và các rào c?n dang nh?p du?c b?o m?t nghiêm ng?t theo chu?n WSTG (Web Security Testing Guide).
+Co ch? phân tích: Engine th?c hi?n ki?m tra da chi?u, t? phân tích tinh (mã ngu?n/c?u hình) d?n phân tích d?ng (HTTP Headers/URL params):
+* B?o m?t Thông tin Phiên (Session Management):
+* SessionFixation & SessionManagement: Theo dõi các header Set-Cookie tr? v? t? máy ch?. Ðánh giá xem các c? b?o m?t quan tr?ng nhu HttpOnly, Secure, và SameSite có du?c thi?t l?p d?y d? hay không d? ch?ng l?i XSS và CSRF.
+* WeakSessionEntropy: Ðánh giá m?c d? h?n lo?n (entropy) và chi?u dài c?a Session ID. N?u ID quá ng?n ho?c có th? d? doán du?c, engine s? dánh d?u l? h?ng.
+* Ki?m soát Xác th?c và Ð?nh danh (Authentication Controls):
+* AccountEnumeration: Ki?m tra logic ph?n h?i c?a ?ng d?ng khi dang nh?p th?t b?i ho?c quên m?t kh?u. N?u ?ng d?ng tr? v? các thông báo khác nhau cho tài kho?n t?n t?i và không t?n t?i (ví d?: "Tài kho?n không t?n t?i" thay vì "Thông tin không chính xác"), k? t?n công có th? dò quét danh sách ngu?i dùng.
+* BruteForceProtection & MfaPresence: Phân tích mã ngu?n và c?u hình d? tìm ki?m xem có s? hi?n di?n c?a co ch? gi?i h?n t? l? (Rate Limiting) và Xác th?c da y?u t? (MFA) hay không.
+* X? lý Token và Lu?ng c?p phép:
+* TokenInUrl: C?nh báo nguy co nghiêm tr?ng (WSTG-ATHN-03) n?u mã thông báo xác th?c ho?c session ID b? nhúng tr?c ti?p vào URL (GET request), vì chúng s? b? luu l?i trong l?ch s? trình duy?t ho?c Server Logs.
+ A-08: Software and Data Integrity Failures (L?i toàn v?n ph?n m?m và d? li?u) A08 liên quan d?n vi?c các do?n mã, d? li?u c?u hình ho?c d? li?u serialization không du?c xác minh tính toàn v?n tru?c khi dua vào th?c thi. L? h?ng này d?c bi?t nguy hi?m khi ?ng d?ng n?p các tài nguyên t? ngu?n không dáng tin c?y (nhu CDN) ho?c gi?i mã hóa (deserialize) d? li?u tr?c ti?p t? client.
+Co ch? phân tích: Quét tinh n?i dung HTML/Template. Khi phát hi?n các th? <script> ho?c <link> g?i d?n các thu vi?n t? tên mi?n bên ngoài (nhu CDN c?a jQuery, Bootstrap), engine ki?m tra xem thu?c tính integrity (ch?a mã bam thu?t toán SHA) có du?c d?nh nghia không. N?u không, k? t?n công chi?m du?c CDN có th? thay d?i mã ngu?n JS d? t?n công client. 
+* DeserializationResponse & UntrustedConfigData: Phân tích heuristic các payload ph?n h?i d? tìm d?u v?t c?a vi?c s? d?ng Deserialization không an toàn (ví d?: phát hi?n signature mã hóa c?a d?i tu?ng Java, .NET hay PHP b? l? ra ngoài). C?nh báo n?u d? li?u c?u hình du?c n?p th?ng t? ngu?n do ngu?i dùng ki?m soát (CWE-502). 
+* CiPipelineSecurity: Ki?m tra các t?p c?u hình c?a h? th?ng CI/CD (nhu .github/workflows/, .gitlab-ci.yml) d? tìm ki?m các l? h?ng liên quan d?n chu?i tri?n khai (CWE-1357), d?m b?o môi tru?ng build không b? can thi?p.
+A-09: Security Logging and Monitoring Failures (L?i giám sát và ghi nh?t ký b?o m?t) N?u không có h? th?ng ghi nh?t ký (Logging) và giám sát (Monitoring) chu?n xác, các t? ch?c s? không th? phát hi?n các cu?c t?n công dang di?n ra, làm ch?m tr? quá trình ph?n h?i s? c?. Quy t?c A09 ki?m tra vi?c ?ng d?ng có ghi nh?n dúng các s? ki?n nh?y c?m hay không, cung nhu tính an toàn c?a chính h? th?ng log.
+Co ch? phân tích: S? d?ng các Pattern Matching d? quét mã ngu?n xem các hàm log (console.log, logger.info, v.v.) có vô tình ghi l?i các bi?n ch?a d? li?u PII, m?t kh?u, JWT token, hay s? th? tín d?ng hay không (CWE-532). 
+* LogInjection: Phân tích tinh d? tìm các v? trí input t? phía client (nhu req.body.username ho?c User-Agent) du?c d?y tr?c ti?p vào file log mà không qua quá trình làm s?ch (sanitization). Ði?u này d?n d?n nguy co k? t?n công chèn các ký t? di?u khi?n (\r\n) d? gi? m?o các b?n ghi log gi? (CWE-117). 
+* AuthEventLogging & AlertingCheck: Heuristic ki?m tra xem các lu?ng quan tr?ng (nhu xác th?c, thay d?i m?t kh?u) có du?c bao b?c b?i các hàm ghi nh?n s? ki?n (Event Logging) ho?c kích ho?t c?nh báo n?i b? (Alerting) hay không.
+A-10: Server-Side Request Forgery - SSRF (Gi? m?o yêu c?u phía máy ch?) SSRF x?y ra khi m?t ?ng d?ng web fetch (kéo) m?t tài nguyên t? xa thông qua URL do ngu?i dùng cung c?p nhung không xác th?c k? lu?ng dích d?n. Vi?c này cho phép k? t?n công ép máy ch? th?c hi?n các k?t n?i m?ng thay m?t chúng, t? dó dánh c?p d? li?u ? các m?ng n?i b? (Internal/Private Networks) ho?c lách qua tu?ng l?a.
+Co ch? phân tích: SENTINEL áp d?ng c? phuong pháp ti?p c?n Blackbox (Ð?ng) và Source Code (Tinh) d? truy v?t l?i này: 
+* SsrfSource (Phân tích mã ngu?n - SAST): Truy v?t Data Flow (lu?ng d? li?u) t? d?u vào c?a ngu?i dùng (req.query.url, req.body.endpoint) d?n các hàm th?c thi HTTP requests phía backend (nhu axios.get(), fetch(), request()). N?u bi?n d?u vào du?c dua th?ng vào làm dích d?n mà không qua whitelist domain, h? th?ng s? dánh d?u là CWE-918. 
+* SsrfHeuristic (Phân tích Blackbox): G?i các payload d?c h?i (ch?a d?i IP n?i b? nhu 127.0.0.1, 169.254.169.254 c?a AWS Cloud Metadata, ho?c localhost ports) vào các tham s? URL dáng ng?. N?u server tr? v? n?i dung m?ng n?i b? ho?c ph?n h?i v?i d? tr? (time-delay) b?t thu?ng, engine s? xác nh?n có t?n t?i SSRF. 
+* ExceptionLeakage & MalformedInput: T?p trung phân tích cách máy ch? x? lý khi m?t request SSRF d?c h?i g?p l?i (ví d? k?t n?i th?t b?i). N?u h? th?ng c?u hình kém và d? l? "Stack Trace" (d?u v?t l?i h? th?ng), k? t?n công s? có thêm manh m?i v? c?u trúc m?ng bên trong máy ch?.
+
+2.4. Công ngh? n?n t?ng và công c? phát tri?n ph?n m?m
+Ð? th?c hi?n hóa các lý thuy?t ki?m th? trên thành m?t ph?n m?m hoàn ch?nh, s?n ph?m du?c xây d?ng d?a trên s? k?t h?p c?a nhi?u công ngh? web hi?n d?i. Vi?c n?m rõ lý thuy?t k? thu?t c?a nh?ng n?n t?ng này giúp gi?i thích t?i sao ki?n trúc h? th?ng l?i du?c thi?t k? theo hu?ng hi?n d?i.
+2.4.1. Môi tru?ng th?c thi Node.js và ki?n trúc Event-Loop
+Node.js là m?t môi tru?ng th?c thi da n?n t?ng mã ngu?n m?, cho phép l?p trình vi?n ch?y mã JavaScript ? phía Server (bên ngoài trình duy?t) d?a trên V8 Engine do Google phát tri?n.
+* Ki?n trúc don lu?ng (Single - Threaded) và Non-blocking I/OL: Khác v?i các h? thông máy ch? da lu?ng ruy?n th?ng (nhu Apache hay Tomcat) ph?i sinh ra m?t lu?ng x? lý m?i chi?m d?ng hàng MB b? nh? cho m?i ngu?i dùng k?t n?i, Node.js ch? ch?y trên m?t lu?ng duy nh?t. Khi th?c thi m?t tác v? n?ng n? ho?c m?t nhi?u th?i gian ch? d?i (nhu g?i hàng ngàn HTTP request trong module DAST), Node.js không b?t toàn b? ph?n m?m ph?i d?ng l?i ch?. Nó s? ?y thác công vi?c dó cho h? th?ng ng?m và ti?p t?c x? lý các l?nh khác (Non-blocking).
+* Vòng l?p s? ki?n (Event-loop): Ðây là trái tim c?a Node.js. Khi các tác v? ng?m hoàn thành (ví d? request nh?n du?c response t? máy ch? dích), nó s? du?c dua vào hàm d?i. Vòng l?p s? ki?n s? liên t?c ki?m tra hàng d?i này và g?i hàm ph?n h?i (Callback/Promise) d? tr? k?t qu? lên lu?ng chính m?t cách mu?t mà.
+* ?ng d?ng trong d? án: T?c d? I/O phi d?ng b? c?a Node.js d?c bi?t phù h?p cho các công c? quét m?ng c?a SENTINEL, giúp h? th?ng t?o ra lu?ng l?n các k?t n?i d?ng th?i v?i lu?ng tiêu th? RAM t?i thi?u.
+2.4.2. Khung phát tri?n ?ng d?ng Desktop da n?n t?ng (Electron JS)
+Electron là m?t framework n?i ti?ng du?c dùng d? xây d?ng cho các ?ng d?ng Desktop hi?n d?i nhu Visual Studio Code, Discord. Electron k?t h?p s?c m?nh k?t xu?t giao di?n c?a trình duy?t web Chromium và kh? nang thao tác h? th?ng c?a Node.js.
+* Vì sao chúng ta nên dùng Electron thay vì s? d?ng web thu?n? M?t công c? quét b?o m?t toàn di?n không th? ch? ch?y du?i d?ng m?t trang web bình thu?ng vì gi?i h?n c?a co ch? Sandbox trên trình duy?t. Trình duy?t không cho phép mã JavaScript d?c tr?c ti?p vào ? c?ng c?a ngu?i dùng (tính nang b?t bu?c ph?i có d? th?c hi?n phuong pháp quét tinh mã ngu?n SAST). B?ng cách dóng gói thành ?ng d?ng Desktop qua Electron, SENTINEL có toàn quy?n tuong tác v?i các t?p tin c?c b?.
+* Ki?n trúc da ti?n trình (Multi-process Architecture): Ð? d?m b?o b?o m?t và hi?u su?t, Electron chia ph?n m?m thành hai ti?n trình chính:
+* Main Process (Ti?n trình chính): Ch? có m?t ti?n trình chính ho?t d?ng trong môi tru?ng Node.js. Nhi?m v? c?a nó là tuong tác tr?c ti?p v?i h? di?u hành và sinh ra các c?a s? ?ng d?ng.
+* Renderer Process (Ti?n trình hi?n th?): Môi tru?ng hi?n th? giao di?n UI b?ng HTML/CSS. Ti?n trình này b? cô l?p, không có quy?n g?i các hàm h? th?ng nguy hi?m d? ngan ch?n tin t?c t?n công thông qua giao di?n ph?n m?m.
+* Co ch? liên l?c IPC (Inter-Process Communication): Do s? cô l?p gi?a hai ti?n trình, h? th?ng dùng IPC làm c?u n?i. Khi ngu?i dùng b?m nút phân tích d? án trên giao di?n (Renderer), m?t thông di?p s? du?c truy?n qua IPC g?i hàm th?c thi phân tích ? phía sau (Main Process). K?t qu? quét sau dó du?c tr? v? qua IPC d? v? lên bi?u d?.
+2.4.3. Công ngh? giao di?n ReactJS, Vite và Zustand
+* ReactJS và khái ni?m Virtual DOM (DOM ?o): React là thu vi?n xây d?ng giao di?n chia nh? m?i th? thành các thành ph?n tái s? d?ng (Componets). Ði?m m?nh lý thuy?t l?n nh?t c?a React là DOM ?o. Trong quá trình quét b?o m?t, hàng tram c?nh báo l?i liên t?c du?c tr? v?. N?u tr?c ti?p thao tác chèn t?ng ph?n t? HTML và trình duy?t (Real DOM) thì ?ng d?ng s? b? treo. React s? gi?i quy?t di?u này b?ng cách c?p nh?t giao di?n trên b? nh? ?o, so sánh s? khác bi?t (Diffing), và ch? son l?i (Repaint) khi dúng kh?i hi?n th? có thay d?i, gi? cho ?ng d?ng không b? gi?t lag.
+*  Công c? build Vite: S? khác bi?t c?t lõi c?a Vite so v?i Webpack cu là Vite t?n d?ng module ES t? nhiên (Native ES) c?a trình duy?t hi?n d?i. Nó b? qua vi?c ph?i dóng gói (bundle) hàng ngàn t?p tin thành m?t file kh?ng l? m?i khi có thay d?i mã ngu?n. Nh? v?y, th?i gian kh?i d?ng máy ch? l?p trình c?a Vite là c?c k? ng?n, k?t h?p co ch? thay th? module nóng (HMR) giúp giao di?n c?p nh?t ngay khi v?a luu file mã ngu?n.
+* Qu?n lý tr?ng thái v?i Zustand: Qúa trình quét c?a SENTINEL mang tính toàn c?c (Global State), c?n du?c hi?n th? ? nhi?u màn hình khác nhau (Dashboard, bi?u d? th?ng k?, ...). Zustand cung c?p m?t kho luu tr? tr?ng thái c?c nh? g?n, giúp chia s? lu?ng d? li?u k?t qu? gi?a t?t c? các màn hình mà không c?n truy?n d? li?u long vòng qua t?ng t?ng Component ph?c t?p.
+> T?ng k?t: Thông qua vi?c phân tích, tìm hi?u các mô hình k? thu?t web, và d?i chi?u v?i các tiêu chu?n kh?t khe hi?n nay là OWASP Top 10 (2025), và t?n d?ng nh?ng co ch? t?i uu c?a các n?n t?ng h? tr? Node.js, Electron, ReactJS, ... dã giúp d? án này có nh?ng n?n t?ng lý thuy?t v?ng ch?c. T? nh?ng co s? lý thuy?t vung ch?c ?y cung chính là ti?n d? mang tính quy?t d?nh d? chúng em có th? ti?n hành xây d?ng, phân tích ki?n trúc, dua ra các thu?t toán d? quét và rà soát các l? h?ng t?i ?ng d?ng SENTINEL.
+
+CHUONG 3: K?T QU? TH?C NGHI?M
+3.1. So d? Pipeline t?ng quan c?a d? án 
+SENTINEL du?c thi?t k? d? h? tr? hai hình th?c ki?m tra chính: quét website thông qua URL và quét tr?c ti?p mã ngu?n project. V?i m?i hình th?c, h? th?ng s? thu th?p nh?ng d? li?u c?n thi?t, phân tích theo các rule b?o m?t d?a trên OWASP Top 10, sau dó chuy?n k?t qu? phát hi?n thành các finding th?ng nh?t.
+
+Riêng v?i URL Scan, sau giai do?n phân tích tinh, h? th?ng còn kích ho?t Dynamic Fuzzer d? ch? d?ng g?i payload ki?m th? vào các tham s? dã thu th?p, nh?m phát hi?n các l? h?ng d?ng SQLi, XSS và SSRF mà phân tích tinh không th? k?t lu?n ch?c ch?n
+
+Hình 3.1.1: Pipeline t?ng quan c?a d? án
+
+Tru?c khi di vào t?ng ch?c nang th?c nghi?m, nhóm trình bày môi tru?ng ch?y và các di?u ki?n chu?n b? c?n thi?t. Ðây là co s? d? d?m b?o quá trình cài d?t, kh?i ch?y và ki?m tra h? th?ng du?c th?c hi?n ?n d?nh.
+
+2. 
+3. 
+3.2. Chu?n b? môi tru?ng và d? án th?c nghi?m
+3.2.1. Chu?n b? môi tru?ng ch?y d? án
+Ð? SENTINEL ho?t d?ng ?n d?nh, máy ch?y c?n dáp ?ng các yêu c?u sau. SENTINEL du?c phát tri?n du?i d?ng ?ng d?ng desktop s? d?ng Electron, giao di?n ngu?i dùng xây d?ng b?ng React và TypeScript, ph?n x? lý quét b?o m?t phía sau tri?n khai b?ng Node.js.
+
+H? th?ng du?c ki?m th? trên Windows - môi tru?ng phù h?p v?i hu?ng dóng gói và phân ph?i ?ng d?ng Electron. Ð? cài d?t thu vi?n, ki?m tra mã ngu?n, build và kh?i ch?y d? án, máy c?n cài s?n Node.js và npm v?i phiên b?n t?i thi?u nhu b?ng du?i dây. Node.js 22 tr? lên là b?t bu?c vì engine s? d?ng các API native nhu fetch và structuredClone chua có ? phiên b?n cu hon.
+
+Thành ph?nC?u hình/Công c? s? d?ngGhi chúH? di?u hànhWindows 10 / Windows 11Môi tru?ng dùng d? cài d?t, ch?y và ki?m th? ?ng d?ngN?n t?ng ?ng d?ngElectronDùng d? dóng gói h? th?ng SENTINEL du?i d?ng ?ng d?ng desktopGiao di?n ngu?i dùngReact + TypeScriptXây d?ng giao di?n nh?p URL, quét project và hi?n th? k?t qu?Engine x? lýNode.jsX? lý logic quét, phân tích d? li?u và t?ng h?p findingsPhiên b?n Node.jsT? 22.19.0 tr? lênÐ?m b?o tuong thích v?i các thu vi?n và script c?a d? ánTrình qu?n lý góinpm t? phiên b?n 10 tr? lênCài d?t dependencies và ch?y các l?nh ki?m tra/buildCông c? buildViteH? tr? kh?i ch?y giao di?n và build ?ng d?ng trong quá trình phát tri?nKi?m th? t? d?ngVitestDùng d? ch?y các ki?m th? t? d?ng cho m?t s? thành ph?n c?a h? th?ngB?ng 3.2.1: B?ng môi tru?ng và công c? th?c nghi?m
+
+Ð? ki?m tra môi tru?ng máy dã dáp ?ng yêu c?u ch?y d? án hay chua, ngu?i dùng m? Terminal t?i thu m?c d? án và th?c hi?n l?nh sau: 
+npm run check:enginesSau khi ch?y l?nh, h? th?ng s? ki?m tra phiên b?n Node.js và npm hi?n t?i. N?u môi tru?ng chua dáp ?ng yêu c?u, ngu?i dùng c?n c?p nh?t l?i Node.js ho?c npm d? tránh l?i trong các bu?c cài d?t và ch?y d? án ti?p theo.
+
+3.2.2. Chu?n b? mã ngu?n d? án
+Sau khi môi tru?ng dã dáp ?ng yêu c?u, t?i mã ngu?n SENTINEL v? máy b?ng l?nh:
+git clone https://github.com/PhamHuy14/sentinel-v2.git
+cd sentinel-v2Tru?c khi cài d?t và kh?i ch?y d? án, ngu?i dùng c?n n?m rõ vai trò c?a các thu m?c chính trong mã ngu?n. Ði?u này giúp quá trình ki?m tra, c?u hình và ch?nh s?a h? th?ng du?c th?c hi?n thu?n ti?n hon
+
+Thành ph?nVai tròsrc/Ch?a mã ngu?n giao di?n React, component, store và logic h? tr? ngu?i dùngelectron/Ch?a main process và preload script ph?c v? ?ng d?ng Electronengine/Ch?a scanner engine, crawler, analyzer, rule engine và report enginepublic/Ch?a tài nguyên tinh s? d?ng trong ?ng d?ngpackage.jsonKhai báo dependencies và các script ch?y d? án.env.exampleCung c?p m?u c?u hình bi?n môi tru?ng.envCh?a c?u hình môi tru?ng th?c t? khi ch?y d? ánB?ng 3.2.2: B?ng mã ngu?n d? án
+
+Hai thu m?c quan tr?ng nh?t trong d? án là engine/ và src/. Thu m?c engine/ d?m nhi?m ph?n x? lý c?t lõi nhu quét, ch?y rule b?o m?t và t?o findings. 
+Thu m?c src/ ph? trách giao di?n React, noi ngu?i dùng thao tác và xem k?t qu?. N?m rõ s? phân chia này giúp vi?c ki?m tra, s?a l?i ho?c m? r?ng h? th?ng tr? nên d? dàng hon.
+
+3.2.3. Cài d?t thu vi?n ph? thu?c
+Sau khi chu?n b? mã ngu?n d? án, ngu?i dùng m? Terminal t?i thu m?c g?c và ch?y l?nh sau d? cài d?t các thu vi?n c?n thi?t:
+npm installL?nh này s? t? d?ng d?c package.json và cài d?t t?t c? thu vi?n c?n thi?t cho c? giao di?n, engine và công c? build. B?ng du?i dây li?t kê các nhóm thu vi?n chính và vai trò c?a t?ng nhóm d? ngu?i dùng n?m du?c h? th?ng dang ph? thu?c vào nh?ng gì:
+
+NhómThu vi?n chínhGiao di?nreact, react-domDesktop appelectronEngine/HTTPNode.js, undiciState managementzustandBuildvite, @vitejs/plugin-reactKi?m th?vitestÐóng góielectron-builderB?ng 3.2.3: B?ng thu vi?n và công ngh?
+
+Sau khi cài d?t hoàn t?t, thu m?c node_modules/ s? du?c t?o t? d?ng. N?u quá trình cài d?t x?y ra l?i, ngu?i dùng c?n ki?m tra l?i phiên b?n Node.js và npm theo hu?ng d?n ? m?c 3.2.1, sau dó th?c hi?n l?i l?nh cài d?t.
+
+3.2.4. C?u hình bi?n môi tru?ng
+Tru?c khi kh?i ch?y SENTINEL, c?n t?o file .env t? file m?u có s?n b?ng l?nh:
+copy .env.example .envSau khi t?o file .env, ngu?i dùng c?n m? file và di?n các giá tr? c?u hình phù h?p, file có hai nhóm bi?n chính:
+
+Bi?nNhà cung c?pGhi chúVITE_GROQ_API_KEYGroqÐ? xu?t dùng tru?c - nhanh nh?t, mi?n phí, dang ký t?i console.groq.comVITE_GEMINI_API_KEYGoogle GeminiGemini 2.0 Flash mi?n phí, dang ký t?i aistudio.google.comVITE_OPENROUTER_API_KEYOpenRouterCó model mi?n phí, dang ký t?i openrouter.aiVITE_TOGETHER_API_KEYTogether.aiCó model mi?n phíVITE_HF_API_KEYHuggingFaceFree tier, dang ký t?i huggingface.coB?ng 3.2.4: Nhóm API key cho tính nang AI
+
+
+
+Bi?nMô t?M?c d?nhSENTINEL_ALLOW_PRIVATE_TARGETSCho phép quét d?a ch? n?i b? nhu localhost ho?c IP localtrueB?ng 3.2.5: C?u hình hành vi quét (tùy ch?n)
+
+Ch?c nang AI h? tr? s? du?c kích ho?t khi ngu?i dùng c?u hình ít nh?t m?t API key. H? th?ng uu tiên s? d?ng các nhà cung c?p theo th? t? Groq, Gemini, OpenRouter, Together và Hugging Face. 
+
+N?u không có API key, các ch?c nang quét URL và quét mã ngu?n v?n ho?t d?ng d?y d?. V?i các tru?ng h?p quét n?i b? nhu localhost, có th? b?t SENTINEL_ALLOW_PRIVATE_TARGETS=true. Các API key th?c t? không du?c trình bày trong báo cáo d? d?m b?o an toàn thông tin.
+
+Hình 3.2.1: File .env.example c?a d? án
+
+3.2.5. Kh?i ch?y h? th?ng
+Sau khi hoàn t?t cài d?t và c?u hình, kh?i ch?y SENTINEL ? ch? d? phát tri?n b?ng l?nh:
+npm run devL?nh này kh?i d?ng Vite d? build giao di?n React, sau dó Electron t? d?ng m? c?a s? ?ng d?ng. Khi giao di?n hi?n th? thành công, h? th?ng dã s?n sàng d? th?c nghi?m.
+
+Hình 3.2.2: Ch?y ?ng d?ng thông qua Terminal
+
+Sau khi hoàn t?t cài d?t và c?u hình, kh?i ch?y SENTINEL ? ch? d? phát tri?n b?ng l?nh:
+npm run distFile .exe d?u ra s? n?m trong thu m?c dist/ và có th? ch?y tr?c ti?p trên Windows mà không c?n cài Node.js hay npm.
+
+3.2.6. Ki?m tra tr?ng thái d? án tru?c th?c nghi?m
+Tru?c khi b?t d?u th?c nghi?m, ch?y l?n lu?t các l?nh sau d? xác nh?n toàn b? h? th?ng dã s?n sàng:
+L?nhM?c díchnpm run check:enginesKi?m tra phiên b?n Node.js và npmnpm run typecheckKi?m tra l?i ki?u d? li?u TypeScriptnpm run lintKi?m tra quy t?c vi?t mã ngu?nnpm testCh?y các bài ki?m th? t? d?ngnpm run buildKi?m tra kh? nang build ?ng d?ngB?ng 3.2.6: B?ng l?nh ki?m tra tr?ng thái
+
+Nên ch?y theo dúng th? t? trong b?ng - t? ki?m tra môi tru?ng d?n ki?m tra build. N?u bu?c nào th?t b?i, x? lý l?i ? bu?c dó tru?c khi ti?p t?c, không b? qua d? ch?y bu?c sau vì các bu?c ph? thu?c vào nhau.
+Khi t?t c? l?nh d?u ch?y thành công, SENTINEL dã s?n sàng cho các k?ch b?n th?c nghi?m ? các m?c ti?p theo.
+3.3. Thi?t l?p th?c nghi?m
+3.3.1. M?c tiêu th?c nghi?m
+Ph?n th?c nghi?m du?c th?c hi?n nh?m ki?m tra hai ch?c nang chính c?a SENTINEL trong quá trình s? d?ng th?c t?, bao g?m quét website thông qua URL và quét mã ngu?n d? án. Thông qua các k?ch b?n th?c nghi?m, nhóm t?p trung dánh giá kh? nang thu th?p d? li?u, phát hi?n findings, phân lo?i m?c d? r?i ro theo OWASP và trình bày k?t qu? cho ngu?i dùng.
+
+C? th?, quá trình th?c nghi?m s? xem xét h? th?ng thu th?p du?c nh?ng thông tin nào t? website ho?c mã ngu?n, các findings du?c phát hi?n và phân lo?i ra sao, d?ng th?i k?t qu? hi?n th? trên giao di?n và báo cáo xu?t ra có d? rõ ràng d? h? tr? ngu?i dùng dánh giá r?i ro hay không. Các k?t qu? này s? du?c d?i chi?u v?i tiêu chí dánh giá dã trình bày ? m?c 3.3.4 d? dua ra nh?n xét v? m?c d? dáp ?ng c?a h? th?ng.
+
+3.3.2. Ph?m vi và di?u ki?n th?c nghi?m
+N?i dungMô t?Ph?m vi ch?y h? th?ngMáy tính cá nhân c?a nhómPh?m vi quét URLWebsite m?u ho?c website do nhóm xây d?ngPh?m vi quét projectProject mã ngu?n m?u do nhóm l?a ch?nHình th?c ghi nh?n k?t qu?Findings trên giao di?n, th?ng kê r?i ro, báo cáo xu?t raNguyên t?c an toànKhông quét trái phép h? th?ng ngoài ph?m vi cho phépB?ng 3.3.1: B?ng ph?m vi và di?u ki?n th?c nghi?m
+
+M?t di?u ki?n quan tr?ng c?n luu ý: toàn b? th?c nghi?m ch? du?c th?c hi?n trên website m?u, môi tru?ng c?c b? ho?c h? th?ng do nhóm xây d?ng và có quy?n ki?m tra. 
+
+Không th?c hi?n quét trên b?t k? h? th?ng nào ngoài ph?m vi cho phép các d?i tu?ng th?c nghi?m c? th? du?c trình bày ? m?c ti?p theo.
+
+3.3.3. Ð?i tu?ng th?c nghi?m
+Trong quá trình th?c nghi?m, nhóm l?a ch?n các d?i tu?ng ki?m th? theo hai ch?c nang chính c?a SENTINEL, bao g?m quét website b?ng URL và quét mã ngu?n project. 
+
+Các d?i tu?ng du?c l?a ch?n g?m c? h? th?ng có l? h?ng dã bi?t và các d? án th?c t? do nhóm xây d?ng, nh?m dánh giá kh? nang phát hi?n cung nhu m?c d? phù h?p c?a k?t qu? quét.
+
+Ð?i tu?ngURLLý do l?a ch?nOWASP Juice Shophttps://juice-shop.herokuapp.comLà ?ng d?ng web du?c thi?t k? có ch? dích d? ch?a nhi?u l? h?ng b?o m?t, phù h?p d? ki?m tra kh? nang phát hi?n c?a SENTINEL.Pixel Vaulthttps://github.com/phamduongdinhhuy2005-ops/Pixel-Vault.gitLà website do nhóm xây d?ng, không c? tình cài l? h?ng, dùng d? dánh giá kh? nang quét trên môi tru?ng th?c t? và quan sát các c?nh báo có th? phát sinh.B?ng 3.3.2: Ð?i tu?ng th?c nghi?m quét URL
+
+Ð?i tu?ngURLLý do l?a ch?nOWASP Juice Shop sourcehttps://github.com/juice-shop/juice-shopLà codebase có nhi?u v?n d? b?o m?t dã du?c bi?t d?n, phù h?p d? dánh giá d? ph? phát hi?n c?a h? th?ng.Pixel Vault sourcehttps://github.com/phamduongdinhhuy2005-ops/Pixel-Vault.gitLà mã ngu?n d? án sinh viên th?c t?, dùng d? ki?m tra kh? nang phân tích source code c?a SENTINEL trên project thông thu?ng.CafeShop sourcehttps://github.com/phamduongdinhhuy2005-ops/CafeShopLà mã ngu?n d? án sinh viên khác, du?c s? d?ng d? tang d? da d?ng c?a m?u th?c nghi?m.B?ng 3.3.3: Ð?i tu?ng th?c nghi?m quét mã ngu?n
+
+3.3.4. K?ch b?n th?c nghi?m t?ng quát
+Các k?ch b?n th?c nghi?m du?c xây d?ng xoay quanh hai ch?c nang chính c?a SENTINEL, m?i k?ch b?n tuong ?ng v?i m?t m?c tiêu ki?m tra c? th? và du?c áp d?ng trên các d?i tu?ng dã xác d?nh ? m?c 3.3.3.
+
+Mã k?ch b?nN?i dung th?c nghi?mM?c díchTN01Th?c hi?n quét m?t URL h?p l?Ðánh giá kh? nang kh?i ch?y và hoàn t?t ti?n trình quét websiteTN02Quét website có form ho?c endpoint d?u vàoÐánh giá kh? nang thu th?p và phân tích form, request t? websiteTN03Quét website thi?u ho?c c?u hình sai security headersÐánh giá kh? nang phát hi?n các c?u hình b?o m?t chua phù h?pTN04Th?c hi?n quét m?t d? án mã ngu?n m?uÐánh giá kh? nang phân tích c?u trúc và n?i dung mã ngu?nTN05Quét d? án có thu vi?n ph? thu?c ho?c c?u hình r?i roÐánh giá kh? nang phát hi?n các v?n d? b?o m?t trong mã ngu?n d? ánTN06Xu?t báo cáo sau khi quétÐánh giá kh? nang t?ng h?p, trình bày và xu?t k?t qu? th?c nghi?mB?ng 3.3.4: B?ng k?ch b?n th?c nghi?m
+V?i ch?c nang quét URL, các k?ch b?n t?p trung ki?m tra kh? nang thu th?p d? li?u t? website (header, cookie, form, endpoint), phát hi?n du?ng d?n nh?y c?m qua Route Probing, nh?n di?n tech stack và kích ho?t Dynamic Fuzzer d? ki?m th? các tham s? d?u vào.
+
+V?i ch?c nang quét mã ngu?n, các k?ch b?n ki?m tra kh? nang phân tích c?u trúc d? án, phát hi?n dependency có r?i ro, c?u hình chua an toàn, thông tin nh?y c?m b? l? trong code và các do?n mã có d?u hi?u b?o m?t y?u.
+
+3.3.5. Tiêu chí dánh giá
+Các tiêu chí du?i dây du?c xác d?nh tru?c khi ch?y th?c nghi?m và áp d?ng th?ng nh?t cho c? hai ch?c nang quét. Tr?ng tâm không ch? là h? th?ng có phát hi?n du?c v?n d? hay không, mà còn ? kh? nang phân lo?i, trình bày và h? tr? ngu?i dùng hi?u m?c d? r?i ro c?a t?ng finding.
+
+Tiêu chíN?i dung dánh giáNgu?ng d?tKh? nang quétHoàn thành quá trình quét URL ho?c mã ngu?nKhông crash, tr? v? k?t qu? trong vòng 120 giâyKh? nang thu th?p d? li?uThu th?p du?c thông tin c?n thi?t t? website và mã ngu?nGhi nh?n ít nh?t header, cookie, form (URL) ho?c dependency, config, secret (source)Kh? nang phát hi?n findingsGhi nh?n findings phù h?p v?i k?ch b?n quétPhát hi?n ít nh?t 1 finding trên m?i k?ch b?nKh? nang phân lo?i r?i ro
+Phân lo?i findings theo m?c d? nghiêm tr?ngM?i finding có nhãn Critical / High / Medium / LowKh? nang ánh x? OWASPG?n findings v?i nhóm l? h?ng OWASP tuong ?ngM?i finding có nhóm OWASP t? A01 d?n A10Kh? nang hi?n th? k?t qu?Trình bày k?t qu? rõ ràng trên giao di?nFindings hi?n th? d?: tên, m?c d?, mô t?, d? xu?t x? lýKh? nang xu?t báo cáoH? tr? xu?t báo cáo sau khi quétXu?t du?c file báo cáo HTML, JSON hoàn ch?nhTính ?n d?nh Không treo ho?c d?ng b?t thu?ng0 l?n crash trong toàn b? các k?ch b?n th?c nghi?mB?ng 3.3.5: B?ng tiêu chí dánh giá
+
+3.4. Th?c nghi?m quét website b?ng URL
+3.4.1. Mô t? ch?c nang quét URL
+V?i ch?c nang quét website b?ng URL, ngu?i dùng nh?p d?a ch? website và thông tin xác th?c n?u có. H? th?ng s? th?c hi?n song song ba tác v? g?m: thu th?p liên k?t, ki?m tra các tuy?n nh?y c?m và nh?n di?n công ngh? s? d?ng.
+
+Sau dó, d? li?u du?c dua vào b? ki?m tra rule tinh theo các nhóm OWASP nhu A01, A02, A03, A04, A05, A07, A08 và A10. Ti?p theo, h? th?ng th?c hi?n ki?m th? d?ng d? phát hi?n các l? h?ng nhu SQL Injection, XSS, Open Redirect, SSRF, SSTI và Path Traversal.
+
+Cu?i cùng, SENTINEL lo?i b? các k?t qu? trùng l?p và t?ng h?p k?t qu? quét, bao g?m danh sách findings, công ngh? s? d?ng, di?m b? m?t t?n công, ph?m vi quét và th?ng kê theo OWASP.
+
+
+Hình 3.4.1: Chi ti?t pipeline c?a ch?c nang quét URL
+
+Dynamic Fuzzer là thành ph?n duy nh?t trong pipeline tuong tác ch? d?ng v?i máy ch? b?ng d? li?u do h? th?ng t? t?o ra, nh?m ki?m tra ph?n h?i tru?c các d?ng t?n công ph? bi?n nhu SQL Injection, XSS, SSRF và Open Redirect. Hình du?i dây mô t? chi ti?t lu?ng x? lý bên trong giai do?n này.
+
+
+Hình 3.4.2: Chi ti?t pipeline ki?m th? d?ng (Dynamic Fuzzer)
+
+Dynamic Fuzzer ho?t d?ng theo ngân sách request d?nh s?n nh?m ki?m soát t?i lên website m?c tiêu. V?i m?i tham s? thu th?p du?c, h? th?ng phân lo?i ki?u d? li?u và ch?n payload ki?m th? phù h?p. 
+
+Ð?i v?i SQL Injection d?ng timing-based, h? th?ng do th?i gian ph?n h?i g?c tru?c khi g?i payload và ch? ghi nh?n khi d? tr? vu?t ngu?ng rõ ràng d? gi?m false positive.
+
+Sau khi phát hi?n tín hi?u b?t thu?ng, h? th?ng g?i thêm request xác nh?n tru?c khi ghi nh?n finding chính th?c. Cu?i cùng, toàn b? k?t qu? t? các giai do?n du?c g?p l?i, lo?i b? trùng l?p theo ruleId:target:location và hi?n th? th?ng nh?t trên dashboard.
+3.4.2. Quy trình th?c hi?n quét URL
+Ph?n này mô t? t?ng bu?c ngu?i dùng th?c hi?n d? ch?y m?t lu?t quét URL trên SENTINEL.
+
+Bu?c 1: M? ?ng d?ng SENTINEL.exe dã du?c dóng gói
+
+Hình 3.4.3: Giao di?n ?ng d?ng SENTINEL trên môi tru?ng desktop
+
+Bu?c 2: T?i giao di?n chính, ch?n ch?c nang Quét website b?ng URL
+
+Hình 3.4.4: Giao di?n t?ng th? c?a ?ng d?ng SENTINEL
+
+Bu?c 3: Nh?p URL website c?n ki?m tra, sau dó c?u hình hai thông s? quan tr?ng tru?c khi quét:
+
+* Ph?m vi quét: giúp gi?i h?n crawler ch? thu th?p các liên k?t thu?c cùng domain g?c, tránh truy c?p sang website bên th? ba ngoài ph?m vi ki?m th?.
+* Cu?ng d? quét: cho phép di?u ch?nh s? request g?i song song và th?i gian ch? gi?a các request. Cu?ng d? càng cao thì quá trình quét càng nhanh, nhung d?ng th?i cung t?o nhi?u t?i hon lên máy ch? m?c tiêu.
+
+Hình 3.4.5: Tùy ch?n ph?m vi và cu?ng d? quét c?a ?ng d?ng
+
+Bu?c 4: Nh?p thông tin xác th?c n?u website yêu c?u dang nh?p. Có th? dùng cookie ho?c Bearer token d? SENTINEL quét du?c các trang sau xác th?c. B? qua bu?c này n?u quét ? ch? d? ?n danh.
+
+Hình 3.4.6: C?u hình xác th?c khi quét website
+
+Bu?c 5: Nh?n b?t d?u quét và theo dõi tr?ng thái x? lý theo th?i gian th?c.
+
+Hình 3.4.7: Quá trình quét URL website trên ?ng d?ng SENTINEL
+
+Bu?c 6: Khi quét hoàn t?t, danh sách findings hi?n th? trên dashboard kèm m?c d? nghiêm tr?ng, nhóm OWASP, mô t? chi ti?t và d? xu?t x? lý cho t?ng finding.
+
+Hình 3.4.8: K?t qu? quét URL website trên ?ng d?ng SENTINEL
+
+3.4.3. Các k?ch b?n áp d?ng cho th?c nghi?m quét URL
+T? b?ng k?ch b?n t?ng quát ? m?c 3.3.4, b?n k?ch b?n du?c áp d?ng cho th?c nghi?m quét URL: TN01, TN02, TN03 và TN06.
+
+Mã k?ch b?nN?i dung th?c nghi?mM?c díchTN01Th?c hi?n quét m?t URL h?p l?Ðánh giá kh? nang kh?i ch?y và hoàn t?t ti?n trình quét websiteTN02Quét website có form ho?c endpoint d?u vàoÐánh giá kh? nang thu th?p và phân tích form, request t? websiteTN03Quét website có thi?u ho?c c?u hình sai security headersÐánh giá kh? nang phát hi?n các c?u hình b?o m?t chua phù h?pTN06Xu?t báo cáo sau khi quétÐánh giá kh? nang t?ng h?p, trình bày và xu?t k?t qu? th?c nghi?mB?ng 3.4.1: B?ng k?ch b?n quét URL
+
+Các k?ch b?n này bao ph? toàn b? lu?ng x? lý c?a URL Scan - t? kh?i ch?y ti?n trình, thu th?p d? li?u header/cookie/form/endpoint, phát hi?n findings theo OWASP, cho d?n ki?m tra hi?n th? k?t qu? trên dashboard. 
+
+TN01 và TN02 du?c th?c hi?n trên c? Juice Shop l?n Pixel Vault d? có k?t qu? so sánh gi?a website có l? h?ng dã bi?t và website th?c t? bình thu?ng. TN03 và TN06 ch? áp d?ng cho Juice Shop vì c?n môi tru?ng có l? h?ng d? Dynamic Fuzzer có th? phát hi?n d?u hi?u t?n công.
+
+
+Hình 3.4.9: Th?c hi?n quét m?t URL h?p l? (TN01)
+
+K?ch b?n ki?m tra kh? nang kh?i ch?y ti?n trình quét và thu th?p d? li?u co b?n t? website. URL Juice Shop du?c nh?p tr?c ti?p vào giao di?n, ph?m vi gi?i h?n trong domain g?c. H? th?ng hoàn thành quét mà không crash, tr? v? danh sách findings kèm thông tin tech stack và attack surface score.
+
+
+Hình 3.4.10: Quét các website có form ho?c endpoint d?u vào (TN02)
+
+K?ch b?n này dùng d? ki?m tra kh? nang thu th?p và phân tích form HTML, cung nhu các endpoint có tham s? d?u vào. OWASP Juice Shop du?c ch?n vì có nhi?u form nhu dang nh?p, tìm ki?m và thanh toán - dây là các b? m?t t?n công phù h?p d? Dynamic Fuzzer g?i payload ki?m th?.
+
+
+Hình 3.4.11: Quét website có thi?u ho?c c?u hình sai security headers (TN03)
+
+K?ch b?n này ki?m tra kh? nang phát hi?n l? h?ng thông qua phân tích HTTP response header. Static Rule Engine s? ki?m tra các header b?o m?t quan tr?ng nhu Strict-Transport-Security, Content-Security-Policy và X-Frame-Options.
+
+M?i header b? thi?u ho?c c?u hình chua dúng s? du?c ghi nh?n thành m?t finding riêng, kèm nhóm OWASP tuong ?ng và d? xu?t kh?c ph?c c? th?.
+
+
+Hình 3.4.12: Xu?t báo cáo sau khi quét du?i d?ng HTML (TN06) (1)
+
+K?ch b?n này ki?m tra ch?c nang t?ng h?p và xu?t báo cáo sau khi quét hoàn t?t. Ngu?i dùng xu?t báo cáo HTML và JSON tr?c ti?p t? dashboard.
+
+Báo cáo d?u ra bao g?m danh sách findings du?c phân nhóm theo OWASP, m?c d? nghiêm tr?ng và d? xu?t x? lý, giúp ngu?i dùng d? dàng chia s? k?t qu? mà không c?n m? l?i ?ng d?ng.
+
+Hình 3.4.13: Xu?t báo cáo sau khi quét du?i d?ng HTML (TN06) (2)
+
+K?t qu? t? b?n k?ch b?n trên du?c s? d?ng làm co s? d? phân tích, so sánh và d?i chi?u v?i các tiêu chí dánh giá ? m?c ti?p theo.
+3.4.4. Phân tích k?t qu? th?c nghi?m quét URL
+Sau khi th?c hi?n các k?ch b?n TN01, TN02, TN03 và TN06 trên hai website, k?t qu? t?ng h?p nhu sau:
+
+WebsiteFindingsCriticalHighMediumLowÐi?mTr?ng tháiOWOOWASP Juice Shop
+12052548 /100Uu tiên x? lý s?mPIXEL_VAULT4342558100/100C?n x? lý ngayB?ng 3.4.2: B?ng k?t qu? quét URL
+
+K?t qu? cho th?y có s? chênh l?ch rõ r?t gi?a hai website. OWASP Juice Shop ghi nh?n 12 findings v?i di?m 48/100, phù h?p v?i m?t ?ng d?ng demo có l? h?ng du?c ki?m soát. 
+
+Trong khi dó, Pixel Vault ghi nh?n 43 findings v?i di?m 100/100, m?c "Nghiêm tr?ng - C?n x? lý ngay", cho th?y d? án có b? m?t t?n công l?n và còn nhi?u v?n d? b?o m?t chua du?c x? lý.
+
+SENTINEL cung nh?n di?n du?c tech stack c?a Pixel Vault g?m Laravel, PHP và Apache, t? dó h? tr? uu tiên ki?m tra các rule liên quan d?n c?u hình server PHP và Apache.
+
+
+Nhóm OWASPOWASP Juice ShopPixel VaultNh?n xétA01 - Broken Access Control24C? hai website d?u có v?n d? ki?m soát truy c?pA02 - Cryptographic Failures49Pixel Vault thi?u nhi?u co ch? b?o v? d? li?u honA03 - Injection120Phát hi?n nhi?u nh?t trên Pixel Vault - dây là nhóm nguy hi?m nh?tA05 - Security Misconfiguration10OWASP Juice Shop có c?u hình server chua phù h?pA07 - Auth Failures01Pixel Vault có v?n d? v? xác th?cA10 - SSRF19Pixel Vault có nhi?u endpoint có kh? nang b? SSRFB?ng 3.4.3: B?ng k?t qu? phân tích theo nhóm OWASP
+
+Ði?m dáng chú ý là nhóm A03 - Injection xu?t hi?n 20 findings trên Pixel Vault nhung không xu?t hi?n trên Juice Shop khi quét URL. Ði?u này có th? xu?t phát t? s? khác bi?t v? công ngh?: Juice Shop s? d?ng Node.js, trong khi Pixel Vault dùng Laravel, PHP và Apache, khi?n các d?u hi?u liên quan d?n injection d? du?c h? th?ng nh?n di?n hon qua ph?n h?i HTTP.
+
+Ð? minh h?a, finding A02-HEADER-001 trên Pixel Vault ghi nh?n header Strict-Transport-Security b? thi?u trong response t? máy ch? Apache. Finding này du?c phân lo?i m?c High và h? th?ng d? xu?t b? sung header Strict-Transport-Security: max-age=31536000; includeSubDomains vào c?u hình Apache nh?m bu?c trình duy?t ch? k?t n?i qua HTTPS.
+
+Ngoài ra, dashboard cung hi?n th? c?nh báo n?i b?t v? vi?c thi?u Content-Security-Policy, do dây là header quan tr?ng trong vi?c gi?m thi?u r?i ro XSS.
+
+Nhìn chung, SENTINEL hoàn thành quá trình quét trên c? hai website, phân lo?i findings theo m?c d? nghiêm tr?ng và ánh x? dúng nhóm OWASP tuong ?ng. Tuy nhiên, m?t s? findings thu?c nhóm A10 - SSRF v?n c?n du?c xác minh th? công, vì công c? black-box không có quy?n truy c?p log phía server d? ki?m ch?ng request có th?c s? du?c th?c thi hay không.
+3.5. Th?c nghi?m quét mã ngu?n d? án
+3.5.1. Mô t? ch?c nang quét mã ngu?n d? án
+Ch?c nang quét mã ngu?n cho phép ngu?i dùng ch?n tr?c ti?p thu m?c d? án trên máy d? SENTINEL phân tích. Khác v?i quét URL theo hu?ng black-box, ch?c nang này d?c tr?c ti?p n?i dung file, nh? dó có th? phát hi?n các v?n d? khó quan sát t? bên ngoài nhu secret hardcode, dependency có l? h?ng, c?u hình chua an toàn ho?c logging thông tin nh?y c?m.
+
+Lu?ng x? lý g?m hai giai do?n chính. ? giai do?n d?u, h? th?ng s? d?ng walkFiles() d? duy?t cây thu m?c, d?ng th?i b? qua các thu m?c không c?n thi?t nhu node_modules, .git, dist và build, v?i gi?i h?n t?i da 2.500 file. Sau dó, các collector l?n lu?t thu th?p d? li?u theo t?ng nhóm g?m Dependency, Config, Secret, Logging và Tech Stack.
+
+? giai do?n ti?p theo, d? li?u du?c dua vào Rule Engine v?i b? l?c collector === 'source' d? ch? áp d?ng các rule phù h?p v?i phân tích mã ngu?n.
+
+Hình 3.5.1: Chi ti?t pipeline quét mã ngu?n c?a d? án
+
+Sau khi Rule Engine hoàn t?t, hàm enrichSourceFindings() t? d?ng g?n do?n code liên quan vào t?ng finding. Nh? dó, m?i k?t qu? hi?n th? d?y d? v? trí file, dòng l?nh c?n xem xét, m?c d? nghiêm tr?ng, nhóm OWASP tuong ?ng và d? xu?t x? lý, giúp ngu?i dùng d? dàng ki?m tra mà không c?n t? dò l?i trong mã ngu?n.
+3.5.2. Quy trình th?c hi?n quét mã ngu?n d? án
+Ph?n này mô t? t?ng bu?c ngu?i dùng th?c hi?n d? ch?y m?t lu?t quét mã ngu?n trên SENTINEL.
+Bu?c 1: T?i giao di?n chính, ch?n ch?c nang Quét mã ngu?n d? án
+
+Hình 3.5.2: Giao di?n quét mã ngu?n c?a d? án SENTINEL
+
+Bu?c 2: Nh?n Ch?n thu m?c d? m? File Explorer, sau dó ch?n dúng thu m?c g?c c?a d? án c?n ki?m tra, thu?ng là thu m?c ch?a package.json ho?c file c?u hình chính. T? thu m?c này, SENTINEL s? duy?t toàn b? cây thu m?c và t? d?ng b? qua các thu m?c nhu node_modules, .git, dist và build.
+
+Hình 3.5.3: Ch?n thu m?c mã ngu?n d? th?c hi?n quét project
+
+Bu?c 3: Nh?n B?t d?u phân tích mã ngu?n. Trong quá trình quét, h? th?ng hi?n th? ti?n trình duy?t file theo th?i gian th?c. Sau khi hoàn t?t, dashboard s? hi?n th? danh sách findings, t?ng s? file dã quét và phân b? k?t qu? theo m?c d? nghiêm tr?ng.
+
+Hình 3.5.4: K?t qu? quét mã ngu?n project trên ?ng d?ng SENTINEL
+
+Bu?c 4: Nh?n vào t?ng finding d? xem chi ti?t, bao g?m v? trí file, do?n code liên quan, nhóm OWASP và d? xu?t x? lý. Các thông tin này du?c enrichSourceFindings() b? sung t? d?ng, giúp ngu?i dùng xác d?nh chính xác do?n mã c?n ki?m tra ho?c s?a l?i.
+
+Hình 3.5.5: Chi ti?t finding b?o m?t trong mã ngu?n
+
+3.5.3. Các k?ch b?n áp d?ng cho th?c nghi?m quét mã ngu?n d? án
+T? b?ng k?ch b?n t?ng quát ? m?c 3.3.4, ba k?ch b?n du?c s? d?ng cho th?c nghi?m quét mã ngu?n g?m TN04, TN05 và TN06.
+
+Mã k?ch b?nN?i dung th?c nghi?mM?c díchTN04Th?c hi?n quét m?t d? án mã ngu?n m?uÐánh giá kh? nang phân tích c?u trúc và n?i dung mã ngu?nTN05Quét d? án có thu vi?n ph? thu?c ho?c c?u hình r?i roÐánh giá kh? nang phát hi?n các v?n d? b?o m?t trong mã ngu?n d? ánTN06Xu?t báo cáo sau khi quétÐánh giá kh? nang t?ng h?p, trình bày và xu?t k?t qu? th?c nghi?mB?ng 3.5.1: B?ng k?ch b?n quét mã ngu?n d? án
+
+
+Hình 3.5.6: Th?c hi?n quét d? án mã ngu?n m?u OWASP Juice Shop (TN04)
+
+K?ch b?n này ki?m tra kh? nang duy?t thu m?c và phân tích n?i dung file c?a SENTINEL. OWASP Juice Shop du?c ch?n vì là codebase có l? h?ng dã bi?t, giúp dánh giá kh? nang phát hi?n v?n d? c?a h? th?ng. K?t qu? th? hi?n s? file du?c quét, phân b? findings theo m?c d? nghiêm tr?ng và các nhóm OWASP xu?t hi?n.
+
+
+Hình 3.5.7: Quét d? án có thu vi?n ph? thu?c ho?c c?u hình r?i ro (TN05) (1)
+
+Hình 3.5.8: Quét d? án có thu vi?n ph? thu?c ho?c c?u hình r?i ro (TN05) (2)
+
+K?ch b?n này ki?m tra kh? nang phát hi?n các v?n d? b?o m?t trong mã ngu?n th?c t?, t?p trung vào các nhóm OWASP nhu A02, A03, A05, A07, A08 và A09. Hai d? án Pixel Vault và CafeShop du?c ch?n vì là d? án sinh viên th?c t?, không c? tình cài l? h?ng, giúp dánh giá SENTINEL trên codebase bình thu?ng.
+
+
+Hình 3.5.9: File báo cáo HTML c?a project-scan (TN06)
+
+K?ch b?n này ki?m tra ch?c nang t?ng h?p và xu?t báo cáo HTML sau khi quét mã ngu?n hoàn t?t. Báo cáo d?u ra bao g?m findings du?c phân nhóm theo OWASP, m?c d? nghiêm tr?ng, v? trí file và d? xu?t x? lý, giúp ngu?i dùng chia s? k?t qu? mà không c?n m? l?i ?ng d?ng.
+
+K?t qu? c?a ba k?ch b?n trên là co s? d? phân tích và d?i chi?u v?i các tiêu chí dánh giá ? m?c ti?p theo.
+3.5.4. Phân tích k?t qu? th?c nghi?m quét mã ngu?n d? án
+Sau khi th?c hi?n các k?ch b?n TN04, TN05 và TN06 trên hai d? án, k?t qu? t?ng h?p nhu sau:
+
+WebsiteFindingsCriticalHighMediumLowÐi?mTr?ng tháiOWOOWASP Juice Shop
+82255223100/100C?n x? lý ngayPIXEL_VAULT3210292100/100C?n x? lý ngayB?ng 3.5.2: B?ng k?t qu? dánh giá
+
+C? hai d? án d?u d?t m?c "Nghiêm tr?ng - C?n x? lý ngay", nhung d?c di?m findings có s? khác bi?t rõ r?t. OWASP Juice Shop ghi nh?n 82 findings, trong dó có 55 findings m?c High, phù h?p v?i d?c di?m c?a m?t codebase du?c thi?t k? có ch? dích d? ch?a nhi?u l? h?ng nghiêm tr?ng.
+
+Trong khi dó, Pixel Vault ghi nh?n 32 findings, ch? y?u ? m?c Medium v?i 29 findings và không có finding m?c High. Ði?u này cho th?y d? án t?n t?i m?t s? r?i ro b?o m?t ti?m ?n nhung m?c d? nghiêm tr?ng th?p hon. SENTINEL cung nh?n di?n Pixel Vault s? d?ng PHP, quét 84 file và phát hi?n các v?n d? d?c trung c?a stack PHP/Laravel.
+
+Nhóm OWASPOWASP Juice ShopPixel VaultNh?n xétA01 - Broken Access Control150Juice Shop có nhi?u v?n d? ki?m soát truy c?p - d?c trung c?a ?ng d?ng e-commerce có phân quy?n ph?c t?pA02 - Cryptographic Failures24C? hai d?u thi?u co ch? b?o v? d? li?u, Pixel Vault nhi?u hon do d?c thù PHPA03 - Injection340Chi?m 41% t?ng findings c?a Juice Shop - ph?n ánh dúng b?n ch?t ?ng d?ng Node.js có nhi?u di?m nh?n inputA04 - Insecure Design10Xu?t hi?n nh? l? trên Juice ShopA05 - Security Misconfiguration90Juice Shop có nhi?u c?u hình chua an toàn trong file config và CI/CDA06 - Vulnerable Components83C? hai d?u có thu vi?n ph? thu?c ch?a l? h?ng dã bi?tA08 - Software Integrity Failures1024Nhóm l?n nh?t c?a Pixel Vault - 75% t?ng findingsA09 - Security Logging32C? hai d?u ghi log thông tin nh?y c?mB?ng 3.5.3: B?ng k?t qu? dánh giá
+
+Hai d? án cho th?y s? khác bi?t rõ r?t v? lo?i l? h?ng du?c phát hi?n. OWASP Juice Shop t?p trung nhi?u ? nhóm A03 - Injection v?i 34 findings và A01 - Broken Access Control v?i 15 findings, phù h?p v?i d?c di?m c?a m?t ?ng d?ng có nhi?u di?m nh?n input và logic phân quy?n ph?c t?p.
+
+Ngu?c l?i, Pixel Vault ch? y?u ghi nh?n findings thu?c nhóm A08 - Software Integrity Failures v?i 24/32 findings. Ði?u này cho th?y các v?n d? c?a d? án t?p trung nhi?u vào dependency và c?u hình thu vi?n, thu?ng g?p trong các d? án PHP/Laravel dang phát tri?n.
+
+Ðáng chú ý, nhóm A03 - Injection không xu?t hi?n khi quét mã ngu?n Pixel Vault, nhung l?i xu?t hi?n 20 findings khi quét URL. K?t qu? này cho th?y hai phuong pháp quét có co ch? phát hi?n khác nhau: URL Scan d?a trên ph?n h?i d?ng t? website, còn Project Scan d?a trên pattern tinh trong mã ngu?n.
+3.6. Ðánh giá t?ng h?p k?t qu? th?c nghi?m
+3.6.1. T?ng h?p k?t qu? d?t du?c
+Sau khi hoàn t?t th?c nghi?m hai ch?c nang URL Scan và Project Scan, SENTINEL t?ng h?p toàn b? findings vào m?t checklist th?ng nh?t. D? li?u t? hai lu?ng quét du?c gom l?i, lo?i b? trùng l?p và s?p x?p theo m?c d? uu tiên.
+
+
+Hình 3.6.1: Checklist du?c t?o ra t? ngu?n d? li?u c?a hai ch?c nang
+
+T? checklist t?ng h?p, SENTINEL ghi nh?n findings ? 9/10 nhóm OWASP Top 10. Nhóm duy nh?t không xu?t hi?n ? ch? d? Project Scan là A10 - SSRF, do lo?i l? h?ng này ch? y?u c?n ki?m th? d?ng d? xác nh?n. Các nhóm có r?i ro cao du?c uu tiên hi?n th? tru?c, giúp ngu?i dùng nhanh chóng xác d?nh v?n d? c?n x? lý.
+
+
+Hình 3.6.2: Các nhóm l? h?ng có r?i ro cao s? luôn du?c uu tiên tru?c
+
+Ngoài ra, h? th?ng gom các findings có hu?ng x? lý tuong d?ng vào cùng m?t nhóm checklist, thay vì li?t kê r?i r?c t?ng finding. Cách trình bày này giúp ngu?i dùng t?p trung vào hành d?ng kh?c ph?c chính. V?i m?i nhóm, ngu?i dùng có th? m? r?ng d? xem chi ti?t t?ng finding và d? xu?t x? lý c? th?.
+
+
+Hình 3.6.3: T?i t?ng nhóm checklist ngu?i dùng có th? xem chi ti?t và d? xu?t x? lý
+
+
+3.6.2. Ðánh giá d? án theo tiêu chí dã d? ra
+K?t qu? th?c nghi?m du?c d?i chi?u v?i các tiêu chí và ngu?ng d?t dã xác d?nh ? m?c 3.3.5.
+
+Tiêu chíK?t qu? ghi nh?nNgu?ng d?tÐánh giáKh? nang quétHoàn thành toàn b? 6 k?ch b?n, không crashKhông crash, k?t qu? trong 120 giâyÐ?tKh? nang thu th?p d? li?uThu th?p d? header, cookie, form (URL) và dependency, config, secret (source)Ghi nh?n ít nh?t các nhóm d? li?u co b?nÐ?tKh? nang phát hi?n findings12 findings (Juice Shop URL), 43 findings (Pixel Vault URL), 82 findings (Juice Shop source), 32 findings (Pixel Vault source)Ít nh?t 1 finding trên m?i k?ch b?nÐ?tKh? nang phân lo?i r?i roM?i finding có nhãn Critical / High / Medium / Low
+M?i finding có nhãn phân lo?iÐ?tKh? nang ánh x? OWASPGhi nh?n 9/10 nhóm OWASP Top 10M?i finding có nhóm OWASP t? A01-A10Ð?tKh? nang hi?n th? k?t qu?Findings hi?n th? d? tên, m?c d?, mô t?, v? trí file và d? xu?t x? lýHi?n th? d? 4 thành ph?n co b?nÐ?tKh? nang xu?t báo cáoXu?t thành công báo cáo HTML và JSON hoàn ch?nh ? k?ch b?n TN06Xu?t du?c file HTML hoàn ch?nhÐ?tTính ?n d?nh c?a h? th?ng0 l?n crash trong toàn b? th?c nghi?m0 l?n crashÐ?tB?ng 3.6.1: B?ng dánh giá tiêu chí
+
+K?t qu? cho th?y SENTINEL dáp ?ng d?y d? các tiêu chí d? ra. H? th?ng hoàn thành toàn b? 6 k?ch b?n th?c nghi?m, không x?y ra crash, thu th?p du?c d? li?u c?n thi?t t? c? URL Scan và Project Scan, d?ng th?i phát hi?n findings trên t?ng k?ch b?n ki?m th?.
+
+Các findings d?u du?c phân lo?i theo m?c d? nghiêm tr?ng, ánh x? v?i nhóm OWASP tuong ?ng và hi?n th? d?y d? thông tin nhu tên l?i, mô t?, v? trí, m?c d? r?i ro và d? xu?t x? lý. Ngoài ra, ch?c nang xu?t báo cáo HTML cung ho?t d?ng thành công ? k?ch b?n TN06.
+
+M?t di?m c?n luu ý là m?t s? findings thu?c nhóm A01 - Broken Access Control du?c phát hi?n qua phân tích mã ngu?n d?a trên pattern nhu id ho?c userId trong request, nhung chua th? xác nh?n d?y d? logic ki?m tra quy?n. Do dó, các finding này c?n du?c rà soát th? công d? dánh giá m?c d? ?nh hu?ng th?c t?.
+
+Tóm l?i, SENTINEL dáp ?ng toàn b? 8 tiêu chí dánh giá trong ph?m vi th?c nghi?m. Tuy nhiên, do k?t qu? du?c t?o t? quét t? d?ng, m?t s? nhóm nhu A10 - SSRF và A01 - Broken Access Control v?n c?n xác minh th? công tru?c khi k?t lu?n là l? h?ng th?c s?.
+
+3.6.3. Các h?n ch? trong quá trình th?c nghi?m
+M?c dù quá trình th?c nghi?m cho th?y SENTINEL có kh? nang h? tr? phát hi?n và phân lo?i nhi?u v?n d? b?o m?t theo nhóm OWASP, k?t qu? thu du?c v?n còn m?t s? h?n ch? nh?t d?nh. Các h?n ch? này ch? y?u d?n t? ph?m vi th?c nghi?m, d?c di?m c?a quá trình quét t? d?ng và kh? nang xác minh ng? c?nh th?c t? c?a t?ng phát hi?n b?o m?t.
+
+H?n ch?Mô t?Ph?m vi d?i tu?ng th?c nghi?m còn gi?i h?nTh?c nghi?m ch? y?u du?c th?c hi?n trên OWASP Juice Shop và các d? án m?u, chua bao ph? trên nhi?u lo?i h? th?ng khác nhauK?t qu? ph? thu?c vào b? rule hi?n cóSENTINEL phát hi?n v?n d? b?o m?t d?a trên các rule dã xây d?ng d?a trên tài li?u OWASP Testing Guide. Vì v?y nh?ng l? h?ng n?m ngoài ph?m vi rule có th? không du?c ghi nh?nCó kh? nang xu?t hi?n c?nh báo saiM?t s? phát hi?n d?c bi?t là các phát hi?n d?ng heuristic, ch? mang tính c?nh báo và c?n du?c ki?m tra th? công d? xác nh?n m?c d? ?nh hu?ng th?c t?Quét mã ngu?n còn ph? thu?c vào mã ngu?n cung c?pN?u d? án thi?u di file c?u hình, dependency ho?c mã ngu?n không d?y d?, k?t qu? quét có th? chua d?y d? toàn b? r?i ro b?o m?tKhông th? thay th? ki?m th? xâm nh?p th? côngSENTINEL dóng vai trò công c? h? tr? rà soát và c?nh báo r?i ro ban d?u, chua th? thay th? hoàn toàn quá trình pentest chuyên sâu c?a các chuyên gia b?o m?tB?ng 3.6.2: B?ng dánh giá h?n ch?
+
+Nh?ng h?n ch? trên cho th?y SENTINEL phù h?p v?i vai trò công c? h? tr? rà soát và c?nh báo r?i ro b?o m?t ban d?u. Ð? dua ra k?t lu?n chính xác hon, các phát hi?n quan tr?ng v?n c?n du?c ngu?i dùng ki?m tra th? công và k?t h?p v?i ng? c?nh th?c t? c?a h? th?ng.
+
+3.6.4. Hu?ng c?i thi?n c?a d? án
+Trong các phiên b?n ti?p theo, SENTINEL có th? du?c c?i thi?n theo hu?ng m? r?ng b? rule phát hi?n, gi?m c?nh báo sai và nâng c?p ch?c nang phân tích mã ngu?n. Vi?c b? sung thêm rule cho các nhóm l? h?ng OWASP, d?c bi?t là các v?n d? liên quan d?n phân quy?n, xác th?c, logic nghi?p v? và c?u hình tri?n khai, s? giúp cho h? th?ng phát hi?n du?c nhi?u r?i ro hon.
+
+Bên c?nh dó, h? th?ng c?n c?i thi?n co ch? xác minh findings b?ng cách k?t h?p nhi?u tín hi?u phân tích và cung c?p thêm các b?ng ch?ng rõ ràng hon. Ði?u này giúp gi?m các findings sai l?ch và h? tr? ngu?i dùng dánh giá chính xác hon m?c d? ?nh hu?ng c?a t?ng phát hi?n.
+
+Ð?i v?i URL Scan, nhóm d? xu?t nâng c?p kh? nang thu th?p endpoint, form, route ?n và các n?i dung d?ng. Ð?i v?i Project Scan, nhóm s? ti?p t?c nâng c?p d? h? th?ng có th? phân tích sâu hon file c?u hình, secret, ... h? tr? thêm nhi?u ngôn ng? l?p trình khác.
+
+Bên c?nh các ch?c nang quét, SENTINEL cung c?n c?i thi?n ch?c nang AI h? tr?. Nhóm s? nâng c?p thêm thêm d? AI có th? tr? v? các câu tr? l?i rõ ràng hon, gi?i thích các findings, d? xu?t kh?c ph?c chuyên sâu và phù h?p cho t?ng lo?i l? h?ng và nâng cao kh? nang th?u hi?u ng? c?nh t?t hon. Ð?ng th?i, h? th?ng c?n có thêm co ch? ki?m soát ch?t lu?ng câu tr? l?i nh?m h?n ch? các g?i ý chua chính xác ho?c chua phù h?p v?i mã ngu?n dang quét.
+
+
+
+CHUONG 4: K?T LU?N VÀ HU?NG PHÁT TRI?N
+4. 
+4.1. K?t qu? d?t du?c
+	Sau quá trình nghiên c?u và phân tích yêu c?u và tri?n khai d? án, nhóm dã hoàn thi?n du?c các m?c tiêu tr?ng tâm ban d?u mà d? tài d?t ra. C? th?, SENTINEL dã d?t du?c nh?ng k?t qu? nhu sau:
+	Hoàn thi?n thành công ?ng d?ng SENTINEL du?i d?ng công c? ph?m m?m ho?t d?ng ?n d?nh trên môi tru?ng Window, ph?c v? m?c dích h? tr? rà soát b?o m?t co b?n và h?c t?p trong linh v?c an ninh m?ng
+ 	Tích h?p d?ng th?i nhi?u phuong th?c ki?m th? b?o m?t g?m:
+* Ki?m th? b?o m?t t? d?ng theo runtime (DAST) thông qua quét URL
+* Phân tích mã ngu?n tinh (SAST)
+* Ki?m tra thành ph?n ph? thu?c (SCA) thông qua file qu?n lý package.
+Vi?c k?t h?p nhi?u hu?ng ti?p c?n giúp h? th?ng có th? phát hi?n da d?ng d?u hi?u r?i ro hon n?u so v?i công c? ch? s? d?ng m?t ki thu?t riêng l?.
+Xây d?ng b? lu?t phân tích và chu?n hóa k?t qu? theo tiêu chu?n top 10 OWASP. Các findings sau khi phát hi?n s? du?c x?p vào t?ng nhóm l? h?ng tuong ?ng nh?m h? tr? ngu?i dùng dánh giá m?c d? nguy hi?m và d? uu tiên d? x? lí.
+Trong quá trình phát tri?n, nhóm dã t?i uu ph?n x? lý d? li?u và giao di?n b?ng cách t?n d?ng co ch? da ti?n trình c?a Electron, k?t h?p giao ti?p IPC gi?a Main Process và Renderer Process. Ngoài ra, ReactJS du?c s? d?ng d? xây d?ng giao di?n và Zustand h? tr? qu?n lý state toàn c?c, giúp vi?c c?p nh?t findings theo th?i gian th?c di?n ra ?n d?nh hon. Nh? dó, khi h? th?ng x? lý s? lu?ng findings l?n, giao di?n v?n gi? du?c d? mu?t và h?n ch? tình tr?ng gi?t ho?c treo ?ng d?ng.
+H? th?ng h? tr? phân lo?i findings theo nhi?u m?c d? nghiêm tr?ng khác nhau nhu Critical, High, Medium và Low d? ngu?i dùng d? theo dõi và dánh giá m?c d? r?i ro. Bên c?nh dó, ?ng d?ng cung h? tr? xu?t k?t qu? quét ra file báo cáo nh?m ph?c v? cho vi?c luu tr?, phân tích ho?c s? d?ng trong quá trình h?c t?p và nghiên c?u.
+Nhóm dã ti?n hành ki?m th? th?c t? trên môi tru?ng website m?u OWASP Juice Shop d? dánh giá kh? nang ho?t d?ng c?a h? th?ng. K?t qu? thu du?c cho th?y ?ng d?ng ho?t d?ng dúng v?i m?c tiêu ban d?u d? ra. Sau quá trình quét URL, h? th?ng ghi nh?n t?ng c?ng 12 findings v?i di?m dánh giá 48/100 và m?c c?nh báo "Uu tiên x? lý s?m".
+Các l? h?ng du?c phát hi?n bao g?m:
+* A02: Cryptographic Failures v?i 4 findings, 
+* A01: Broken Access Control v?i 2 findings, 
+* A05: Security Misconfiguration v?i 1 finding, 
+* A10: Server-Side Request Forgery v?i 1 finding. 
+K?t qu? này cho th?y h? th?ng có kh? nang phát hi?n du?c m?t s? nhóm l? h?ng ph? bi?n thu?ng xu?t hi?n trên các ?ng d?ng web hi?n nay.
+4.2. H?n ch? c?a h? th?ng
+M?c dù h? th?ng dã hoàn thành du?c các ch?c nang chính nhu m?c tiêu ban d?u dã d? ra ban d?u, trong quá trình th?c hành và ki?m th? nhóm nh?n th? SENTINEL v?n còn m?t s? di?m d? c?i thi?n
+Ð?u tiên, SAST dang ch? y?u phân tích mã ngu?n d?a trên cú pháp và lu?ng d? li?u co b?n nên m?t s? tru?ng h?p v?n s? xu?t hi?n c?nh báo gi?. M?t s? tru?ng h?p d? li?u dã du?c x? lý ho?c xóa b?ng các hàm ph?c t?p nhung h? th?ng chua th? phân tích d?y d?, d?n d?n các c?nh báo chua th?t s? chính xác.
+Ð?i v?i ch?c nang URL Scan, h? th?ng ch? y?u ho?t d?ng theo hu?ng ki?m th? h?p den và bán t? d?ng. Vì v?y, SENTINEL v?n chua th? t? d?ng nh?n di?n t?t du?c các l? h?ng liên quan d?n logic nghi?p v? d?c thù c?a t?ng h? th?ng, ví d? nhu Broken Access Control nâng cao ho?c Insecure Design. Nh?ng tru?ng h?p này v?n c?n ngu?i dùng ki?m tra và dánh giá th? công thêm.
+M?t s? tính nang nâng cao liên quan d?n tr? lý AI yêu c?u ngu?i dùng t? c?u hình API t? các n?n t?ng nhu Gemini, Groq Groq thông qua file env. Ði?u này khi?n h? th?ng ph? thu?c vào k?t n?i m?ng cung nhu gi?i h?n s? d?ng t? các d?ch v? bên th? ba.
+Hi?n t?i, SENTINEL ch? y?u h? tr? rà soát và phát hi?n các d?u hi?u r?i ro ban d?u ch? chua th?c hi?n các k? thu?t khai thác chuyên sâu nhu trong quy trình pentest th?c t?. Vì v?y, h? th?ng chua th? thay th? hoàn toàn cho vi?c ki?m th? b?o m?t th? công b?i chuyên gia.
+4.3. Ð?nh hu?ng phát tri?n lên Ð? án chuyên ngành
+Trong th?i gian t?i, nhóm d? d?nh ti?p t?c m? r?ng và nâng c?p h? th?ng SENTINEL d? phát tri?n thành m?t d? án chuyên ngành hoàn ch?nh hon c? v? ch?c nang l?n hi?u nang.
+Nhóm d?nh hu?ng s? t?i uu thêm co ch? x? lý b?t d?ng b? c?a Node.js cung nhu giao ti?p IPC trong Electron nh?m h? tr? quét d?ng th?i nhi?u URL ho?c các thu m?c mã ngu?n l?n mà v?n d?m b?o h? th?ng ho?t d?ng ?n d?nh.
+Trong giai do?n ti?p theo, nhóm mu?n phát tri?n thêm module t? d?ng sinh Proof of Concept nh?m ki?m tra tr?c ti?p kh? nang t?n t?i c?a l? h?ng. Ði?u này có th? giúp gi?m s? lu?ng c?nh báo gi? và tang d? chính xác c?a k?t qu? quét.
+H? th?ng s? du?c b? sung thêm các ki thu?t ki?m tra d? li?u d? vào nâng cao d? có th? phân tích ki hon các ô nh?p li?u, bi?u m?u và các du?ng d?n ch?c nang c?a h? th?ng. Ngoài ra, nhóm cung hu?ng m? r?ng kh? nang h? tr? d?i v?i các ?ng d?ng web s? d?ng giao ti?p d? li?u theo ki?u API, GraphQL và k?t n?i th?i gian th?c nhu Websocket.
+Hi?n t?i h? th?ng ch? y?u h? tr? phân tích mã ngu?n vi?t b?ng JavaScirpt và TypeScript. Trong th?i gian t?i, nhóm mu?n m? r?ng b? lu?t phân tích d? h? th?ng có th? h? tr? thêm các ngôn ng? ph? bi?n khác nhu PHP, Java và Python.
+Ngoài ra, nhóm cung d?nh hu?ng nghiên c?u các mô hình AI có các kích thu?c nh?, có th? ch?y tr?c ti?p trên máy tính ngu?i dùng mà không c?n k?t n?i các d?ch v? AI bên ngoài. Các mô hình này s? h? tr? phân tích k?t qu? quét và g?i ý hu?ng s?a l?i phù h?p cho l?p trình viên trong quá trình l?p trình.
+Trong tuong lai, SENTINEL có th? du?c phát tri?n thành công c? ch?y b?ng dòng l?nh và chu?n hóa d? li?u d?u ra theo m?t d?nh d?ng th?ng nh?t d? d? dàng tích h?p vào các h? th?ng t? d?ng ki?m tra ph?n m?m nhu GitHub Actions ho?c GitLab CI. Ði?u này giúp quá trình ki?m tra b?o m?t du?c th?c hi?n liên t?c trong su?t quá trình phát tri?n ph?n m?m thay vì ch? ki?m tra khi d? án g?n hoàn thành.
+
+Tài Li?u Kham Kh?o
+A. Tiêu chu?n Qu?c t? & Phuong pháp lu?n B?o m?t (Chuong 1 & Chuong 2)
+[1] ISO/IEC Joint Technical Committee, "Information technology - Security techniques - Application security - Part 1: Overview and concepts," ISO/IEC Standard 27034-1:2011, 2011.
+[2] OWASP Foundation, "OWASP Top 10:2021 - The Ten Most Critical Web Application Security Risks".
+[3] Verizon, "2024 Data Breach Investigations Report", 2024.
+
+[4] M. Souppaya and K. Scarfone, "Technical Guide to Information Security Testing and Assessment," National Institute of Standards and Technology (NIST), Gaithersburg, MD, USA, Special Publication (SP) 800-115, Sep. 2008.
+
+[5] OWASP Top 10 Project, "OWASP Top 10:2025 - The Ten Most Critical Web Application Security Risks," Open Worldwide Application Security Project (OWASP), 2025. [Online]. Ðu?ng link kham kh?o: https://owasp.org/Top10/2025/.
+
+[6] OWASP Foundation, "Web Security Testing Guide (WSTG)," Open Worldwide Application Security Project (OWASP). [Online]. Ðu?ng link kham kh?o: https://owasp.org/www-project-web-security-testing-guide/.
+
+[7] OWASP Foundation, "Application Security Verification Standard (ASVS)," Open Worldwide Application Security Project (OWASP). [Online]. Ðu?ng link kham kh?o: https://owasp.org/www-project-application-security-verification-standard/.
+
+[8] OWASP Cheat Sheet Series, "Developer-Focused Security Guidance," Open Worldwide Application Security Project (OWASP). [Online]. Ðu?ng link kham kh?o: https://cheatsheetseries.owasp.org.
+
+[9] MITRE Corporation, "Common Weakness Enumeration (CWE)," 2026. [Online]. Ðu?ng link kham kh?o: https://cwe.mitre.org/.
+
+[10] PortSwigger, "Web Security Academy: Free, online web security training," PortSwigger Ltd. [Online]. Ðu?ng link kham kh?o: https://portswigger.net/web-security.
+
+B. Giao th?c M?ng & Co ch? B?o m?t Web phía Trình duy?t (Chuong 2)
+[11] R. Fielding and J. Reschke, "Hypertext Transfer Protocol (HTTP/1.1): Message Syntax and Routing," Internet Engineering Task Force (IETF), RFC 7230, Jun. 2014. [Online]. Ðu?ng link kham kh?o: https://datatracker.ietf.org/doc/html/rfc7230.
+
+[12] A. Barth, "HTTP State Management Mechanism," Internet Engineering Task Force (IETF), RFC 6265, Apr. 2011. [Online]. Ðu?ng link kham kh?o: https://datatracker.ietf.org/doc/html/rfc6265.
+
+[13] MDN Web Docs, "Web Security - Security on the Web," Mozilla Developer Network. [Online]. Ðu?ng link kham kh?o: https://developer.mozilla.org/en-US/docs/Web/Security.
+
+C. N?n t?ng Công ngh? & Hu?ng d?n An toàn Framework (Chuong 2 & Chuong 3)
+[14] Node.js Project, "Node.js v22.x Official Documentation - The Node.js Event Loop, Timers, and Process," Node.js Foundation, 2025. [Online]. Ðu?ng link kham kh?o: https://nodejs.org/api/.
+
+[15] Electron Open Source Project, "Security, Native Capabilities, and Your Responsibility," OpenJS Foundation. [Online]. Ðu?ng link kham kh?o: https://www.electronjs.org/docs/latest/tutorial/security/.
+
+[16] Meta Open Source, "React Documentation - Preserving and Resetting State," Meta Platforms, Inc., 2026. [Online]. Ðu?ng link kham kh?o: https://react.dev/.
+
+[17] Zustand Contributors, "Zustand: Bear necessities for state management in React," 2026. [Online]. Ðu?ng link kham kh?o: https://zustand-demo.pmnd.rs/.
+
+D. Môi tru?ng Th?c nghi?m & T?i uu hóa H? th?ng (Chuong 3 & Chuong 4)
+[18] OWASP Foundation, "OWASP Juice Shop: An intentionally insecure web application," Open Worldwide Application Security Project (OWASP). [Online]. Ðu?ng link kham kh?o: https://owasp.org/www-project-juice-shop/.
+
+[19] B. Brawner, "Pwning OWASP Juice Shop: The official guide to the OWASP Juice Shop," 2025. [Online]. Ðu?ng link kham kh?o: https://help.owasp-juice.shop.
+
+[20] Vitest Development Team, "Vitest: Blazing Fast Unit Test Framework," 2026. [Online]. Ðu?ng link kham kh?o: https://vitest.dev/.
+
+[21] S. Artzi, A. Kiezun, J. Dolby, and F. Tip, "Finding bugs in web applications using dynamic test generation," in Proceedings of the 2008 International Symposium on Software Testing and Analysis (ISSTA), Seattle, WA, USA, 2008, pp. 111-122.
+
+[22] GitHub Actions Documentation, "Automating your workflow - Security hardening for GitHub Actions," GitHub, Inc., 2026. [Online]. Ðu?ng link kham kh?o: https://docs.github.com/en/actions.
+
+E. Các môi tru?ng kham kh?o và ý tu?ng th?c hi?n demo (Chuong 3)
+[23] URL website: https://juice-shop.herokuapp.com/#/
+
+[24] URL website: https://pixel-vault.gamer.gd/?i=1
+
+[25] Mã ngu?n d? án m?u: https://github.com/phamduongdinhhuy2005-ops/Pixel-Vault.git
+
+[26] Mã ngu?n d? án m?u: https://github.com/phamduongdinhhuy2005-ops/CafeShop.git
+[27] OWASP Juice Shop: https://owasp.org/www-project-juice-shop/
+
+[28] Pwning OWASP Juice Shop: https://help.owasp-juice.shop
+
+[29] OWASP Cheat Sheet Series: https://cheatsheetseries.owasp.org
+
+[30] MDN Web Security: https://developer.mozilla.org/en-US/docs/Web/Security
+
+4
+
+

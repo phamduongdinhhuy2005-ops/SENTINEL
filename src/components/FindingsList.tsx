@@ -74,7 +74,7 @@ export const FindingsList: React.FC = () => {
         <ReportExportButton />
       </div>
       <div className="scan-info">
-        <p><strong>Chế độ:</strong> {mode === 'url-scan' ? 'URL Scan' : 'Project Scan'}</p>
+        <p><strong>Chế độ:</strong> {mode === 'url-scan' ? 'Quét Website' : 'Quét Mã Nguồn'}</p>
         <p><strong>Mục tiêu:</strong> {target || scanResult.scannedUrl}</p>
         {scanResult.finalUrl && <p><strong>URL cuối:</strong> {scanResult.finalUrl}</p>}
         {scanResult.status && <p><strong>HTTP Status:</strong> {scanResult.status}</p>}

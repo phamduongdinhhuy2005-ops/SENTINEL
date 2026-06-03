@@ -79,7 +79,7 @@ function App() {
 
   const leftPanelTitle = isChecklist ? 'Checklist' : isUrlScan ? 'Cấu hình quét' : 'Chọn dự án';
   const leftPanelSub = isChecklist
-    ? 'Tổng hợp việc cần làm từ kết quả quét và đánh giá thiết kế.'
+    ? 'Biến kết quả quét thành danh sách việc cần xử lý.'
     : isUrlScan
       ? 'Nhập URL và cấu hình mức độ quét.'
       : 'Chọn thư mục mã nguồn để phân tích bảo mật.';

@@ -125,9 +125,9 @@ const CoverageNotes: React.FC<{ notes?: string[]; mode: 'url-scan' | 'project-sc
   const [open, setOpen] = useState(false);
   if (visibleNotes.length === 0) return null;
   const summary = mode === 'url-scan'
-    ? 'URL Scan kiểm tra header, response và endpoint công khai; chưa bao phủ đăng nhập, vai trò và luồng nghiệp vụ.'
-    : 'Project Scan đọc mã nguồn, cấu hình và dependency; chưa xác minh runtime, khai thác thực tế hoặc dữ liệu production.';
-  const scopeLabel = mode === 'url-scan' ? 'URL Scan' : 'Project Scan';
+    ? 'Quét Website kiểm tra phần nhìn thấy qua HTTP; chưa thay thế kiểm thử đăng nhập, vai trò và nghiệp vụ.'
+    : 'Quét Mã Nguồn đọc code, cấu hình và dependency; chưa xác minh hành vi runtime hoặc dữ liệu production.';
+  const scopeLabel = mode === 'url-scan' ? 'Quét Website' : 'Quét Mã Nguồn';
 
   return (
     <div className={`coverage-notes ${open ? 'is-open' : 'is-collapsed'}`}>
@@ -208,6 +208,14 @@ const STATUS_VI: Record<FindingStatus, string> = {
 // ── Finding Drawer ────────────────────────────────────────────────────────────
 const FindingDrawer: React.FC<{ finding: Finding | null; onClose: () => void }> = ({ finding, onClose }) => {
   const { setAIPendingFinding, setAIChatOpen } = useAIStore();
+  const [evidenceExpanded, setEvidenceExpanded] = useState(false);
+  const [planExpanded, setPlanExpanded] = useState(false);
+
+  useEffect(() => {
+    setEvidenceExpanded(false);
+    setPlanExpanded(false);
+  }, [finding ? findingKey(finding) : 'none']);
+
   if (!finding) return null;
 
   const isFuzzer = finding.collector === 'active-fuzzer';
@@ -215,6 +223,12 @@ const FindingDrawer: React.FC<{ finding: Finding | null; onClose: () => void }> 
   const evidenceLines = finding.evidence.filter((e) => !e.startsWith('Payload:'));
   const guide = categoryGuide(finding);
   const remediationPlan = finding.remediationPlan || buildRemediationPlan(finding);
+  const evidenceIsLong = evidenceLines.length > 3 || evidenceLines.some((e) => e.length > 220);
+  const evidenceToggleLabel = evidenceExpanded
+    ? 'Thu gọn'
+    : 'Xem chi tiết';
+  const remediationHasCode = Boolean(remediationPlan.suggestedChange?.from || remediationPlan.suggestedChange?.to);
+  const remediationIsLong = remediationHasCode || remediationPlan.steps.length > 3 || remediationPlan.steps.some((step) => step.length > 150);
 
   return (
     <div className="finding-drawer-backdrop" onClick={onClose}>
@@ -226,7 +240,7 @@ const FindingDrawer: React.FC<{ finding: Finding | null; onClose: () => void }> 
             <span className={`sev-tag tag-${finding.severity}`}>{severityLabel(finding.severity)}</span>
             <div className="finding-drawer-title">{finding.title}</div>
           </div>
-          <button className="btn-secondary finding-drawer-close" onClick={onClose}>Đóng ✕</button>
+          <button className="btn-secondary finding-drawer-close" onClick={onClose}>Đóng</button>
         </div>
 
         {/* Meta row */}
@@ -283,10 +297,32 @@ const FindingDrawer: React.FC<{ finding: Finding | null; onClose: () => void }> 
 
           {evidenceLines.length > 0 && (
             <section className="finding-section finding-section-evidence">
-              <div className="detail-label">Dữ liệu phát hiện</div>
-              <div className="evidence-list">
-                {evidenceLines.map((e, i) => renderEvidence(e, i, { path: finding.location || finding.target }))}
+              <div className="detail-section-head">
+                <div className="detail-label">Dữ liệu phát hiện</div>
+                {evidenceIsLong && (
+                  <button
+                    type="button"
+                    className="detail-toggle"
+                    onClick={() => setEvidenceExpanded((value) => !value)}
+                  >
+                    {evidenceToggleLabel}
+                  </button>
+                )}
               </div>
+              {evidenceIsLong && !evidenceExpanded ? (
+                <button
+                  type="button"
+                  className="detail-collapsed-panel"
+                  onClick={() => setEvidenceExpanded(true)}
+                >
+                  <strong>{evidenceLines.length} dữ liệu phát hiện</strong>
+                  <span>Bấm xem chi tiết để mở toàn bộ bằng chứng kỹ thuật.</span>
+                </button>
+              ) : (
+                <div className="evidence-list">
+                  {evidenceLines.map((e, i) => renderEvidence(e, i, { path: finding.location || finding.target }))}
+                </div>
+              )}
             </section>
           )}
 
@@ -296,28 +332,54 @@ const FindingDrawer: React.FC<{ finding: Finding | null; onClose: () => void }> 
           </section>
 
           <section className="finding-section remediation-plan finding-section-remediation">
-            <div className="detail-label">Đề xuất vị trí và thay đổi cần kiểm tra</div>
+            <div className="detail-section-head">
+              <div className="detail-label">Đề xuất vị trí và thay đổi cần kiểm tra</div>
+              {remediationIsLong && (
+                <button
+                  type="button"
+                  className="detail-toggle"
+                  onClick={() => setPlanExpanded((value) => !value)}
+                >
+                  {planExpanded ? 'Thu gọn' : 'Xem đầy đủ'}
+                </button>
+              )}
+            </div>
             <div className="remediation-plan-note"><SentenceText text={remediationPlan.confidenceNote} /></div>
             <div className="remediation-plan-location">{remediationPlan.locationHint}</div>
-            {remediationPlan.suggestedChange && (
-              <div className="remediation-change">
-                {remediationPlan.suggestedChange.from && (
+            {remediationIsLong && !planExpanded ? (
+              <button
+                type="button"
+                className="detail-collapsed-panel"
+                onClick={() => setPlanExpanded(true)}
+              >
+                <strong>
+                  {remediationHasCode ? 'Có đoạn thay đổi đề xuất' : `${remediationPlan.steps.length} bước xử lý`}
+                </strong>
+                <span>Bấm xem đầy đủ để mở toàn bộ checklist sửa lỗi.</span>
+              </button>
+            ) : (
+              <>
+                {remediationPlan.suggestedChange && (
+                  <div className="remediation-change">
+                    {remediationPlan.suggestedChange.from && (
+                      <div>
+                        <div className="remediation-change-label">Sửa từ</div>
+                        <pre>{remediationPlan.suggestedChange.from}</pre>
+                      </div>
+                    )}
                   <div>
-                    <div className="remediation-change-label">Sửa từ</div>
-                    <pre>{remediationPlan.suggestedChange.from}</pre>
+                    <div className="remediation-change-label">Đề xuất thành</div>
+                    <pre>{remediationPlan.suggestedChange.to}</pre>
+                  </div>
                   </div>
                 )}
-                <div>
-                  <div className="remediation-change-label">Đề xuất thành</div>
-                  <pre>{remediationPlan.suggestedChange.to}</pre>
-                </div>
-              </div>
+                <ol className="remediation-steps">
+                  {remediationPlan.steps.map((step, index) => (
+                    <li key={index}><SentenceText text={step} /></li>
+                  ))}
+                </ol>
+              </>
             )}
-            <ol className="remediation-steps">
-              {remediationPlan.steps.map((step, index) => (
-                <li key={index}><SentenceText text={step} /></li>
-              ))}
-            </ol>
           </section>
 
           <section className="finding-section finding-section-confidence">
@@ -424,6 +486,7 @@ export const ResultsPanel: React.FC = () => {
     urlScanResult, projectScanResult, error, isLoading, activeTab,
     resetUrlScanResult, resetProjectScanResult,
     setFindingStatus, getFindingStatus, clearFindingStatuses,
+    resultsDensity, setResultsDensity,
   } = useStore();
 
   const [sortBy, setSortBy]       = useState<'severity' | 'confidence'>('severity');
@@ -503,21 +566,21 @@ export const ResultsPanel: React.FC = () => {
   ).length;
 
   return (
-    <div className="results-shell density-comfort">
+    <div className={`results-shell density-${resultsDensity}`}>
 
       {/* ── Overview toggle strip ── */}
       <div className="rp-guide">
         <div className="rp-guide-steps">
           <span className="rp-guide-pill rp-guide-pill--1">
-            <span className="rp-guide-num">1</span> Xem lỗi Critical &amp; High trước
+            <span className="rp-guide-num">1</span> Xem rủi ro cao trước
           </span>
           <span className="rp-guide-sep">→</span>
           <span className="rp-guide-pill">
-            <span className="rp-guide-num">2</span> Nhấn &quot;Chi tiết&quot; để xem cách sửa
+            <span className="rp-guide-num">2</span> Mở chi tiết để hiểu cách sửa
           </span>
           <span className="rp-guide-sep">→</span>
           <span className="rp-guide-pill">
-            <span className="rp-guide-num">3</span> Cập nhật trạng thái xử lý
+            <span className="rp-guide-num">3</span> Cập nhật trạng thái
           </span>
         </div>
         <div className="rp-guide-actions">
@@ -577,6 +640,24 @@ export const ResultsPanel: React.FC = () => {
             <option value="severity">Sắp xếp: Mức độ</option>
             <option value="confidence">Sắp xếp: Độ tin cậy</option>
           </select>
+          <div className="density-switch" role="group" aria-label="Mật độ bảng kết quả">
+            <button
+              type="button"
+              className={`btn-reset ${resultsDensity === 'comfort' ? 'active' : ''}`}
+              onClick={() => setResultsDensity('comfort')}
+              title="Bảng thoáng hơn"
+            >
+              Thoáng
+            </button>
+            <button
+              type="button"
+              className={`btn-reset ${resultsDensity === 'compact' ? 'active' : ''}`}
+              onClick={() => setResultsDensity('compact')}
+              title="Hiển thị nhiều dòng hơn"
+            >
+              Gọn
+            </button>
+          </div>
           <span className="filter-count">{visible.length} nhóm / {filteredFindings.length} cảnh báo</span>
 
           {hasFilter && (

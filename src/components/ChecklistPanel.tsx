@@ -209,11 +209,11 @@ export const ChecklistPanel: React.FC = () => {
         <div className="empty-state-steps">
           <div className="empty-state-step">
             <span className="empty-state-step-num">1</span>
-            <span>Chạy URL Scan hoặc Project Scan</span>
+            <span>Chạy Quét Website hoặc Quét Mã Nguồn</span>
           </div>
           <div className="empty-state-step">
             <span className="empty-state-step-num">2</span>
-            <span>Checklist sẽ được tạo từ các phát hiện và công nghệ nhận diện</span>
+            <span>Checklist sẽ gom phát hiện thành việc cần xử lý</span>
           </div>
         </div>
       </div>
@@ -221,10 +221,10 @@ export const ChecklistPanel: React.FC = () => {
   }
 
   const sourceLabel = hasProjectScan && hasUrlScan
-    ? 'URL Scan + Project Scan'
+    ? 'Quét Website + Quét Mã Nguồn'
     : hasUrlScan
-      ? 'URL Scan'
-      : 'Project Scan';
+      ? 'Quét Website'
+      : 'Quét Mã Nguồn';
 
   return (
     <div className="checklist-left-stack">

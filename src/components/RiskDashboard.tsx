@@ -96,7 +96,7 @@ export const RiskDashboard: React.FC<Props> = ({ scanResult }) => {
               </div>
             )}
             <div className="rg-meta-row">
-              <span className="rg-meta-k">Findings</span>
+              <span className="rg-meta-k">Phát hiện</span>
               <span className="rg-meta-v rg-meta-v--bold">{metadata.summary.total}</span>
             </div>
           </div>

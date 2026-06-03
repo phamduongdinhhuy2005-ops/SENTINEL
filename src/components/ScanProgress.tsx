@@ -12,6 +12,13 @@ const ICONS: Record<string, string> = {
   error:   '✗',
 };
 const STAGES = ['crawl', 'probe', 'analyze', 'fuzz', 'done'];
+const STAGE_LABELS: Record<string, string> = {
+  crawl: 'Crawl',
+  probe: 'Probe',
+  analyze: 'Phân tích',
+  fuzz: 'Fuzz',
+  done: 'Hoàn tất',
+};
 const STAGE_PROGRESS: Record<string, number> = {
   crawl: 20,
   probe: 40,
@@ -77,7 +84,7 @@ export const ScanProgress: React.FC = () => {
             <React.Fragment key={s}>
               <div className={`stage-node ${doneStages.has(stage) ? 'done' : ''} ${activeStage === stage ? 'active' : ''}`}>
                 <div className="stage-dot" />
-                <span>{s}</span>
+                <span>{STAGE_LABELS[s] || s}</span>
               </div>
               {s !== 'done' && <div className={`stage-line ${doneStages.has(stage) ? 'done' : ''}`} />}
             </React.Fragment>

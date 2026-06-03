@@ -377,7 +377,7 @@ export const ChecklistRightPanel: React.FC = () => {
         <div className="rp-empty-steps">
           <div className="rp-empty-step">
             <div className="rp-empty-num">1</div>
-            <div className="rp-empty-text">Chạy URL Scan hoặc Project Scan</div>
+            <div className="rp-empty-text">Chạy Quét Website hoặc Quét Mã Nguồn</div>
           </div>
           <div className="rp-empty-arrow">→</div>
           <div className="rp-empty-step">
@@ -395,7 +395,7 @@ export const ChecklistRightPanel: React.FC = () => {
         {urlScanResult && (
           <div className="section checklist-summary-card">
             <div className="checklist-summary-head">
-              <div className="section-label" style={{ marginBottom: 0 }}>URL Scan</div>
+              <div className="section-label" style={{ marginBottom: 0 }}>Quét Website</div>
               <span className="checklist-summary-badge">runtime</span>
             </div>
             <div className="checklist-summary-target">{urlScanResult.scannedUrl || urlScanResult.finalUrl}</div>
@@ -406,7 +406,7 @@ export const ChecklistRightPanel: React.FC = () => {
         {projectScanResult && (
           <div className="section checklist-summary-card">
             <div className="checklist-summary-head">
-              <div className="section-label" style={{ marginBottom: 0 }}>Project Scan</div>
+              <div className="section-label" style={{ marginBottom: 0 }}>Quét Mã Nguồn</div>
               <span className="checklist-summary-badge">Mã nguồn</span>
             </div>
             <ScanSummaryBlock scanResult={projectScanResult} />
@@ -419,10 +419,10 @@ export const ChecklistRightPanel: React.FC = () => {
         )}
 
         <div className="section checklist-summary-tip">
-          <span className="checklist-tip-title">Logic hiện tại: </span>
+          <span className="checklist-tip-title">Cách dùng: </span>
           <SentenceText
             as="span"
-            text="Checklist giữ đầy đủ phát hiện từ URL Scan và Project Scan. Các mục có cùng quy tắc hoặc cùng hướng sửa sẽ được gom thành một nhóm xử lý. Nhóm có rủi ro cao hơn luôn được đưa lên trước."
+            text="Checklist biến kết quả quét thành nhóm việc cần xử lý. Các phát hiện cùng mẫu lỗi hoặc cùng hướng sửa sẽ được gom lại, rủi ro cao luôn nằm trước."
           />
         </div>
       </div>
@@ -481,7 +481,7 @@ export const ChecklistRightPanel: React.FC = () => {
           </div>
         ) : (
           <div className="checklist-clean-state">
-            Không có phát hiện nào cần xử lý. Vẫn nên hoàn tất phần đánh giá thiết kế bên dưới.
+            Không có phát hiện nào cần xử lý. Vẫn nên hoàn tất phần rà soát kiến trúc bảo mật bên dưới.
           </div>
         )}
       </div>
@@ -489,7 +489,7 @@ export const ChecklistRightPanel: React.FC = () => {
       <div className="section checklist-review-panel">
         <div className="chk-section-header checklist-review-head">
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div className="section-label" style={{ marginBottom: 4 }}>Đánh giá thiết kế</div>
+            <div className="section-label" style={{ marginBottom: 4 }}>Rà soát kiến trúc bảo mật</div>
             <div className="checklist-progress-row">
               <div className="checklist-progress-track">
                 <div className="checklist-progress-fill" style={{ width: `${completionRate}%` }} />

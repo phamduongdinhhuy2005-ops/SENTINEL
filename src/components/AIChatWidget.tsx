@@ -136,14 +136,14 @@ function renderMd(raw: string): string {
 const QUICK_QS = [
   // 🛡️ Công cụ
   { label: 'Sentinel là gì?',       q: 'SENTINEL là gì?',                    category: 'Công cụ' },
-  { label: 'URL Scan',               q: 'URL Scan là gì và dùng thế nào?',    category: 'Công cụ' },
-  { label: 'Project Scan',           q: 'Project Scan hoạt động như thế nào?', category: 'Công cụ' },
+  { label: 'Quét Website',           q: 'Quét Website là gì và dùng thế nào?', category: 'Công cụ' },
+  { label: 'Quét Mã Nguồn',          q: 'Quét Mã Nguồn hoạt động như thế nào?', category: 'Công cụ' },
   { label: 'Crawl Depth',            q: 'Crawl Depth là gì?',                 category: 'Công cụ' },
   { label: 'Request Budget',         q: 'Request Budget là gì?',              category: 'Công cụ' },
   { label: 'Xác thực',               q: 'Cách thêm Authentication khi scan?', category: 'Công cụ' },
   { label: 'Xuất báo cáo',           q: 'Cách export báo cáo?',               category: 'Công cụ' },
   { label: 'Lịch sử scan',           q: 'Cách xem lịch sử scan?',             category: 'Công cụ' },
-  { label: 'Collector',              q: 'Collector trong Findings là gì?',    category: 'Công cụ' },
+  { label: 'Nguồn phát hiện',        q: 'Nguồn phát hiện trong bảng kết quả là gì?', category: 'Công cụ' },
   { label: 'False positive',         q: 'Khi nào phát hiện có thể là false positive?', category: 'Công cụ' },
   { label: 'Risk Score',             q: 'Risk Score được tính như thế nào?',  category: 'Công cụ' },
   { label: 'Checklist',              q: 'Tab Checklist dùng để làm gì?',      category: 'Công cụ' },
@@ -387,7 +387,7 @@ async function resolveAssistantAnswer(payload: AiQueryPayload): Promise<Resolved
 
 const WELCOME_CHIPS = [
   { label: 'Sentinel là gì?',    q: 'SENTINEL là gì?' },
-  { label: 'URL Scan',           q: 'URL Scan là gì và dùng thế nào?' },
+  { label: 'Quét Website',       q: 'Quét Website là gì và dùng thế nào?' },
   { label: 'SQL Injection',      q: 'SQL Injection là gì và cách fix?' },
   { label: 'OWASP Top 10',       q: 'OWASP Top 10 là gì?' },
   { label: 'XSS là gì?',         q: 'XSS là gì và cách fix?' },
@@ -491,7 +491,7 @@ export function AIChatWidget() {
   const ensureWelcome = useCallback(() => {
     if (initializedRef.current) return;
     initializedRef.current = true;
-    const welcomeContent = `Xin chào! Tôi là **SENTINEL AI Assistant** — trợ lý bảo mật dựa trên knowledge base OWASP cục bộ và có thể mở rộng bằng LLM khi bạn cấu hình API key.\n\nTôi được xây dựng để giúp bạn:\n\n- Giải thích chi tiết các lỗ hổng bảo mật (XSS, SQL Injection, CSRF, IDOR, SSTI, SSRF...)\n- Hướng dẫn từng bước cách sử dụng SENTINEL\n- Phân tích và đề xuất cách khắc phục từng phát hiện cụ thể\n- Giải thích các khái niệm OWASP A01–A10\n\nNhấn vào bất kỳ phát hiện nào và chọn **"Hỏi AI"** để nhận phân tích tường tận, hoặc gõ câu hỏi bên dưới.`;
+    const welcomeContent = `Xin chào! Tôi là **Trợ lý AI của SENTINEL**.\n\nTôi giúp bạn làm 3 việc chính:\n\n- Giải thích lỗi bảo mật bằng ngôn ngữ dễ hiểu\n- Gợi ý cách sửa và bước kiểm tra lại\n- Trả lời câu hỏi dựa trên kết quả quét hiện có\n\nBạn có thể chọn gợi ý bên dưới, gõ câu hỏi, hoặc mở một phát hiện rồi bấm **"Hỏi AI"**.`;
     const welcome: AIChatMessage = {
       id: genMsgId(), role: 'assistant', content: welcomeContent, ts: Date.now(),
     };
@@ -1022,8 +1022,8 @@ export function AIChatWidget() {
             {!hasAnyConfiguredKey && (
               <div className="ai-config-banner">
                 <div>
-                  <strong>AI nâng cao chưa được bật</strong>
-                  <span>Ứng dụng vẫn trả lời bằng knowledge base cục bộ. Thêm Groq/Gemini/OpenRouter key để dùng LLM.</span>
+                  <strong>Đang dùng trả lời cục bộ</strong>
+                  <span>Thêm API key nếu bạn muốn câu trả lời linh hoạt hơn.</span>
                 </div>
                 <button type="button" className="btn-link" onClick={() => setShowAISettings(true)}>
                   Cấu hình ngay
@@ -1034,7 +1034,7 @@ export function AIChatWidget() {
               <div className="onboarding-banner" style={{ margin: '8px 10px 6px' }}>
                 <div className="onboarding-banner-title">Mẹo nhanh</div>
                 <div className="onboarding-banner-text">
-                  Nhấn nút gợi ý để xem câu hỏi mẫu. Bạn cũng có thể nhấn “Hỏi AI” trong từng phát hiện để xem phân tích chi tiết.
+                  Chọn câu hỏi mẫu hoặc bấm “Hỏi AI” trong từng phát hiện để xem gợi ý sửa.
                 </div>
                 <button
                   className="btn-link"

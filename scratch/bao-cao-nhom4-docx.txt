@@ -1,0 +1,709 @@
+ | BỘ GIÁO DỤC VÀ ĐÀO TẠO TRƯỜNG ĐẠI HỌC CÔNG NGHỆ TP. HCM
+ĐỒ ÁN CƠ SỞ
+PHÁT TRIỂN HỆ THỐNG KIỂM THỬ LỖ HỔNG BẢO MẬT WEB TỰ ĐỘNG THEO OWASP TOP 10
+Ngành: CÔNG NGHỆ THÔNG TIN
+Chuyên ngành: AN NINH MẠNG
+Giảng viên hướng dẫn: TH.S Đinh Phương Nam
+Sinh viên thực hiện:
+Nguyễn An Khang      MSSV: 2380600984Lớp: 23DTHD3
+Phạm Dương Đình Huy   MSSV: 2380600870Lớp: 23DTHD3
+Lê Phương Nam      MSSV: 2380614933Lớp: 23DTHD3
+Bùi Trọng Thức      MSSV: 2380602199Lớp: 23DTHD3
+TP. Hồ Chí Minh, 2026
+Lời Cảm Ơn
+Chúng em, nhóm 4, xin bày tỏ sự tôn trọng và lòng biết ơn sâu sắc đến Thầy Đinh Phương Nam – giảng viên hướng dẫn đồ án cơ sở, người đã tận tình định hướng, góp ý chuyên môn và hỗ trợ nhóm trong suốt quá trình thực hiện đồ án “SENTINEL” với đề tài “Phát triển hệ thống kiểm thử lỗ hổng bảo mật web tự động theo OWASP top 10”. Nhờ sự hướng dẫn và những góp ý khoa học của thầy, nhóm chúng em đã có điều kiện hoàn thiện đề tài này một cách hệ thống, đúng định hướng và đảm bảo tiến độ theo yêu cầu học phần. Dù đã cố gắng đầu tư thời gian và nỗ lực hết mình, nhưng do kiến thức và kinh nghiệm thực tiễn còn hạn chế, đồ án này chắc chắn không thể tránh khỏi những thiếu sót. Nhóm chúng em rất mong nhận được những ý kiến đóng góp quý báu từ thầy để đề tài được hoàn thiện hơn. Bên cạnh đó, quá trình thực hiện đồ án cũng giúp chúng em rèn luyện tư duy phân tích, tinh thần làm việc nhóm và nhận thức rõ hơn về tầm quan trọng của trí tuệ nhân tạo trong thực tiễn. Một lần nữa, chúng em xin kính chúc thầy luôn khỏe mạnh, hạnh phúc và gặt hái được nhiều thành công trong tương lai.
+Lời Cam Đoan
+Nhóm 4 xin cam đoan toàn bộ nội dung của đồ án “SENTINEL” là kết quả nghiên cứu và triển khai do chính các thành viên trong nhóm thực hiện. Các số liệu, phân tích và kết quả trình bày đều trung thực, không sao chép từ bất kỳ nguồn nào khác. Trong trường hợp có bất kỳ sai sót hoặc vi phạm liên quan đến bản quyền hay tính trung thực của dự án, nhóm xin hoàn toàn chịu trách nhiệm từ Khoa/Viện.
+Nhận xét của giảng viên
+…………………………………………………………………………………………………
+…………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………………
+Mục Lục
+CHƯƠNG 1. TỔNG QUAN9
+1.1.Giới thiệu đề tài9
+1.2.Bối cảnh bảo mật ứng dụng web10
+1.3.Tổng quan về hệ thống SENTINEL11
+1.4.Tính cấp thiết và lý do hình thành đề tài12
+1.5.Ý nghĩa khoa học và thực tiễn12
+1.5.1.Ý nghĩa khoa học12
+1.5.2 Ý nghĩa thực tiễn12
+1.6.1.Đối tượng nghiên cứu13
+1.6.2.Phạm vi nghiên cứu13
+1.6.Công nghệ sử dụng trong đồ án14
+1.7.Dữ liệu đầu vào và đầu ra của hệ thống15
+1.8.Phương pháp nghiên cứu15
+1.9.Nhiệm vụ đồ án16
+CHƯƠNG 2. CƠ SỞ LÝ THUYẾT17
+2.1.Khái niệm về hệ thống ứng dụng web và bảo mật17
+2.1.1.Mô hình Client – Server và giao thức HTTP17
+2.1.2.Mối đe dọa và tầm quan trọng của an toàn thông tin ứng dụng Web17
+2.2.Các phương thức kiểm thử bảo mật ứng dụng (Application Security Testing)18
+2.2.1.Kiểm thử bảo mật tự động (DAST – Dynamic Application Security Testing)18
+2.2.2.Kiểm thử mã nguồn (SAST – Static Application Security Testing)19
+2.2.3.Phân tích thành phần phần mềm (SCA – Software Composition Analysis)19
+2.3.Hệ thống tiêu chuẩn lỗ hổng OWASP Top 10 (Phiên bản 2025)20
+2.4.Công nghệ nền tảng và công cụ phát triển phần mềm26
+2.4.1.Môi trường thực thi Node.js và kiến trúc Event-Loop26
+2.4.2.Khung phát triển ứng dụng Desktop đa nền tảng (Electron JS)26
+2.4.3.Công nghệ giao diện ReactJS, Vite và Zustand27
+CHƯƠNG 3: KẾT QUẢ THỰC NGHIỆM29
+3.1.Sơ đồ Pipeline tổng quan của dự án29
+3.2.Chuẩn bị môi trường và dự án thực nghiệm29
+3.2.1.Chuẩn bị môi trường chạy dự án29
+3.2.2.Chuẩn bị mã nguồn dự án30
+3.2.3.Cài đặt thư viện phụ thuộc31
+3.2.4.Cấu hình biến môi trường31
+3.2.5.Khởi chạy hệ thống32
+3.2.6.Kiểm tra trạng thái dự án trước thực nghiệm32
+3.3.Thiết lập thực nghiệm33
+3.3.1.Mục tiêu thực nghiệm33
+3.3.2.Phạm vi và điều kiện thực nghiệm33
+3.3.3.Đối tượng thực nghiệm34
+3.3.4.Kịch bản thực nghiệm tổng quát34
+3.3.5.Tiêu chí đánh giá35
+3.4.Thực nghiệm quét website bằng URL35
+3.4.1.Mô tả chức năng quét URL35
+3.4.2.Quy trình thực hiện quét URL37
+3.4.3.Các kịch bản áp dụng cho thực nghiệm quét URL40
+3.4.4.Phân tích kết quả thực nghiệm quét URL42
+3.5.Thực nghiệm quét mã nguồn dự án43
+3.5.1.Mô tả chức năng quét mã nguồn dự án43
+3.5.2.Quy trình thực hiện quét mã nguồn dự án44
+3.5.3.Các kịch bản áp dụng cho thực nghiệm quét mã nguồn dự án46
+3.5.4.Phân tích kết quả thực nghiệm quét mã nguồn dự án48
+3.6.Đánh giá tổng hợp kết quả thực nghiệm50
+3.6.1.Tổng hợp kết quả đạt được50
+3.6.2.Đánh giá dự án theo tiêu chí đã đề ra52
+3.6.3.Các hạn chế trong quá trình thực nghiệm53
+3.6.4.Hướng cải thiện của dự án53
+CHƯƠNG 4: KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN55
+4.1.Kết quả đạt được55
+4.2.Hạn chế của hệ thống56
+4.3.Định hướng phát triển lên Đồ án chuyên ngành56
+Tài Liệu Kham Khảo58
+Mục Lục Ảnh
+Hình 3.1.1: File .env.example của dự án31
+Hình 3.1.2: Chạy ứng dụng thông qua Terminal31
+Hình 3.3.1: Mở ứng dụng SENTINEL.exe đã được đóng gói37
+Hình 3.3.2: Sau khi giao diện hiển thị bấm chọn chức năng quét website bằng URL37
+Hình 3.3.3: Nhập URL website, cấu hình phạm vi và cường độ quét38
+Hình 3.3.4: Nhập thông tin xác thực nếu website yêu cầu38
+Hình 3.3.5: Nhấn nút bắt đầu quét và theo dõi trạng thái xử lý39
+Hình 3.3.6: Quan sát kết quả được trả về sau khi quét39
+Hình 3.3.7: Thực hiện quét một URL hợp lệ (TN01)41
+Hình 3.3.8: Quét các website có form hoặc endpoint đầu vào (TN02)41
+Hình 3.3.9: Quét website có thiếu hoặc cấu hình sai security headers (TN03)41
+Hình 3.3.10: Xuất báo cáo sau khi quét dưới dạng HTML (TN06) (1)42
+Hình 3.3.11: Xuất báo cáo sau khi quét dưới dạng HTML (TN06) (2)42
+Hình 3.4.1: Tại giao diện chính bấm chọn quét mã nguồn45
+Hình 3.4.2: Nhấn chọn thư mục để mở File Explorer và chọn thư mục cần quét46
+Hình 3.4.3: Nhấn nút Bắt đầu phân tích mã nguồn và kiểm tra kết quả quét46
+Hình 3.4.4: Xem thông tin chi tiết của findings và đề xuất xử lý47
+Hình 3.4.5: Thực hiện quét dự án mã nguồn mẫu OWASP Juice Shop (TN04)48
+Hình 3.4.6: Quét dự án có thư viện phụ thuộc hoặc cấu hình rủi ro gồm A02, A03, A05, A07, A08, A09 (TN05) (1)48
+Hình 3.4.7: Quét dự án có thư viện phụ thuộc hoặc cấu hình rủi ro gồm A02, A03, A05, A07, A08, A09 (TN05) (2)48
+Hình 3.5.1: Checklist được tạo ra từ nguồn dữ liệu của hai chức năng51
+Hình 3.5.2: Các nhóm lỗ hổng có rủi ro cao sẽ luôn được ưu tiên trước52
+Hình 3.5.3: Tại từng nhóm checklist người dùng có thể xem chi tiết và đề xuất xử lý52
+Mục Lục Bảng
+Bảng 1.2.1: Các hướng kiểm thử được sử dụng làm cơ sở cho SENTINEL10
+Bảng 1.3.1: Các chức năng chính của hệ thống SENTINEL11
+Bảng 1.5.1: Mục tiêu nghiên cứu của đề tài13
+Bảng 1.5.2: Phạm vi kiểm thử của hệ thống14
+Bảng 1.6.1: Công nghệ sử dụng trong hệ thống SENTINEL14
+Bảng 1.7.1: Dữ liệu đầu vào và đầu ra của hệ thống15
+Bảng 2.3.1: Bảng header cho lỗ hổng A-0221
+Bảng 3.2.1: Bảng môi trường và công cụ thực nghiệm30
+Bảng 3.2.2: Bảng mã nguồn dự án31
+Bảng 3.2 .3: Bảng thư viện và công nghệ31
+Bảng 3.1.4: Bảng lệnh kiểm tra trạng thái33
+Bảng 3.2.1: Bảng phạm vi và điều kiện thực nghiệm33
+Bảng 3.2.2: Bảng kịch bản thực nghiệm35
+Bảng 3.2.3: Bảng tiêu chí đánh giá35
+Bảng 3.3.1: Bảng kịch bản quét URL38
+Bảng 3.3.2: Bảng kết quả quét URL40
+Bảng 3.3.3: Bảng kết quả đánh giá41
+Bảng 3.4.1: Bảng kịch bản quét mã nguồn dự án44
+Bảng 3.4.2: Bảng kết quả đánh giá46
+Bảng 3.4.3: Bảng kết quả đánh giá47
+Bảng 3.5.1: Bảng đánh giá tiêu chí50
+Bảng 3.5.2: Bảng đánh giá hạn chế51
+CHƯƠNG 1. TỔNG QUAN
+Giới thiệu đề tài
+Trong quá trình hoàn thiện đồ án, thì phần lớn hệ thống đều hoạt động theo mô hình Client - Server và kết nối thông qua các giao thức HTTP hoặc HTTPS. Người dùng sử dụng và thao tác trình duyệt, dữ liệu được đóng gói thành request rồi gửi đến server để xử lý, truy vấn cơ sở dữ liệu và trả kết quả về giao diện. Quá trình trao đổi dữ liệu giữa Client-Server làm có thêm nhiều đầu vào URL, form, cookie, header và body request. Nếu các điểm đầu vào không được kiểm soát tốt, hệ thống có thể xuất hiện các rủi ro bảo mật như Injection, Broken Access Control, làm lộ dữ liệu hoặc cấu hình sai.
+Trong quá trình học và làm bài tập, nhóm nhận thấy sinh viên thường tập trung nhiều vào phần chức năng như đăng nhập, đăng ký, quản lý người dùng, quản lý sản phẩm, giỏ hàng hoặc trang quản trị. Nhưng đôi khi quá tập trung vào vẻ bề ngoài mà quên mất phần bảo mật đáng ra phải có trong từng đoạn mã nguồn (Ví dụ: một trang của quản trị viên muốn bấm vào nút gọi api nhưng phía sa chưa đầy đủ kết nối để có thể khởi chạy).
+Từ những vấn đề trên, nhóm chọn đề tài “Phát triển hệ thống kiểm thử lỗ hổng bảo mật web tự động theo OWASP Top 10” nhằm tìm hiểu và xây dựng một công cụ hỗ trợ kiểm tra một số rủi ro phổ biến trong ứng dụng web. Trong phạm vi đồ án, hệ thống không hướng đến thay thế các công cụ bảo mật chuyên nghiệp, mà tập trung hỗ trợ quá trình học tập, thực hành và đánh giá ban đầu đối với các project web.
+Đề tài được thực hiện thông qua dự án SENTINEL, một công cụ hỗ trợ kiểm tra bảo mật ở mức cơ bản cho ứng dụng web. Hệ thống được định hướng giúp người dùng phát hiện sớm một số dấu hiệu rủi ro như cấu hình chưa an toàn, xử lý dữ liệu đầu vào chưa chặt chẽ, sử dụng thư viện có lỗ hổng hoặc các vấn đề liên quan đến phản hồi của website khi chạy thử nghiệm. Qua đó nhóm có thể vận dụng kiến thức về bảo mật ứng dụng web, kiểm thử phần mềm và phát triển hệ thống vào một sản phẩm cụ thể.
+Bối cảnh bảo mật ứng dụng web
+Hiện nay,do thời đại hội nhập các công nghệ được tạo ra rất nhiều mỗi ngày nhưng cũng từ đó khiến mọi người luôn dựa vào các công nghệ mới này như: API,các thư viện mã nguồn mở, AI…, sự phát triển này giúp chúng ta hoàn thành công việc một cách nhanh chống như từ sự nhanh chống đó chỉ ra một vấn đề,mọi sự đẹp đẻ đều ở bên ngoài còn bên trong các lỗ hỏng bảo mật nhiều không đếm hết. 
+Thực tế cho thấy hiện nay các lỗi web đang xuất hiện ngày càng phổ biến và biến tấu theo các chiều hướng xấu.Theo OWASP Top 10:2021, các nhóm rủi ro nghiêm trọng thường gặp gồm kiểm soát truy cập không đúng, lỗi injection, cấu hình bảo mật chưa an toàn và sử dụng thành phần phần mềm có lỗ hổng. Trong đó, lỗi kiểm soát truy cập được OWASP xếp ở vị trí A01 và được ghi nhận xuất hiện trong 94% ứng dụng được kiểm thử. 
+Ngoài ra, báo cáo Verizon Data Breach Investigations Report 2024 cũng cho thấy việc khai thác lỗ hổng để bắt đầu một vụ xâm nhập đã tăng 180% so với năm trước. Các số liệu này cho thấy một lỗi nhỏ trong xử lý request, quản lý đăng nhập, phân quyền hoặc cấu hình server đều có thể ảnh hưởng đến dữ liệu và hoạt động của hệ thống.
+Từ các thực trạng đó,nhóm nhận thấy vai trò các công cụ hỗ trợ kiểm tra bảo mật là điều tất yếu, đặt biệt là trong môi trường học tập mọi người đều chưa quá để tâm đến bảo mật dữ liệu.Vì vậy nhóm xây dựng dự án SENTINEL với mục tiêu hỗ trợ phát hiện sớm các rủi ro về bảo mật.
+Hướng kiểm thử | Vai trò | Dấu hiệu cần kiểm tra
+DAST - Dynamic Application Security Testing | Kiểm tra ứng dụng từ bên ngoài khi trang Web đang chạy. | Header bảo mật, cookie, form, thông báo lỗi, URL và dấu hiệu lỗi cấu hình.
+SAST - Static Application Security Testing | Phân tích  mã nguồn hoặc cấu hình dự án. | Tính an toàn của mật khẩu; dữ liệu nhập vào có được kiểm tra kỹ; thông tin nhạy cảm bị ghi ra loggng  .
+SCA - Software Composition Analysis | kiểm tra thành phần phần mềm và phụ thuộc bên thứ ba. | Kiểm tra thư viện có cũ không, có cần cập nhật không; xem các file như package.json, package-lock.json.
+Kiểm tra thư viện có cũ không, có cần cập nhật không; xem các file như package.json, package-lock.json.
+Bảng 1.2.1: Các hướng kiểm thử được sử dụng làm cơ sở cho SENTINEL
+Tổng quan về hệ thống SENTINEL
+SENTINEL là ứng dụng desktop hỗ trợ kiểm thử bảo mật web cơ bản. Hệ thống được xây dựng bằng Electron để đóng gói ứng dụng, React để phát triển giao diện, JavaScript cho logic xử lý, Vite để hỗ trợ build nhanh và Node.js để thực hiện các tác vụ đọc file, gửi request, phân tích dữ liệu và xử lý kết quả.
+Khi sử dụng, người dùng có thể nhập URL của Website cần kiểm tra hoặc chọn thư mục của dự án cần kiểm tra. Với URL Scan, hệ thống gửi request, đọc phản hồi từ server và ghi nhận các dấu hiệu liên quan đến runtime. Với dự án Scan, hệ thống duyệt mã nguồn và các file cấu hình để tìm những điểm cần cảnh báo. Kết quả từ hai hướng kiểm tra được tổng hợp thành danh sách tìm kiếm, checklist OWASP Top 10 và thống kê các mức độ nguy hiểm. 
+ Về cơ bản, SENTINEL là công cụ bán tự động. Một số vấn đề có thể nhận diện không đúng hoàn toàn như thiếu security header, cookie chưa có flag phù hợp hoặc source mã nguồn có dấu hiệu chứa các nguy cơ. Nhưng, các lỗi phụ thuộc vào logic nghiệp vụ như Broken Access Control, Insecure Design hoặc SSRF phức tạp vẫn cần người dùng xác minh thủ công. Vì vậy, kết quả của hệ thống được xem là kiểm tra tham khảo không phải đúng hoàn toàn.
+STT | Chức năng | Mô tả
+1 | Quét URL website | Nhập URL website, gửi request và kiểm tra các dấu hiệu khi chạy như header, cookie, form, lỗi cấu hình.
+2 | Quét mã nguồn của dự án | Chọn thư mục chứa mã nguồn để hệ thống kiểm tra file cấu hình, phụ thuộc, logging và cách xử lý input.
+3 | kiểm tra phụ thuộc | Đọc file quản lý gói để hỗ trợ nhận diện thành phần phần mềm có nguy cơ lỗi thời hoặc cần kiểm tra thêm.
+4 | Checklist OWASP Top 10 | Gán tìm kiếm vào các nhóm A01-A10 để người dùng theo dõi kết quả theo chuẩn phân loại rủi ro.
+5 | Phân loại mức độ nghiêm trọng | Sắp xếp tìm kiếm theo Critical, High, Medium và Low nhằm hỗ trợ ưu tiên xử lý.
+6 | Dashboard tổng quan | Hiển thị số lượng tìm kiếm, nhóm rủi ro nổi bật và trạng thái checklist sau mỗi lần quét.
+7 | Lịch sử quét | Lưu lại các lần kiểm tra để so sánh kết quả trước và sau khi sửa lỗi.
+8 | Hướng dẫn và trợ lý offline | Giải thích ý nghĩa tìm kiếm, nhóm OWASP liên quan và hướng xử lý cơ bản bằng dữ liệu nội bộ.
+9 | Xuất báo cáo | Tổng hợp kết quả kiểm thử thành báo cáo phục vụ phân tích, thuyết trình hoặc nộp bài.
+Bảng 1.3.1: Các chức năng chính của hệ thống SENTINEL
+Tính cấp thiết và lý do hình thành đề tài
+Hiện nay, Hiện nay, nhiều website không chỉ hiển thị thông tin mà còn xử lý tài khoản, dữ liệu người dùng, đơn hàngvà nhiều dữ liệu quan trọng khác.Vì vậy nếu website có lỗi bảo mật, hệ thống có thể bị tấn công mag lại nhiều hậu quả khó lường.Theo OWASP Top 10 các lỗi như phân quyền ,injection,cấu hình chưa an toàn và sử dụng thư viện có lỗ hổng vẫn là những rủi ro phổ biến trong ứng dụng web.
+Trong các dự án môn học sinh viên chỉ tập trung vào giao diện cho đẹp chức năng phải đúng yêu cầu,Nhưng bên cạnh đó một trang web chạy được không có nghĩa là an toàn bất khả xâm phạm.Website có thể bị rò rỉ dữ liệu,làm lộ mật khẩu, không kiểm tra kỹ phân quyền,dùng các thư viện cũ.Đây là những lỗi khó quan sát ngay cả giảng viên cũng có thể khó nhận ra.
+Từ thực trạng đó, nhóm chọn xây dựng SENTINEL để hỗ trợ kiểm tra ban đầu một số rủi ro bảo mật thường gặp trong project web. Công cụ này không đặt mục tiêu là thay thế các phần mềm kiểm thử chuyên nghiệp, mà là giúp người học nhận ra các thiếu sót trong công cuộc bảo mật dự án,hiểu rõ hơn về các lỗi bảo mật theo OWASP Top 10 và liên hệ kiến thức lý thuyết với mã nguồn thực tế.
+Ý nghĩa khoa học và thực tiễn
+Ý nghĩa khoa học
+Về mặt khoa học, đề tài giúp hệ thống hóa kiến thức bảo mật ứng dụng web theo các khái niệm nền tảng như mô hình Client - Server, HTTP/HTTPS, bề mặt tấn công, kiểm thử động, phân tích tĩnh và phân tích thành phần phần mềm. Những kiến thức này là cơ sở để giải thích vì sao một ứng dụng web cần được kiểm tra ở cả trạng thái runtime lẫn mã nguồn.
+Đề tài giúp nhóm biết cách nhìn dấu hiệu kỹ thuật để đoán lỗi bảo mật. Ví dụ, lỗi server có thể do cấu hình sai, input xử lý chưa kỹ có thể gây Injection, còn thư viện cũ có thể có lỗ hổng. Việc phân loại như vậy giúp nhóm kiểm tra và đánh giá dễ hơn.
+1.5.2 Ý nghĩa thực tiễn
+Về mặt thực tiễn, SENTINEL hỗ trợ sinh viên và nhóm phát triển nhỏ kiểm tra ban đầu một số rủi ro thường gặp trong project web. Công cụ có thể giúp người dùng xem lại các vấn đề như thiếu header bảo mật, cookie cấu hình chưa tốt, mã nguồn có dấu hiệu nhạy cảm hoặc thư viện phụ thuộc cần được kiểm tra thêm.
+SENTINEL không thay thế kiểm thử bảo mật thủ công hoặc các công cụ chuyên nghiệp, nhưng có thể đóng vai trò như một bước rà soát ban đầu trong quá trình học tập và phát triển project. Thông qua kết quả kiểm tra, người dùng dễ nhận biết lỗi nằm ở nhóm rủi ro nào, mức độ cần ưu tiên ra sao và cần xem lại phần nào trong hệ thống.
+STT | Mục tiêu | Nội dung thực hiện
+1 | Tìm hiểu nền tảng bảo mật web | Nghiên cứu mô hình Client - Server, HTTP/HTTPS, dữ liệu request/response và các điểm phát sinh rủi ro.
+2 | Nghiên cứu OWASP Top 10 | Tìm hiểu các nhóm A01-A10 và chọn nội dung phù hợp để ánh xạ tìm kiếm trong hệ thống.
+3 | Xây dựng kiểm thử DAST cơ bản | Cho phép nhập URL, kiểm tra phản hồi runtime, header, cookie, form và dấu hiệu cấu hình.
+4 | Xây dựng kiểm thử SAST cơ bản | Đọc thư mục mã nguồn để phát hiện dấu hiệu liên quan đến secret, logging, cấu hình và xử lý input.
+5 | Bổ sung hướng SCA | Kiểm tra file phụ thuộc nhằm hỗ trợ nhận diện thành phần phần mềm cần kiểm tra hoặc cập nhật.
+6 | Tổng hợp và phân loại tìm kiếm | Gán tìm kiếm vào nhóm OWASP, phân mức độ rủi ro và hiển thị bằng dashboard/checklist.
+7 | Đánh giá kết quả thực nghiệm | Chạy thử trên dự án mẫu, ghi nhận kết quả, phân tích hạn chế và đề xuất hướng phát triển.
+Bảng 1.5.1: Mục tiêu nghiên cứu của đề tài
+Đối tượng nghiên cứu
+Đối tượng nghiên cứu của đề tài là các rủi ro bảo mật thường gặp trong ứng dụng web, phương pháp kiểm thử bảo mật ứng dụng và cách tổ chức kết quả kiểm thử theo OWASP Top 10. Trong phạm vi sản phẩm, nhóm tập trung vào website đang chạy, thư mục mã nguồn của dự án, phụ thuộc và danh sách tìm kiếm sinh ra sau quá trình phân tích.
+Phạm vi nghiên cứu
+Do phạm vi môn học, hệ thống được giới hạn ở mức hỗ trợ phát hiện dấu hiệu rủi ro và gợi ý kiểm tra. SENTINEL không thực hiện tấn công chuyên sâu, không dùng để quét hệ thống thật khi chưa được phép và không khẳng định mọi cảnh báo đều chắc chắn chính xác là lỗ hổng. Với các lỗi về các dự án quan trọng, người dùng cần phân tích thủ công thêm.
+Nội dung | Phạm vi thực hiện
+Đối tượng kiểm thử | Website đang chạy, thư mục mã nguồn dự án và file phụ thuộc liên quan.
+Hình thức kiểm thử | Kết hợp DAST cơ bản, SAST cơ bản và SCA ở mức kiểm tra ban đầu.
+Mức độ tự động | Bán tự động: hệ thống phát hiện dấu hiệu, người dùng xác minh lại các lỗi phụ thuộc ngữ cảnh.
+Chuẩn tham chiếu | OWASP Top 10, tập trung vào các nhóm rủi ro A01-A10.
+Mức độ đánh giá | Critical, High, Medium và Low.
+Môi trường sử dụng | Ứng dụng desktop chạy trên máy cá nhân, ưu tiên Windows khi demo.
+Giới hạn | Không thay thế pentest chuyên sâu; không khai thác trái phép; chỉ hỗ trợ học tập và kiểm tra sơ bộ.
+Bảng 1.5.2: Phạm vi kiểm thử của hệ thống
+Công nghệ sử dụng trong đồ án
+Nhóm chọn phát triển SENTINEL dưới dạng ứng dụng máy tính vì công cụ cần đọc mã nguồn và các file dự án ngay trên máy người dùng. Electron được dùng để đóng gói thành ứng dụng máy tính, Node.js hỗ trợ đọc file và xử lý dữ liệu, còn React, Vite và Zustand được dùng để xây dựng giao diện và quản lý dữ liệu trong quá trình quét.
+STT | Thành phần | Công nghệ/Công cụ | Vai trò trong hệ thống
+1 | Nền tảng ứng dụng | Electron | Đóng gói ứng dụng desktop, kết hợp Chromium và Node.js.
+2 | Môi trường thực thi | Node.js | Gửi request, đọc file, xử lý dữ liệu quét và hỗ trợ tác vụ I/O bất đồng bộ.
+3 | Giao diện người dùng | React | Xây dựng UI theo component và cập nhật dashboard/tìm kiếm hiệu quả.
+4 | Ngôn ngữ lập trình | TypeScript, JavaScript | Cài đặt logic quét, rule, xử lý dữ liệu và giao diện.
+5 | Công cụ build | Vite | Tăng tốc quá trình phát triển và build giao diện.
+6 | Quản lý trạng thái | Zustand | Chia sẻ kết quả quét giữa dashboard, checklist, lịch sử và báo cáo.
+7 | Bảo vệ nội dung HTML | DOMPurify | Giảm rủi ro khi hiển thị nội dung có khả năng chứa HTML không an toàn.
+8 | HTTP client/runtime | Undici | Hỗ trợ gửi request trong quá trình quét URL.
+9 | Kiểm thử và chuẩn hóa mã | Vitest, ESLint, Prettier | Kiểm thử, lint và định dạng mã nguồn.
+10 | Đóng gói ứng dụng | Electron Builder | Tạo bản cài đặt hoặc bản chạy cho môi trường demo.
+Bảng 1.6.1: Công nghệ sử dụng trong hệ thống SENTINEL
+Dữ liệu đầu vào và đầu ra của hệ thống
+SENTINEL lấy dữ liệu từ URL website và thư mục dự án. Phần mềm cũng đọc các file quản lý thư viện để kiểm tra các gói thư viện đang dùng. Sau khi quét, hệ thống trả về thống kê rủi ro, lịch sử quét và báo cáo.
+Thành phần | Dữ liệu đầu vào | Dữ liệu đầu ra
+Quét URL | Địa chỉ website, ví dụ http://localhost:3000. | Dấu hiệu runtime liên quan đến header, cookie, form, phản hồi lỗi, URL và cấu hình server.
+Quét dự án | Thư mục mã nguồn ứng dụng. | tìm kiếm trong source mã nguồn như secret, log nhạy cảm, cấu hình sai hoặc xử lý input chưa an toàn.
+kiểm tra phụ thuộc | File quản lý gói như package.json, package-lock.json hoặc file cấu hình tương ứng. | Danh sách phụ thuộc cần kiểm tra thêm hoặc có nguy cơ lỗi thời.
+Checklist OWASP | Kết quả từ URL Scan, dự án Scan và phụ thuộc scan. | Bảng tổng hợp tìm kiếm theo từng nhóm A01-A10.
+Dashboard | Danh sách tìm kiếm sau phân tích. | Thống kê số lỗi theo mức độ và nhóm rủi ro.
+Báo cáo | Thông tin lần quét, tìm kiếm và thống kê. | Báo cáo phục vụ phân tích, thuyết trình hoặc đề xuất khắc phục.
+Bảng 1.7.1: Dữ liệu đầu vào và đầu ra của hệ thống
+Phương pháp nghiên cứu
+Đề tài được thực hiện bằng cách Nghiên cứu các lỗi đã có theo dữ liệu được công bố. Nhóm không chỉ trình bày về lý thuyết mà còn áp dụng vào quá trình làm SENTINEL, từ đó áp dụng các chức năng cần có như quét URL, đọc mã nguồn, kiểm tra thư viện và phân loại lỗi theo OWASP Top 10.
+Trước tiên, nhóm tìm hiểu các kiến thức liên quan đến ứng dụng Web, mô hình Client - Server, HTTP/HTTPS, DAST, SAST, SCA và OWASP Top 10. Việc này giúp nhóm hiểu các lỗi bảo mật thường gặp và có thêm tư liệu để thêm vào phần mềm
+Sau đó, nhóm phân tích yêu cầu của hệ thống theo hướng giúp sinh viên nâng cao chất lượng ban đầu của dự án. Các chức năng ở phạm vi gợi ý sửa chữa tăng cao tính bảo mật, không tập trung vào tấn công.
+Tiếp theo, nhóm xây dựng các chức năng chính như quét website qua URL, đọc mã nguồn trong thư mục dự án, kiểm tra thư viện phụ thuộc, phân loại lỗi theo OWASP Top 10 và hiển thị kết quả trên giao diện.
+Cuối cùng, nhóm xây dựng SENTINEL và chạy thử trên dự án mẫu. Kết quả chạy thử được dùng để xem công cụ phát hiện được những rủi ro nào, giao diện có dễ dùng không và còn điểm nào cần cải thiện.
+Nhiệm vụ đồ án
+Để hoàn thành đề tài, nhóm thực hiện các nhiệm vụ sau:
+Tìm hiểu kiến thức cơ bản về ứng dụng Web, mô hình Client - Server, HTTP/HTTPS và cách request/response hoạt động. 
+Tìm hiểu OWASP Top 10 để chọn các nhóm lỗi phù hợp. 
+Xây dựng chức năng kiểm tra website qua URL, để tìm thấy các lỗi về header, cookie, lỗi hiển thị và các dấu hiệu cấu hình chưa an toàn. 
+Xây dựng chức năng đọc mã nguồn dự án để kiểm tra các vấn đề về bảo mật. 
+Xây dựng chức năng kiểm tra thư viện phụ thuộc để phát hiện thư viện cũ. 
+Phân loại kết quả kiểm tra theo các nhóm OWASP Top 10 đánh giá mức độ nguy hiểm của cá lỗ hỏng 
+Xây dựng giao diện ứng dụng desktop bằng Electron, React, Vite và Zustand. 
+Kiểm thử hệ thống trên dự thử nghiệm, ghi nhận kết quả, đánh giá ưu và nhược điểm để có hương phát triển tốt hơn trong tương lai.
+CHƯƠNG 2. CƠ SỞ LÝ THUYẾT
+Khái niệm về hệ thống ứng dụng web và bảo mật
+Mô hình Client – Server và giao thức HTTP
+Để hiểu rõ về ứng dụng web và bảo mật, cũng như là cách hoạt động của các công cụ kiểm thử như pentest, … Hoặc sản phẩm chính của đồ án là SENTINEL thì chúng ta cần phải hiểu rõ về nền tảng của các ứng dụng web hiện đại. Phần lớn ứng dụng web đều tuân theo mô hình Khách – Chủ (Client – Server).
+Client (Máy khách): thường sẽ đóng vai trò dịch mã HTML, CSS và JavaScript để tạo ra giao diện cho người dùng (ví dụ: Google Chorme, FireFox, Edge, …). Client sẽ đóng gói dữ liệu và gửi yêu cầu về máy chủ khi người dùng thao tác nào đó (ví dụ: bấm nút đăng nhập, thêm giỏ hàng, …).
+Server (Máy chủ): Hệ thống máy tính từ xa chứa mã nguồn backend, kết nối với dữ liệu trong database (cơ sở dữ liệu). Server nhận yêu cầu từ Client, thực hiện các logic nghiệp vụ (kiểm tra dữ liệu, tính toán dữ liệu) và trả kết về lại Client.
+Xương sống của quá trình giao tiếp này là giao thức HTTP (Hypertext Transfer Protocol) và phiên bảo mật của HTTP là HTTPS (Hypertext Transfer Protocol Security). Một gói tin HTTP Request mang theo nhiều thông tin nhạy cảm được cấu trúc bao gồm: phương thức Method (Get, Post, Put, Delete), URL đích, các trướng header (Cookie, Session Token, định dạng dữ liệu) và phần thân Body. Các lỗ hổng bảo mật thường phát sinh viên khi lập trình viên quá tin tưởng vào dữ liệu mà Client gửi lên. Tin tặc có thể lợi dụng điều đó và sử dụng các công cụ bắt chặn (proxy) để chỉnh sửa các trường trong HTTP Request trước khi nó đến được Server và từ đó thực thi các ý đồ xấu.
+Mối đe dọa và tầm quan trọng của an toàn thông tin ứng dụng Web
+Hiện nay xu hướng chuyển đổi số ngày càng phát triển mạnh mẽ, các ứng dụng web giờ đây đóng vai trò như các cổng thông tin lưu trữ một lượng lớn dữ liệu nhạy cảm đối với người dùng (thông tin cá nhân, tải chính hồ sơ y tế, …). Đi kèm với việc cấu trúc ứng dụng Web ngày càng phức tạp (chuyển sang mô hình Microservices, sử dụng API tích hợp từ nhiều bên) đã vô tình mở rộng “bề mặt tấn công” (Attack Surface) của hệ thống.
+Hậu quả của một vụ xâm nhập thành công không chỉ dừng lại ở việc hệ thống bị gián đoạn hoạt động mà còn gây thiệt hại nặng nề về mặt tài chính và uy tín thương hiệu của tổ chức do dữ liệu bị đánh cắp. Việc ứng dụng các kỹ thuật kiểm thử bảo mật (Security Testing) sớm trong vòng đời phát triển phần mềm (SDLC) là giải pháp bắt buộc để rà soát và triệt tiêu các điểm yếu trước khi đưa hệ thống vào phục vụ người dùng.
+Các phương thức kiểm thử bảo mật ứng dụng (Application Security Testing)
+Trong thực tiễn kỹ thuật phần mềm, không có một công cụ đơn lẻ nào có thể tìm ra 100% mọi loai lỗ hổng. Qúa trình kiểm thử bảo mật đòi hỏi sự kết hợp của nhiều phương pháp khác nhau để đạt độ bao phủ lớn nhất. Ứng dụng SENTINEL được xây dựng dựa trên sự tích hợp của ba phương pháp cốt lõi: DAST, SAST và SCA.
+Kiểm thử bảo mật tự động (DAST – Dynamic Application Security Testing)
+DAST đánh giá ứng dụng từ bên ngoài khi hệ thống đang ở trạng thái hoạt động thực tế (Runtime). Phương pháp này tuân theo phương pháp tiếp cận hộp đen (Blackbox Testing), nghĩa là công cụ quét hoàn toàn không biết gì về kiến trúc bên trong của hệ thống mục tiêu.
+Cơ chế hoạt động: một module DAST thường hoạt động qua hai giai đoạn chính. Đầu tiên giai đoạn do thám (Crawling/Spidering), công cụ mô hình tự động mô phỏng hành vi của một người dùng thực để thu thập toàn bộ các URL, biểu mẫu (form) và tham số có thể tương tác được trên website. Tiếp theo là giai đoạn tấn công (Scanning), công cụ tạo ra hàng ngàn các HTTP Request được tùy biến, chèn thêm các Payload độc hại (các chuỗi mã hóa, mã script) vào các điểm đầu vào (Input Vectors) rồi gửi ồ ạt đến máy chủ (Server).
+Phân tích dấu hiệu lỗ hổng: Khi nhận được HTTP Request trả về từ máy chủ (Server), DAST sẽ phân tích nội dung. Nếu server trả về thông báo lỗi cú pháp cơ sở dữ liệu (biệu hiện của SQL Injection), hoặc nội dung phản hồi hiển thị nguyên bản đoạn mã Script vừa chèn vào (biển hiện của Cross-site Scripting – XSS), hoặc thời gian phản hồi thay đổi một cách bất thường (Time-based Attacks), DAST sẽ đối chiếu với cơ sở dữ liệu mẫu và ghi nhận đó là một lỗ hổng thực tế.
+Ưu điểm và giới hạn: Ưu điểm lớn nhất của DAST là có thể kiểm tra được toàn bộ hệ thống thực tế, bao gồm cả các lỗi do cấu hình server sai (Web Server Misconfiguration) hay quản lý phiên đặng nhập lỏng lẻo. Tuy nhiên, nó không thể chỉ ra chính xác dòng code nào trong mã nguồn đang gây ra lỗi, khiến việc khắc phục đôi khi tốn nhiều thời gian.
+Kiểm thử mã nguồn (SAST – Static Application Security Testing)
+Ngược lại hoàn toàn với DAST, SAST là phương pháp kiểm thử hộp trắng (Whitebox Testing). Kỹ thuật này phân tích trực tiếp vào mã nguồn của dự án (Source Code) ngay khi hệ thống chưa được biên dịch hay khởi chạy.
+Phân tích thông qua Cây cú pháp trừu tượng (AST): Khác với con người đọc code theo từng dòng chữ, máy tính không hiểu văn bản thuần túy. Để phân tích tĩnh, các công cụ SAST sử dụng các trình phân tích cú pháp (Parser) để chuyển toàn bộ mã nguồn thành một cấu trúc dữ liệu gọi là Cây cú pháp trừu tượng (Abstract Syntax Tree – AST). AST biểu diễn câu lệnh, hàm, biến dưới dạng các nút (node) trong một cây logic.
+Truy vết luồng dữ liệu (Data Flow Analysis): Thông qua AST, SAST có thể theo dõi vòng đời cả một biến dữ liệu kể từ khi nó được nhập vào (Source) được nối trực tiếp vào một câu lệnh thực thi vào cơ sở dữ liệu (Sink) mà không đi qua bất kỳ bộ lọc làm sạch nào (Sanitization) trên đường đi, nó sẽ gióng lên cảnh báo rủi ro ngay lập tức.
+Gía trị mang lại: SAST có thể tìm ra chính xác thư mục, tệp tin và số dòng code chứa lỗi. Điều này giúp lập trình viên sữa lỗi cực kỳ nhanh chóng. Hơn thế nữa, SAST có thể tích hợp trực tiếp vào môi trường viết code (IDE) để tạo ra thói quen code an toàn ngay từ đầu. Tuy nhiên, do chỉ phân tích tĩnh, SAST thường sinh ra các cảnh báo giả (Fale Positive) ki đánh giá sai về mức độ an toàn của một hàm đóng gói.
+Phân tích thành phần phần mềm (SCA – Software Composition Analysis)
+Phần lớn phần mềm hiện nay không được viết từ đầu (form scratch) mà dựa vào việc tái sử dụng hàng chục, thậm chí hàng trăm thư viện mã nguồn mở có sẵn. Một lỗ hổng trong thư viện nhỏ có thể đánh sập toàn bộ hệ thống khổng lồ sử dụng nó.
+Nguyên lý rà soát: SCA tập trung vào việc giám sát các thành phần bên thứ ba. Công cụ này đọc các tệp cấu hình quản lý gói của dự án (ví dụ: package.json và package-lock.json của Node.js, pom.xml của Java, hay Requirements.txt của Python) để xây dựng ra một danh sách (BOM – Bill of Materials) chứa tên và phiên bản chính xác của từng thư viện.
+Đối chiếu cơ sở dữ liệu: Danh sách phiên bản này sẽ được đối chiếu liên tục với các cơ sở dữ liệu lỗ hổng toàn cầu, chẳng hạn như Hệ thống dữ liệu lỗ hổng quốc gia của Hoa Kỳ (NVD – National Vulnerabilities and Exposures). Nếu như ứng dụng đang dùng một thư viện chứa CVE mức độ nghiêm trọng (Critical), SCA sẽ báo cáo và đề xuất lập trình viên nâng cấp thư viện lên phiên bản vá lỗi (Patch).
+Hệ thống tiêu chuẩn lỗ hổng OWASP Top 10 (Phiên bản 2025)
+OWASP (Open Worldwide Application Security Project) là tổ chức phi lợi nhuận uy tín nhất toàn cầu chuyên nghiên cứu về an ninh phần mềm. Danh sách OWASP Top 10 được phát hành định kỳ, liệt kê 10 loại rủi ro bảo mật phổ biến và nguy hiểm nhất. Đây là phân tích chi tiết bộ tiêu chuẩn OWASP 2025, cùng chính là cơ sở lý thuyết để xây dựng các rules (các luật) cho dự án và công cụ SENTINEL.
+Vào đầu năm 2026 (dữ liệu cập nhật cho bản 2025), OWASP đã công bố phiên bản Top 10 mới nhất. Khác với giai đoạn trước, bảng xếp hạng lần này phản ánh sự dịch chuyển rõ rệt của các mối đe dọa từ lỗi mã nguồn thuần túy sang các vấn đề nghiêm trọng về kiến trúc đám mây và chuỗi cung ứng phần mềm. Bảng xếp hạng cụ thể như sau:
+A-01: Broken Access Control (Hỏng kiểm soát truy cập) Nhóm lỗi này vẫn tiếp tục giữ vững vị trí số một. Vấn đề cốt lõi xuất phát từ việc máy chủ không kiểm tra chặt chẽ đặc quyền của người dùng trước khi cấp phát tài nguyên. Điều quan trọng nhất trong phiên bản 2025 là lỗ hổng giả mạo yêu câu máy chủ (SSRF – Server-Side Request Forgery) đã chính thức bị sáp nhập vào hạng mục này thay vì đứng riêng lẻ.
+Các dạng khai thác điển hình được ghi nhận nhiều nhất bao gồm: 
+Insecure Direct Reference (IDOR): Kẻ tấn công thao túng trực tiếp các tham số định danh (như id = 123) trên URL hoặc body request để chọc vào dữ liệu của người dùng khác. Chẳng hạn, sửa GET/api/order?id=100 thành id = 101 để ép server nhả ra thông tin đơn hàng không thuộc về mình.
+Forced Browing (Duyệt ép buộc): Hành vi truy cập thẳng vào các trang quản trị hoặc tài nguyên nội bộ mà bỏ qua luồng điều hướng hợp lệ
+Server-Side Request Forgery (SSRF): Đánh lừa máy chủ thực hiện các câu truy vấn HTTP gửi tới các hệ thống mạng nội bộ. Kẻ tấn công thường dùng SSRF để đọc siêu dữ liệu (metadata) của các máy chủ đám mây AWS, GCP hoặc Azure.
+Cơ chế phân tích: SENTINEL xử lý nhóm này thông qua một cơ chế dò quét tự động khá toàn diện. Hệ thống phân tích cú pháp các tham số URL xem có dạng định danh số (heuristics IDOR) hay không. Đồng thời, công cụ liên tục nhả các payload để thử truy cập vào hơn 60 đường dẫn nhạy cảm phổ biến nhằm phát hiện forced browsing và SSRF.
+A-02: Security Misconfiguration (Cấu hình thiếu an toàn) Sự chuyển dịch ồ ạt sang kiến trúc đám mây (cloud) và vi dịch vụ (microservices) đã đẩy rủi ro cấu hình sai lên vị trí thứ 2. Hầu hết các sự cố khởi nguồn từ những sai sót rất nhỏ gọn: để quên mật khẩu mặc định của database, lộ tệp .env, hay đơn giản là không tắt tính năng hiển thị danh sách thư mục (directory listing) trên máy chủ web.
+Thêm vào đó, việc cấu hình sai hoặc thiếu hụt hoàn toàn các tiêu đề bảo mật HTTP (Security Headers) là ngòi nổ cho các đợt tấn công XSS hoặc Clickjacking. Để giải quyết, quá trình quét tĩnh của hệ thống sẽ tiến hành rà soát bắt buộc các nhóm header tối quan trọng sau:
+Tên Header | Mục đích bảo vệ
+Strict-Transport-Security (HSTS) | Ép buộc trình duyệt chỉ giao tiếp qua HTTPS
+Content-Security-Policy (CSP) | Chặn đứng XSS bằng cách kiểm soát nguồn tải tài nguyên
+X-Frame-Options | Ngăn chặn việc nhúng trang web vào thẻ iframe (chống Clickjacking)
+X-Content-Type-Options | Cấm trình duyệt tự động suy đoán kiểu tệp (MIME sniffing)
+Referrer-Policy | Giới hạn việc rò rỉ đường dẫn khi người dùng bấm sang trang khác
+Permissions-Policy | Siết chặt quyền truy cập camera, micro, GPS của trình duyệt
+Bảng 2.3.1: Bảng header cho lỗ hổng A-02
+Cùng với việc quét header, SENTINEL đánh giá cực kỳ gắt gao các thuộc tính bảo mật của cookie (Secure, HttpOnly, SameSite) nhằm đảm bảo tuân thủ tiêu chuẩn RFC 6265.
+A-03: Software Supply Chain Failures (Lỗi chuỗi cung ứng phần mềm) Đây là một hạng mục hoàn toàn mới, xuất hiện để phản ánh tình trạng lạm dụng quá đà các thư viện mã nguồn mở. Toàn bộ logic ứng dụng của bạn có thể hoàn hảo, nhưng hệ thống vẫn sẽ sụp đổ nếu một gói thư viện phụ thuộc (dependency/package) mà bạn đang gọi tới lại chứa mã độc hoặc có CVE chưa vá.
+Cơ chế phân tích: Nhận thức được mức độ nghiêm trọng này, chức năng quét tĩnh (Project Scan) của phần mềm được tích hợp sâu module Phân tích Thành phần Phần mềm (SCA). Cơ chế hoạt động bao gồm: 
+Đọc và phân tích cây phụ thuộc từ các tệp package.json, package-lock.json (đối với Node.js) hoặc .csproj (đối với .NET). 
+So khớp trực tiếp phiên bản của từng thư viện với cơ sở dữ liệu lỗ hổng nội bộ. 
+Cảnh báo tình trạng không nhất quán (inconsistency) giữa tệp khai báo và tệp lock, một dấu hiệu rõ ràng của rủi ro chuỗi cung ứng.
+A-04: Cryptographic Failures (Điểm yếu mật mã học) Vấn đề này tập trung vào khâu bảo vệ dữ liệu nhạy cảm (mật khẩu, khóa API, thẻ tín dụng). Lỗi phổ biến nhất vẫn là sự sơ suất khi truyền tải dữ liệu qua HTTP thay vì HTTPS. Kế đến là việc sử dụng các thuật toán băm (hash) đã bị phá vỡ từ lâu (như MD5, SHA1) để lưu trữ mật khẩu, hay thiết lập cấu hình CORS (Cross-Origin Resource Sharing) quá lỏng lẻo (chẳng hạn dùng thẻ * cho Access-Control-Allow-Origin kèm chứng thực).
+A-05: Injection (Tấn công tiêm nhiễm) Nhóm Injection giờ đây đã tụt xuống vị trí số 5 do sự phổ biến của các framework ORM giúp tự động xử lý chuỗi (escape). Dù vậy, với các truy vấn phức tạp hoặc mã nguồn cũ, SQL Injection và XSS vẫn là bài toán nhức nhối. Lỗ hổng xảy ra khi luồng dữ liệu đầu vào không được hệ thống kiểm duyệt kỹ mà đã vội vàng tống thẳng vào trình thông dịch (interpreter).
+Cơ chế phân tích: SENTINEL phát hiện mảng này bằng cách tiêm lượng lớn payload vào mọi tham số. Các kỹ thuật nhận diện bao gồm: 
+SQLi Error-based: Đọc thông báo lỗi trả về từ máy chủ (ví dụ: You have an error in your SQL syntax hay ORA-\d{5}). 
+SQLi Time-based blind: Gọi các lệnh như SLEEP() để ép máy chủ phản hồi chậm đi. Sau đó, phần mềm sẽ đối chiếu độ trễ thời gian với ngường cơ sở (baseline) để kết luận. 
+Cross-Site Scripting (XSS): Dùng kỹ thuật marker-based, gửi các chuỗi đặc tả (<script>alert(1337)</script>) và dò xem nó có bật ngược trở lại (reflect) nguyên vẹn trên màn hình HTML hay không. 
+Command/Template Injection: Nhắm vào các shell hệ điều hành và các bộ sinh mã giao diện (SSTI).
+A-06: Vulnerable and Outdated Components (Thành phần có lỗ hổng và lỗi thời) Với sự phát triển của chuỗi cung ứng phần mềm (Software Supply Chain), các ứng dụng hiện đại thường phụ thuộc vào rất nhiều thư viện của bên thứ ba. Lỗ hổng A06 xảy ra khi hệ thống sử dụng các thành phần (framework, thư viện, module) đã hết hạn hỗ trợ (End-of-Life) hoặc có chứa lỗ hổng bảo mật đã biết (CVEs).
+Cơ chế phân tích: Khác với các phương pháp DAST truyền thống, SENTINEL-v2 kết hợp phân tích tĩnh (SCA - Software Composition Analysis) đối với các tệp cấu hình package của dự án. Engine thực hiện ánh xạ (remap) các dấu hiệu rủi ro từ nhóm quản lý thành phần (A03 cũ) sang chuẩn A06 hiện tại để giữ sự thống nhất:
+NpmDependencyRisk & NugetDependencyRisk: Quét phân tích các tệp package.json, package-lock.json (đối với Node.js) và *.csproj, packages.config (đối với .NET) để trích xuất danh sách các dependency. Đối chiếu phiên bản đang dùng với cơ sở dữ liệu lỗ hổng (NVD/CVE) để tìm các thư viện lỗi thời hoặc nguy hiểm.
+NodeEngineVersionRisk & DotnetFrameworkVersionRisk: Đánh giá môi trường runtime trực tiếp (như phiên bản Node.js engine hay .NET Framework) để cảnh báo nếu hệ thống đang chạy trên một nền tảng không còn được nhận các bản vá bảo mật (End-of-Life).
+SupplyChain Enhanced (TyposquattingRisk & PackageLockConsistency): Tính năng kiểm tra tính đồng nhất của lockfile và rủi ro chuỗi cung ứng. Thuật toán phát hiện Typosquatting sẽ cảnh báo các package có tên dễ gây nhầm lẫn với các thư viện phổ biến (ví dụ: react-dom vs reactt-dom) nhằm chống lại các cuộc tấn công chèn mã độc.
+A-07: Identification and Authentication Failures (Lỗi định danh và xác thực) Việc xác thực (Authentication) và quản lý phiên (Session Management) yếu kém cho phép kẻ tấn công thỏa hiệp mật khẩu, key, session token để giả mạo danh tính của người dùng hợp lệ. Quy tắc A07 tập trung vào việc đảm bảo vòng đời của một phiên làm việc và các rào cản đăng nhập được bảo mật nghiêm ngặt theo chuẩn WSTG (Web Security Testing Guide).
+Cơ chế phân tích: Engine thực hiện kiểm tra đa chiều, từ phân tích tĩnh (mã nguồn/cấu hình) đến phân tích động (HTTP Headers/URL params):
+Bảo mật Thông tin Phiên (Session Management):
+SessionFixation & SessionManagement: Theo dõi các header Set-Cookie trả về từ máy chủ. Đánh giá xem các cờ bảo mật quan trọng như HttpOnly, Secure, và SameSite có được thiết lập đầy đủ hay không để chống lại XSS và CSRF.
+WeakSessionEntropy: Đánh giá mức độ hỗn loạn (entropy) và chiều dài của Session ID. Nếu ID quá ngắn hoặc có thể dự đoán được, engine sẽ đánh dấu lỗ hổng.
+Kiểm soát Xác thực và Định danh (Authentication Controls):
+AccountEnumeration: Kiểm tra logic phản hồi của ứng dụng khi đăng nhập thất bại hoặc quên mật khẩu. Nếu ứng dụng trả về các thông báo khác nhau cho tài khoản tồn tại và không tồn tại (ví dụ: “Tài khoản không tồn tại” thay vì “Thông tin không chính xác”), kẻ tấn công có thể dò quét danh sách người dùng.
+BruteForceProtection & MfaPresence: Phân tích mã nguồn và cấu hình để tìm kiếm xem có sự hiện diện của cơ chế giới hạn tỷ lệ (Rate Limiting) và Xác thực đa yếu tố (MFA) hay không.
+Xử lý Token và Luồng cấp phép:
+TokenInUrl: Cảnh báo nguy cơ nghiêm trọng (WSTG-ATHN-03) nếu mã thông báo xác thực hoặc session ID bị nhúng trực tiếp vào URL (GET request), vì chúng sẽ bị lưu lại trong lịch sử trình duyệt hoặc Server Logs.
+ A-08: Software and Data Integrity Failures (Lỗi toàn vẹn phần mềm và dữ liệu) A08 liên quan đến việc các đoạn mã, dữ liệu cấu hình hoặc dữ liệu serialization không được xác minh tính toàn vẹn trước khi đưa vào thực thi. Lỗ hổng này đặc biệt nguy hiểm khi ứng dụng nạp các tài nguyên từ nguồn không đáng tin cậy (như CDN) hoặc giải mã hóa (deserialize) dữ liệu trực tiếp từ client.
+Cơ chế phân tích: Quét tĩnh nội dung HTML/Template. Khi phát hiện các thẻ <script> hoặc <link> gọi đến các thư viện từ tên miền bên ngoài (như CDN của jQuery, Bootstrap), engine kiểm tra xem thuộc tính integrity (chứa mã băm thuật toán SHA) có được định nghĩa không. Nếu không, kẻ tấn công chiếm được CDN có thể thay đổi mã nguồn JS để tấn công client. 
+DeserializationResponse & UntrustedConfigData: Phân tích heuristic các payload phản hồi để tìm dấu vết của việc sử dụng Deserialization không an toàn (ví dụ: phát hiện signature mã hóa của đối tượng Java, .NET hay PHP bị lộ ra ngoài). Cảnh báo nếu dữ liệu cấu hình được nạp thẳng từ nguồn do người dùng kiểm soát (CWE-502). 
+CiPipelineSecurity: Kiểm tra các tệp cấu hình của hệ thống CI/CD (như .github/workflows/, .gitlab-ci.yml) để tìm kiếm các lỗ hổng liên quan đến chuỗi triển khai (CWE-1357), đảm bảo môi trường build không bị can thiệp.
+A-09: Security Logging and Monitoring Failures (Lỗi giám sát và ghi nhật ký bảo mật) Nếu không có hệ thống ghi nhật ký (Logging) và giám sát (Monitoring) chuẩn xác, các tổ chức sẽ không thể phát hiện các cuộc tấn công đang diễn ra, làm chậm trễ quá trình phản hồi sự cố. Quy tắc A09 kiểm tra việc ứng dụng có ghi nhận đúng các sự kiện nhạy cảm hay không, cũng như tính an toàn của chính hệ thống log.
+Cơ chế phân tích: Sử dụng các Pattern Matching để quét mã nguồn xem các hàm log (console.log, logger.info, v.v.) có vô tình ghi lại các biến chứa dữ liệu PII, mật khẩu, JWT token, hay số thẻ tín dụng hay không (CWE-532). 
+LogInjection: Phân tích tĩnh để tìm các vị trí input từ phía client (như req.body.username hoặc User-Agent) được đẩy trực tiếp vào file log mà không qua quá trình làm sạch (sanitization). Điều này dẫn đến nguy cơ kẻ tấn công chèn các ký tự điều khiển (\r\n) để giả mạo các bản ghi log giả (CWE-117). 
+AuthEventLogging & AlertingCheck: Heuristic kiểm tra xem các luồng quan trọng (như xác thực, thay đổi mật khẩu) có được bao bọc bởi các hàm ghi nhận sự kiện (Event Logging) hoặc kích hoạt cảnh báo nội bộ (Alerting) hay không.
+A-10: Server-Side Request Forgery - SSRF (Giả mạo yêu cầu phía máy chủ) SSRF xảy ra khi một ứng dụng web fetch (kéo) một tài nguyên từ xa thông qua URL do người dùng cung cấp nhưng không xác thực kỹ lưỡng đích đến. Việc này cho phép kẻ tấn công ép máy chủ thực hiện các kết nối mạng thay mặt chúng, từ đó đánh cắp dữ liệu ở các mạng nội bộ (Internal/Private Networks) hoặc lách qua tường lửa.
+Cơ chế phân tích: SENTINEL áp dụng cả phương pháp tiếp cận Blackbox (Động) và Source Code (Tĩnh) để truy vết lỗi này: 
+SsrfSource (Phân tích mã nguồn - SAST): Truy vết Data Flow (luồng dữ liệu) từ đầu vào của người dùng (req.query.url, req.body.endpoint) đến các hàm thực thi HTTP requests phía backend (như axios.get(), fetch(), request()). Nếu biến đầu vào được đưa thẳng vào làm đích đến mà không qua whitelist domain, hệ thống sẽ đánh dấu là CWE-918. 
+SsrfHeuristic (Phân tích Blackbox): Gửi các payload độc hại (chứa dải IP nội bộ như 127.0.0.1, 169.254.169.254 của AWS Cloud Metadata, hoặc localhost ports) vào các tham số URL đáng ngờ. Nếu server trả về nội dung mạng nội bộ hoặc phản hồi với độ trễ (time-delay) bất thường, engine sẽ xác nhận có tồn tại SSRF. 
+ExceptionLeakage & MalformedInput: Tập trung phân tích cách máy chủ xử lý khi một request SSRF độc hại gặp lỗi (ví dụ kết nối thất bại). Nếu hệ thống cấu hình kém và để lộ “Stack Trace” (dấu vết lỗi hệ thống), kẻ tấn công sẽ có thêm manh mối về cấu trúc mạng bên trong máy chủ.
+Công nghệ nền tảng và công cụ phát triển phần mềm
+Để thực hiện hóa các lý thuyết kiểm thử trên thành một phần mềm hoàn chỉnh, sản phẩm được xây dựng dựa trên sự kết hợp của nhiều công nghệ web hiện đại. Việc nắm rõ lý thuyết kỹ thuật của những nền tảng này giúp giải thích tại sao kiến trúc hệ thống lại được thiết kế theo hướng hiện đại.
+Môi trường thực thi Node.js và kiến trúc Event-Loop
+Node.js là một môi trường thực thi đa nền tảng mã nguồn mở, cho phép lập trình viện chạy mã JavaScript ở phía Server (bên ngoài trình duyệt) dựa trên V8 Engine do Google phát triển.
+Kiến trúc đơn luồng (Single – Threaded) và Non-blocking I/OL: Khác với các hệ thông máy chủ đa luồng ruyền thống (như Apache hay Tomcat) phải sinh ra một luồng xử lý mới chiếm dụng hàng MB bộ nhớ cho mỗi người dùng kết nối, Node.js chỉ chạy trên một luồng duy nhất. Khi thực thi một tác vụ nặng nề hoặc mất nhiều thời gian chờ đợi (như gửi hàng ngàn HTTP request trong module DAST), Node.js không bắt toàn bộ phần mềm phải đứng lại chờ. Nó sẽ ủy thác công việc đó cho hệ thống ngầm và tiếp tục xử lý các lệnh khác (Non-blocking).
+Vòng lặp sự kiện (Event-loop): Đây là trái tim của Node.js. Khi các tác vụ ngầm hoàn thành (ví dụ request nhận được response từ máy chủ đích), nó sẽ được đưa vào hàm đợi. Vòng lặp sự kiện sẽ liên tục kiểm tra hàng đợi này và gọi hàm phản hồi (Callback/Promise) để trả kết quả lên luồng chính một cách mượt mà.
+Ứng dụng trong đồ án: Tốc độ I/O phi đồng bộ của Node.js đặc biệt phù hợp cho các công cụ quét mạng của SENTINEL, giúp hệ thống tạo ra lượng lớn các kết nối đồng thời với lượng tiêu thụ RAM tối thiểu.
+Khung phát triển ứng dụng Desktop đa nền tảng (Electron JS)
+Electron là một framework nổi tiếng được dùng để xây dụng cho các ứng dụng Desktop hiện đại như Visual Studio Code, Discord. Electron kết hợp sức mạnh kết xuất giao diện của trình duyệt web Chromium và khả năng thao tác hệ thống của Node.js.
+Vì sao chúng ta nên dùng Electron thay vì sử dụng web thuần? Một công cụ quét bảo mật toàn diện không thể chỉ chạy dưới dạng một trang web bình thường vì giới hạn của cơ chế Sandbox trên trình duyệt. Trình duyệt không cho phép mã JavaScript đọc trực tiếp vào ổ cứng của người dùng (tính năng bắt buộc phải có để thực hiện phương pháp quét tĩnh mã nguồn SAST). Bằng cách đóng gói thành ứng dụng Desktop qua Electron, SENTINEL có toàn quyền tương tác với các tệp tin cục bộ.
+Kiến trúc đa tiến trình (Multi-process Architecture): Để đảm bảo bảo mật và hiệu suất, Electron chia phần mềm thành hai tiến trình chính:
+Main Process (Tiến trình chính): Chỉ có một tiến trình chính hoạt động trong môi trường Node.js. Nhiệm vụ của nó là tương tác trực tiếp với hệ điều hành và sinh ra các của sổ ứng dụng.
+Renderer Process (Tiến trình hiển thị): Môi trường hiển thị giao diện UI bằng HTML/CSS. Tiến trình này bị cô lập, không có quyền gọi các hàm hệ thống nguy hiểm để ngăn chặn tin tặc tấn công thông qua giao diện phần mềm.
+Cơ chế liên lạc IPC (Inter-Process Communication): Do sự cô lập giữa hai tiến trình, hệ thống dùng IPC làm cầu nối. Khi người dùng bấm nút phân tích dự án trên giao diện (Renderer), một thông điệp sẽ được truyền qua IPC gọi hàm thực thi phân tích ở phía sau (Main Process). Kết quả quét sau đó được trả về qua IPC để vẽ lên biểu đồ.
+Công nghệ giao diện ReactJS, Vite và Zustand
+ReactJS và khái niệm Virtual DOM (DOM ảo): React là thư viện xây dựng giao diện chia nhỏ mọi thứ thành các thành phần tái sử dụng (Componets). Điểm mạnh lý thuyết lớn nhất của React là DOM ảo. Trong quá trình quét bảo mật, hàng tram cảnh báo lỗi liên tục được trả về. Nếu trực tiếp thao tác chèn từng phần tử HTML và trình duyệt (Real DOM) thì ứng dụng sẽ bị treo. React sẽ giải quyết điều này bằng cách cập nhật giao diện trên bộ nhớ ảo, so sánh sự khác biệt (Diffing), và chỉ sơn lại (Repaint) khi đúng khối hiển thị có thay đổi, giữ cho ứng dụng không bị giật lag.
+ Công cụ build Vite: Sự khác biệt cốt lõi của Vite so với Webpack cũ là Vite tận dụng module ES tự nhiên (Native ES) của trình duyệt hiện đại. Nó bỏ qua việc phải đóng gói (bundle) hàng ngàn tệp tin thành một file khổng lồ mỗi khi có thay đổi mã nguồn. Nhờ vậy, thời gian khởi động máy chủ lập trình của Vite là cực kỳ ngắn, kết hợp cơ chế thay thế module nóng (HMR) giúp giao diện cập nhật ngay khi vừa lưu file mã nguồn.
+Quản lý trạng thái với Zustand: Qúa trình quét của SENTINEL mang tính toàn cục (Global State), cần được hiển thị ở nhiều màn hình khác nhau (Dashboard, biểu đồ thống kế, …). Zustand cung cấp một kho lưu trữ trạng thái cực nhỏ gọn, giúp chia sẽ luỗng dữ liệu kết quả giữa tất cả các màn hình mà không cần truyển dữ liệu long vòng qua từng tầng Component phực tạp.
+Tổng kết: Thông qua việc phân tích, tìm hiểu các mô hình kỹ thuật web, và đối chiếu với các tiêu chuẩn khắt khe hiện nay là OWASP Top 10 (2025), và tận dụng những cơ chế tối ưu của các nền tảng hỗ trợ Node.js, Electron, ReactJS, … đã giúp đồ án này có những nền tảng lý thuyết vững chắc. Từ những cơ sở lý thuyết vũng chắc ấy cũng chính là tiền đề mang tính quyết định để chúng em có thể tiến hành xây dựng, phân tích kiến trúc, đưa ra các thuật toán để quét và rà soát các lỗ hổng tại ứng dụng SENTINEL.
+CHƯƠNG 3: KẾT QUẢ THỰC NGHIỆM
+Sơ đồ Pipeline tổng quan của dự án 
+SENTINEL được thiết kế để hỗ trợ hai hình thức kiểm tra chính: quét website thông qua URL và quét trực tiếp mã nguồn project. Với mỗi hình thức, hệ thống sẽ thu thập những dữ liệu cần thiết, phân tích theo các rule bảo mật dựa trên OWASP Top 10, sau đó chuyển kết quả phát hiện thành các finding thống nhất.
+Riêng với URL Scan, sau giai đoạn phân tích tĩnh, hệ thống còn kích hoạt Dynamic Fuzzer để chủ động gửi payload kiểm thử vào các tham số đã thu thập, nhằm phát hiện các lỗ hổng dạng SQLi, XSS và SSRF mà phân tích tĩnh không thể kết luận chắc chắn
+Hình 3.1.1: Pipeline tổng quan của dự án
+Trước khi đi vào từng chức năng thực nghiệm, nhóm trình bày môi trường chạy và các điều kiện chuẩn bị cần thiết. Đây là cơ sở để đảm bảo quá trình cài đặt, khởi chạy và kiểm tra hệ thống được thực hiện ổn định.
+Chuẩn bị môi trường và dự án thực nghiệm
+Chuẩn bị môi trường chạy dự án
+Để SENTINEL hoạt động ổn định, máy chạy cần đáp ứng các yêu cầu sau. SENTINEL được phát triển dưới dạng ứng dụng desktop sử dụng Electron, giao diện người dùng xây dựng bằng React và TypeScript, phần xử lý quét bảo mật phía sau triển khai bằng Node.js.
+Hệ thống được kiểm thử trên Windows — môi trường phù hợp với hướng đóng gói và phân phối ứng dụng Electron. Để cài đặt thư viện, kiểm tra mã nguồn, build và khởi chạy dự án, máy cần cài sẵn Node.js và npm với phiên bản tối thiểu như bảng dưới đây. Node.js 22 trở lên là bắt buộc vì engine sử dụng các API native như fetch và structuredClone chưa có ở phiên bản cũ hơn.
+Thành phần | Cấu hình/Công cụ sử dụng | Ghi chú
+Hệ điều hành | Windows 10 / Windows 11 | Môi trường dùng để cài đặt, chạy và kiểm thử ứng dụng
+Nền tảng ứng dụng | Electron | Dùng để đóng gói hệ thống SENTINEL dưới dạng ứng dụng desktop
+Giao diện người dùng | React + TypeScript | Xây dựng giao diện nhập URL, quét project và hiển thị kết quả
+Engine xử lý | Node.js | Xử lý logic quét, phân tích dữ liệu và tổng hợp findings
+Phiên bản Node.js | Từ 22.19.0 trở lên | Đảm bảo tương thích với các thư viện và script của dự án
+Trình quản lý gói | npm từ phiên bản 10 trở lên | Cài đặt dependencies và chạy các lệnh kiểm tra/build
+Công cụ build | Vite | Hỗ trợ khởi chạy giao diện và build ứng dụng trong quá trình phát triển
+Kiểm thử tự động | Vitest | Dùng để chạy các kiểm thử tự động cho một số thành phần của hệ thống
+Bảng 3.2.1: Bảng môi trường và công cụ thực nghiệm
+Để kiểm tra môi trường máy đã đáp ứng yêu cầu chạy dự án hay chưa, người dùng mở Terminal tại thư mục dự án và thực hiện lệnh sau: 
+npm run check:engines
+Sau khi chạy lệnh, hệ thống sẽ kiểm tra phiên bản Node.js và npm hiện tại. Nếu môi trường chưa đáp ứng yêu cầu, người dùng cần cập nhật lại Node.js hoặc npm để tránh lỗi trong các bước cài đặt và chạy dự án tiếp theo.
+Chuẩn bị mã nguồn dự án
+Sau khi môi trường đã đáp ứng yêu cầu, tải mã nguồn SENTINEL về máy bằng lệnh:
+git clone https://github.com/PhamHuy14/sentinel-v2.git cd sentinel-v2
+Trước khi cài đặt và khởi chạy dự án, người dùng cần nắm rõ vai trò của các thư mục chính trong mã nguồn. Điều này giúp quá trình kiểm tra, cấu hình và chỉnh sửa hệ thống được thực hiện thuận tiện hơn
+Thành phần | Vai trò
+src/ | Chứa mã nguồn giao diện React, component, store và logic hỗ trợ người dùng
+electron/ | Chứa main process và preload script phục vụ ứng dụng Electron
+engine/ | Chứa scanner engine, crawler, analyzer, rule engine và report engine
+public/ | Chứa tài nguyên tĩnh sử dụng trong ứng dụng
+package.json | Khai báo dependencies và các script chạy dự án
+.env.example | Cung cấp mẫu cấu hình biến môi trường
+.env | Chứa cấu hình môi trường thực tế khi chạy dự án
+Bảng 3.2.2: Bảng mã nguồn dự án
+Hai thư mục quan trọng nhất trong dự án là engine/ và src/. Thư mục engine/ đảm nhiệm phần xử lý cốt lõi như quét, chạy rule bảo mật và tạo findings. 
+Thư mục src/ phụ trách giao diện React, nơi người dùng thao tác và xem kết quả. Nắm rõ sự phân chia này giúp việc kiểm tra, sửa lỗi hoặc mở rộng hệ thống trở nên dễ dàng hơn.
+Cài đặt thư viện phụ thuộc
+Sau khi chuẩn bị mã nguồn dự án, người dùng mở Terminal tại thư mục gốc và chạy lệnh sau để cài đặt các thư viện cần thiết:
+npm install
+Lệnh này sẽ tự động đọc package.json và cài đặt tất cả thư viện cần thiết cho cả giao diện, engine và công cụ build. Bảng dưới đây liệt kê các nhóm thư viện chính và vai trò của từng nhóm để người dùng nắm được hệ thống đang phụ thuộc vào những gì:
+Nhóm | Thư viện chính
+Giao diện | react, react-dom
+Desktop app | electron
+Engine/HTTP | Node.js, undici
+State management | zustand
+Build | vite, @vitejs/plugin-react
+Kiểm thử | vitest
+Đóng gói | electron-builder
+Bảng 3.2.3: Bảng thư viện và công nghệ
+Sau khi cài đặt hoàn tất, thư mục node_modules/ sẽ được tạo tự động. Nếu quá trình cài đặt xảy ra lỗi, người dùng cần kiểm tra lại phiên bản Node.js và npm theo hướng dẫn ở mục 3.2.1, sau đó thực hiện lại lệnh cài đặt.
+Cấu hình biến môi trường
+Trước khi khởi chạy SENTINEL, cần tạo file .env từ file mẫu có sẵn bằng lệnh:
+copy .env.example .env
+Sau khi tạo file .env, người dùng cần mở file và điền các giá trị cấu hình phù hợp, file có hai nhóm biến chính:
+Biến | Nhà cung cấp | Ghi chú
+VITE_GROQ_API_KEY | Groq | Đề xuất dùng trước — nhanh nhất, miễn phí, đăng ký tại console.groq.com
+VITE_GEMINI_API_KEY | Google Gemini | Gemini 2.0 Flash miễn phí, đăng ký tại aistudio.google.com
+VITE_OPENROUTER_API_KEY | OpenRouter | Có model miễn phí, đăng ký tại openrouter.ai
+VITE_TOGETHER_API_KEY | Together.ai | Có model miễn phí
+VITE_HF_API_KEY | HuggingFace | Free tier, đăng ký tại huggingface.co
+Bảng 3.2.4: Nhóm API key cho tính năng AI
+Biến | Mô tả | Mặc định
+SENTINEL_ALLOW_PRIVATE_TARGETS | Cho phép quét địa chỉ nội bộ như localhost hoặc IP local | true
+Bảng 3.2.5: Cấu hình hành vi quét (tùy chọn)
+Chức năng AI hỗ trợ sẽ được kích hoạt khi người dùng cấu hình ít nhất một API key. Hệ thống ưu tiên sử dụng các nhà cung cấp theo thứ tự Groq, Gemini, OpenRouter, Together và Hugging Face. 
+Nếu không có API key, các chức năng quét URL và quét mã nguồn vẫn hoạt động đầy đủ. Với các trường hợp quét nội bộ như localhost, có thể bật SENTINEL_ALLOW_PRIVATE_TARGETS=true. Các API key thực tế không được trình bày trong báo cáo để đảm bảo an toàn thông tin.
+Hình 3.2.1: File .env.example của dự án
+Khởi chạy hệ thống
+Sau khi hoàn tất cài đặt và cấu hình, khởi chạy SENTINEL ở chế độ phát triển bằng lệnh:
+npm run dev
+Lệnh này khởi động Vite để build giao diện React, sau đó Electron tự động mở cửa sổ ứng dụng. Khi giao diện hiển thị thành công, hệ thống đã sẵn sàng để thực nghiệm.
+Hình 3.2.2: Chạy ứng dụng thông qua Terminal
+Sau khi hoàn tất cài đặt và cấu hình, khởi chạy SENTINEL ở chế độ phát triển bằng lệnh:
+npm run dist
+File .exe đầu ra sẽ nằm trong thư mục dist/ và có thể chạy trực tiếp trên Windows mà không cần cài Node.js hay npm.
+Kiểm tra trạng thái dự án trước thực nghiệm
+Trước khi bắt đầu thực nghiệm, chạy lần lượt các lệnh sau để xác nhận toàn bộ hệ thống đã sẵn sàng:
+Lệnh | Mục đích
+npm run check:engines | Kiểm tra phiên bản Node.js và npm
+npm run typecheck | Kiểm tra lỗi kiểu dữ liệu TypeScript
+npm run lint | Kiểm tra quy tắc viết mã nguồn
+npm test | Chạy các bài kiểm thử tự động
+npm run build | Kiểm tra khả năng build ứng dụng
+Bảng 3.2.6: Bảng lệnh kiểm tra trạng thái
+Nên chạy theo đúng thứ tự trong bảng — từ kiểm tra môi trường đến kiểm tra build. Nếu bước nào thất bại, xử lý lỗi ở bước đó trước khi tiếp tục, không bỏ qua để chạy bước sau vì các bước phụ thuộc vào nhau.
+Khi tất cả lệnh đều chạy thành công, SENTINEL đã sẵn sàng cho các kịch bản thực nghiệm ở các mục tiếp theo.
+Thiết lập thực nghiệm
+Mục tiêu thực nghiệm
+Phần thực nghiệm được thực hiện nhằm kiểm tra hai chức năng chính của SENTINEL trong quá trình sử dụng thực tế, bao gồm quét website thông qua URL và quét mã nguồn dự án. Thông qua các kịch bản thực nghiệm, nhóm tập trung đánh giá khả năng thu thập dữ liệu, phát hiện findings, phân loại mức độ rủi ro theo OWASP và trình bày kết quả cho người dùng.
+Cụ thể, quá trình thực nghiệm sẽ xem xét hệ thống thu thập được những thông tin nào từ website hoặc mã nguồn, các findings được phát hiện và phân loại ra sao, đồng thời kết quả hiển thị trên giao diện và báo cáo xuất ra có đủ rõ ràng để hỗ trợ người dùng đánh giá rủi ro hay không. Các kết quả này sẽ được đối chiếu với tiêu chí đánh giá đã trình bày ở mục 3.3.4 để đưa ra nhận xét về mức độ đáp ứng của hệ thống.
+Phạm vi và điều kiện thực nghiệm
+Nội dung | Mô tả
+Phạm vi chạy hệ thống | Máy tính cá nhân của nhóm
+Phạm vi quét URL | Website mẫu hoặc website do nhóm xây dựng
+Phạm vi quét project | Project mã nguồn mẫu do nhóm lựa chọn
+Hình thức ghi nhận kết quả | Findings trên giao diện, thống kê rủi ro, báo cáo xuất ra
+Nguyên tắc an toàn | Không quét trái phép hệ thống ngoài phạm vi cho phép
+Bảng 3.3.1: Bảng phạm vi và điều kiện thực nghiệm
+Một điều kiện quan trọng cần lưu ý: toàn bộ thực nghiệm chỉ được thực hiện trên website mẫu, môi trường cục bộ hoặc hệ thống do nhóm xây dựng và có quyền kiểm tra. 
+Không thực hiện quét trên bất kỳ hệ thống nào ngoài phạm vi cho phép các đối tượng thực nghiệm cụ thể được trình bày ở mục tiếp theo.
+Đối tượng thực nghiệm
+Trong quá trình thực nghiệm, nhóm lựa chọn các đối tượng kiểm thử theo hai chức năng chính của SENTINEL, bao gồm quét website bằng URL và quét mã nguồn project. 
+Các đối tượng được lựa chọn gồm cả hệ thống có lỗ hổng đã biết và các dự án thực tế do nhóm xây dựng, nhằm đánh giá khả năng phát hiện cũng như mức độ phù hợp của kết quả quét.
+Đối tượng | URL | Lý do lựa chọn
+OWASP Juice Shop | https://juice-shop.herokuapp.com | Là ứng dụng web được thiết kế có chủ đích để chứa nhiều lỗ hổng bảo mật, phù hợp để kiểm tra khả năng phát hiện của SENTINEL.
+Pixel Vault | https://github.com/phamduongdinhhuy2005-ops/Pixel-Vault.git | Là website do nhóm xây dựng, không cố tình cài lỗ hổng, dùng để đánh giá khả năng quét trên môi trường thực tế và quan sát các cảnh báo có thể phát sinh.
+Bảng 3.3.2: Đối tượng thực nghiệm quét URL
+Đối tượng | URL | Lý do lựa chọn
+OWASP Juice Shop source | https://github.com/juice-shop/juice-shop | Là codebase có nhiều vấn đề bảo mật đã được biết đến, phù hợp để đánh giá độ phủ phát hiện của hệ thống.
+Pixel Vault source | https://github.com/phamduongdinhhuy2005-ops/Pixel-Vault.git | Là mã nguồn dự án sinh viên thực tế, dùng để kiểm tra khả năng phân tích source code của SENTINEL trên project thông thường.
+CafeShop source | https://github.com/phamduongdinhhuy2005-ops/CafeShop | Là mã nguồn dự án sinh viên khác, được sử dụng để tăng độ đa dạng của mẫu thực nghiệm.
+Bảng 3.3.3: Đối tượng thực nghiệm quét mã nguồn
+Kịch bản thực nghiệm tổng quát
+Các kịch bản thực nghiệm được xây dựng xoay quanh hai chức năng chính của SENTINEL, mỗi kịch bản tương ứng với một mục tiêu kiểm tra cụ thể và được áp dụng trên các đối tượng đã xác định ở mục 3.3.3.
+Mã kịch bản | Nội dung thực nghiệm | Mục đích
+TN01 | Thực hiện quét một URL hợp lệ | Đánh giá khả năng khởi chạy và hoàn tất tiến trình quét website
+TN02 | Quét website có form hoặc endpoint đầu vào | Đánh giá khả năng thu thập và phân tích form, request từ website
+TN03 | Quét website thiếu hoặc cấu hình sai security headers | Đánh giá khả năng phát hiện các cấu hình bảo mật chưa phù hợp
+TN04 | Thực hiện quét một dự án mã nguồn mẫu | Đánh giá khả năng phân tích cấu trúc và nội dung mã nguồn
+TN05 | Quét dự án có thư viện phụ thuộc hoặc cấu hình rủi ro | Đánh giá khả năng phát hiện các vấn đề bảo mật trong mã nguồn dự án
+TN06 | Xuất báo cáo sau khi quét | Đánh giá khả năng tổng hợp, trình bày và xuất kết quả thực nghiệm
+Bảng 3.3.4: Bảng kịch bản thực nghiệm
+Với chức năng quét URL, các kịch bản tập trung kiểm tra khả năng thu thập dữ liệu từ website (header, cookie, form, endpoint), phát hiện đường dẫn nhạy cảm qua Route Probing, nhận diện tech stack và kích hoạt Dynamic Fuzzer để kiểm thử các tham số đầu vào.
+Với chức năng quét mã nguồn, các kịch bản kiểm tra khả năng phân tích cấu trúc dự án, phát hiện dependency có rủi ro, cấu hình chưa an toàn, thông tin nhạy cảm bị lộ trong code và các đoạn mã có dấu hiệu bảo mật yếu.
+Tiêu chí đánh giá
+Các tiêu chí dưới đây được xác định trước khi chạy thực nghiệm và áp dụng thống nhất cho cả hai chức năng quét. Trọng tâm không chỉ là hệ thống có phát hiện được vấn đề hay không, mà còn ở khả năng phân loại, trình bày và hỗ trợ người dùng hiểu mức độ rủi ro của từng finding.
+Tiêu chí | Nội dung đánh giá | Ngưỡng đạt
+Khả năng quét | Hoàn thành quá trình quét URL hoặc mã nguồn | Không crash, trả về kết quả trong vòng 120 giây
+Khả năng thu thập dữ liệu | Thu thập được thông tin cần thiết từ website và mã nguồn | Ghi nhận ít nhất header, cookie, form (URL) hoặc dependency, config, secret (source)
+Khả năng phát hiện findings | Ghi nhận findings phù hợp với kịch bản quét | Phát hiện ít nhất 1 finding trên mỗi kịch bản
+Khả năng phân loại rủi ro | Phân loại findings theo mức độ nghiêm trọng | Mỗi finding có nhãn Critical / High / Medium / Low
+Phân loại findings theo mức độ nghiêm trọng
+Khả năng ánh xạ OWASP | Gắn findings với nhóm lỗ hổng OWASP tương ứng | Mỗi finding có nhóm OWASP từ A01 đến A10
+Khả năng hiển thị kết quả | Trình bày kết quả rõ ràng trên giao diện | Findings hiển thị đủ: tên, mức độ, mô tả, đề xuất xử lý
+Khả năng xuất báo cáo | Hỗ trợ xuất báo cáo sau khi quét | Xuất được file báo cáo HTML, JSON hoàn chỉnh
+Tính ổn định | Không treo hoặc dừng bất thường | 0 lần crash trong toàn bộ các kịch bản thực nghiệm
+Bảng 3.3.5: Bảng tiêu chí đánh giá
+Thực nghiệm quét website bằng URL
+Mô tả chức năng quét URL
+Với chức năng quét website bằng URL, người dùng nhập địa chỉ website và thông tin xác thực nếu có. Hệ thống sẽ thực hiện song song ba tác vụ gồm: thu thập liên kết, kiểm tra các tuyến nhạy cảm và nhận diện công nghệ sử dụng.
+Sau đó, dữ liệu được đưa vào bộ kiểm tra rule tĩnh theo các nhóm OWASP như A01, A02, A03, A04, A05, A07, A08 và A10. Tiếp theo, hệ thống thực hiện kiểm thử động để phát hiện các lỗ hổng như SQL Injection, XSS, Open Redirect, SSRF, SSTI và Path Traversal.
+Cuối cùng, SENTINEL loại bỏ các kết quả trùng lặp và tổng hợp kết quả quét, bao gồm danh sách findings, công nghệ sử dụng, điểm bề mặt tấn công, phạm vi quét và thống kê theo OWASP.
+Hình 3.4.1: Chi tiết pipeline của chức năng quét URL
+Dynamic Fuzzer là thành phần duy nhất trong pipeline tương tác chủ động với máy chủ bằng dữ liệu do hệ thống tự tạo ra, nhằm kiểm tra phản hồi trước các dạng tấn công phổ biến như SQL Injection, XSS, SSRF và Open Redirect. Hình dưới đây mô tả chi tiết luồng xử lý bên trong giai đoạn này.
+Hình 3.4.2: Chi tiết pipeline kiểm thử động (Dynamic Fuzzer)
+Dynamic Fuzzer hoạt động theo ngân sách request định sẵn nhằm kiểm soát tải lên website mục tiêu. Với mỗi tham số thu thập được, hệ thống phân loại kiểu dữ liệu và chọn payload kiểm thử phù hợp. 
+Đối với SQL Injection dạng timing-based, hệ thống đo thời gian phản hồi gốc trước khi gửi payload và chỉ ghi nhận khi độ trễ vượt ngưỡng rõ ràng để giảm false positive.
+Sau khi phát hiện tín hiệu bất thường, hệ thống gửi thêm request xác nhận trước khi ghi nhận finding chính thức. Cuối cùng, toàn bộ kết quả từ các giai đoạn được gộp lại, loại bỏ trùng lặp theo ruleId:target:location và hiển thị thống nhất trên dashboard.
+Quy trình thực hiện quét URL
+Phần này mô tả từng bước người dùng thực hiện để chạy một lượt quét URL trên SENTINEL.
+Bước 1: Mở ứng dụng SENTINEL.exe đã được đóng gói
+Hình 3.4.3: Giao diện ứng dụng SENTINEL trên môi trường desktop
+Bước 2: Tại giao diện chính, chọn chức năng Quét website bằng URL
+Hình 3.4.4: Giao diện tổng thể của ứng dụng SENTINEL
+Bước 3: Nhập URL website cần kiểm tra, sau đó cấu hình hai thông số quan trọng trước khi quét:
+Phạm vi quét: giúp giới hạn crawler chỉ thu thập các liên kết thuộc cùng domain gốc, tránh truy cập sang website bên thứ ba ngoài phạm vi kiểm thử.
+Cường độ quét: cho phép điều chỉnh số request gửi song song và thời gian chờ giữa các request. Cường độ càng cao thì quá trình quét càng nhanh, nhưng đồng thời cũng tạo nhiều tải hơn lên máy chủ mục tiêu.
+Hình 3.4.5: Tùy chọn phạm vi và cường độ quét của ứng dụng
+Bước 4: Nhập thông tin xác thực nếu website yêu cầu đăng nhập. Có thể dùng cookie hoặc Bearer token để SENTINEL quét được các trang sau xác thực. Bỏ qua bước này nếu quét ở chế độ ẩn danh.
+Hình 3.4.6: Cấu hình xác thực khi quét website
+Bước 5: Nhấn bắt đầu quét và theo dõi trạng thái xử lý theo thời gian thực.
+Hình 3.4.7: Quá trình quét URL website trên ứng dụng SENTINEL
+Bước 6: Khi quét hoàn tất, danh sách findings hiển thị trên dashboard kèm mức độ nghiêm trọng, nhóm OWASP, mô tả chi tiết và đề xuất xử lý cho từng finding.
+Hình 3.4.8: Kết quả quét URL website trên ứng dụng SENTINEL
+Các kịch bản áp dụng cho thực nghiệm quét URL
+Từ bảng kịch bản tổng quát ở mục 3.3.4, bốn kịch bản được áp dụng cho thực nghiệm quét URL: TN01, TN02, TN03 và TN06.
+Mã kịch bản | Nội dung thực nghiệm | Mục đích
+TN01 | Thực hiện quét một URL hợp lệ | Đánh giá khả năng khởi chạy và hoàn tất tiến trình quét website
+TN02 | Quét website có form hoặc endpoint đầu vào | Đánh giá khả năng thu thập và phân tích form, request từ website
+TN03 | Quét website có thiếu hoặc cấu hình sai security headers | Đánh giá khả năng phát hiện các cấu hình bảo mật chưa phù hợp
+TN06 | Xuất báo cáo sau khi quét | Đánh giá khả năng tổng hợp, trình bày và xuất kết quả thực nghiệm
+Bảng 3.4.1: Bảng kịch bản quét URL
+Các kịch bản này bao phủ toàn bộ luồng xử lý của URL Scan — từ khởi chạy tiến trình, thu thập dữ liệu header/cookie/form/endpoint, phát hiện findings theo OWASP, cho đến kiểm tra hiển thị kết quả trên dashboard. 
+TN01 và TN02 được thực hiện trên cả Juice Shop lẫn Pixel Vault để có kết quả so sánh giữa website có lỗ hổng đã biết và website thực tế bình thường. TN03 và TN06 chỉ áp dụng cho Juice Shop vì cần môi trường có lỗ hổng để Dynamic Fuzzer có thể phát hiện dấu hiệu tấn công.
+Hình 3.4.9: Thực hiện quét một URL hợp lệ (TN01)
+Kịch bản kiểm tra khả năng khởi chạy tiến trình quét và thu thập dữ liệu cơ bản từ website. URL Juice Shop được nhập trực tiếp vào giao diện, phạm vi giới hạn trong domain gốc. Hệ thống hoàn thành quét mà không crash, trả về danh sách findings kèm thông tin tech stack và attack surface score.
+Hình 3.4.10: Quét các website có form hoặc endpoint đầu vào (TN02)
+Kịch bản này dùng để kiểm tra khả năng thu thập và phân tích form HTML, cũng như các endpoint có tham số đầu vào. OWASP Juice Shop được chọn vì có nhiều form như đăng nhập, tìm kiếm và thanh toán — đây là các bề mặt tấn công phù hợp để Dynamic Fuzzer gửi payload kiểm thử.
+Hình 3.4.11: Quét website có thiếu hoặc cấu hình sai security headers (TN03)
+Kịch bản này kiểm tra khả năng phát hiện lỗ hổng thông qua phân tích HTTP response header. Static Rule Engine sẽ kiểm tra các header bảo mật quan trọng như Strict-Transport-Security, Content-Security-Policy và X-Frame-Options.
+Mỗi header bị thiếu hoặc cấu hình chưa đúng sẽ được ghi nhận thành một finding riêng, kèm nhóm OWASP tương ứng và đề xuất khắc phục cụ thể.
+Hình 3.4.12: Xuất báo cáo sau khi quét dưới dạng HTML (TN06) (1)
+Kịch bản này kiểm tra chức năng tổng hợp và xuất báo cáo sau khi quét hoàn tất. Người dùng xuất báo cáo HTML và JSON trực tiếp từ dashboard.
+Báo cáo đầu ra bao gồm danh sách findings được phân nhóm theo OWASP, mức độ nghiêm trọng và đề xuất xử lý, giúp người dùng dễ dàng chia sẻ kết quả mà không cần mở lại ứng dụng.
+Hình 3.4.13: Xuất báo cáo sau khi quét dưới dạng HTML (TN06) (2)
+Kết quả từ bốn kịch bản trên được sử dụng làm cơ sở để phân tích, so sánh và đối chiếu với các tiêu chí đánh giá ở mục tiếp theo.
+Phân tích kết quả thực nghiệm quét URL
+Sau khi thực hiện các kịch bản TN01, TN02, TN03 và TN06 trên hai website, kết quả tổng hợp như sau:
+Website | Findings | Critical | High | Medium | Low | Điểm | Trạng thái
+OWOOWASP Juice Shop | 12 | 0 | 5 | 2 | 5 | 48 /100 | Ưu tiên xử lý sớm
+PIXEL_VAULT | 43 | 4 | 25 | 5 | 8 | 100/100 | Cần xử lý ngay
+Bảng 3.4.2: Bảng kết quả quét URL
+Kết quả cho thấy có sự chênh lệch rõ rệt giữa hai website. OWASP Juice Shop ghi nhận 12 findings với điểm 48/100, phù hợp với một ứng dụng demo có lỗ hổng được kiểm soát. 
+Trong khi đó, Pixel Vault ghi nhận 43 findings với điểm 100/100, mức “Nghiêm trọng — Cần xử lý ngay”, cho thấy dự án có bề mặt tấn công lớn và còn nhiều vấn đề bảo mật chưa được xử lý.
+SENTINEL cũng nhận diện được tech stack của Pixel Vault gồm Laravel, PHP và Apache, từ đó hỗ trợ ưu tiên kiểm tra các rule liên quan đến cấu hình server PHP và Apache.
+Nhóm OWASP | OWASP Juice Shop | Pixel Vault | Nhận xét
+A01 - Broken Access Control | 2 | 4 | Cả hai website đều có vấn đề kiểm soát truy cập
+A02 - Cryptographic Failures | 4 | 9 | Pixel Vault thiếu nhiều cơ chế bảo vệ dữ liệu hơn
+A03 - Injection | 1 | 20 | Phát hiện nhiều nhất trên Pixel Vault — đây là nhóm nguy hiểm nhất
+A05 - Security Misconfiguration | 1 | 0 | OWASP Juice Shop có cấu hình server chưa phù hợp
+A07 - Auth Failures | 0 | 1 | Pixel Vault có vấn đề về xác thực
+A10 - SSRF | 1 | 9 | Pixel Vault có nhiều endpoint có khả năng bị SSRF
+Bảng 3.4.3: Bảng kết quả phân tích theo nhóm OWASP
+Điểm đáng chú ý là nhóm A03 - Injection xuất hiện 20 findings trên Pixel Vault nhưng không xuất hiện trên Juice Shop khi quét URL. Điều này có thể xuất phát từ sự khác biệt về công nghệ: Juice Shop sử dụng Node.js, trong khi Pixel Vault dùng Laravel, PHP và Apache, khiến các dấu hiệu liên quan đến injection dễ được hệ thống nhận diện hơn qua phản hồi HTTP.
+Để minh họa, finding A02-HEADER-001 trên Pixel Vault ghi nhận header Strict-Transport-Security bị thiếu trong response từ máy chủ Apache. Finding này được phân loại mức High và hệ thống đề xuất bổ sung header Strict-Transport-Security: max-age=31536000; includeSubDomains vào cấu hình Apache nhằm buộc trình duyệt chỉ kết nối qua HTTPS.
+Ngoài ra, dashboard cũng hiển thị cảnh báo nổi bật về việc thiếu Content-Security-Policy, do đây là header quan trọng trong việc giảm thiểu rủi ro XSS.
+Nhìn chung, SENTINEL hoàn thành quá trình quét trên cả hai website, phân loại findings theo mức độ nghiêm trọng và ánh xạ đúng nhóm OWASP tương ứng. Tuy nhiên, một số findings thuộc nhóm A10 - SSRF vẫn cần được xác minh thủ công, vì công cụ black-box không có quyền truy cập log phía server để kiểm chứng request có thực sự được thực thi hay không.
+Thực nghiệm quét mã nguồn dự án
+Mô tả chức năng quét mã nguồn dự án
+Chức năng quét mã nguồn cho phép người dùng chọn trực tiếp thư mục dự án trên máy để SENTINEL phân tích. Khác với quét URL theo hướng black-box, chức năng này đọc trực tiếp nội dung file, nhờ đó có thể phát hiện các vấn đề khó quan sát từ bên ngoài như secret hardcode, dependency có lỗ hổng, cấu hình chưa an toàn hoặc logging thông tin nhạy cảm.
+Luồng xử lý gồm hai giai đoạn chính. Ở giai đoạn đầu, hệ thống sử dụng walkFiles() để duyệt cây thư mục, đồng thời bỏ qua các thư mục không cần thiết như node_modules, .git, dist và build, với giới hạn tối đa 2.500 file. Sau đó, các collector lần lượt thu thập dữ liệu theo từng nhóm gồm Dependency, Config, Secret, Logging và Tech Stack.
+Ở giai đoạn tiếp theo, dữ liệu được đưa vào Rule Engine với bộ lọc collector === 'source' để chỉ áp dụng các rule phù hợp với phân tích mã nguồn.
+Hình 3.5.1: Chi tiết pipeline quét mã nguồn của dự án
+Sau khi Rule Engine hoàn tất, hàm enrichSourceFindings() tự động gắn đoạn code liên quan vào từng finding. Nhờ đó, mỗi kết quả hiển thị đầy đủ vị trí file, dòng lệnh cần xem xét, mức độ nghiêm trọng, nhóm OWASP tương ứng và đề xuất xử lý, giúp người dùng dễ dàng kiểm tra mà không cần tự dò lại trong mã nguồn.
+Quy trình thực hiện quét mã nguồn dự án
+Phần này mô tả từng bước người dùng thực hiện để chạy một lượt quét mã nguồn trên SENTINEL.
+Bước 1: Tại giao diện chính, chọn chức năng Quét mã nguồn dự án
+Hình 3.5.2: Giao diện quét mã nguồn của dự án SENTINEL
+Bước 2: Nhấn Chọn thư mục để mở File Explorer, sau đó chọn đúng thư mục gốc của dự án cần kiểm tra, thường là thư mục chứa package.json hoặc file cấu hình chính. Từ thư mục này, SENTINEL sẽ duyệt toàn bộ cây thư mục và tự động bỏ qua các thư mục như node_modules, .git, dist và build.
+Hình 3.5.3: Chọn thư mục mã nguồn để thực hiện quét project
+Bước 3: Nhấn Bắt đầu phân tích mã nguồn. Trong quá trình quét, hệ thống hiển thị tiến trình duyệt file theo thời gian thực. Sau khi hoàn tất, dashboard sẽ hiển thị danh sách findings, tổng số file đã quét và phân bố kết quả theo mức độ nghiêm trọng.
+Hình 3.5.4: Kết quả quét mã nguồn project trên ứng dụng SENTINEL
+Bước 4: Nhấn vào từng finding để xem chi tiết, bao gồm vị trí file, đoạn code liên quan, nhóm OWASP và đề xuất xử lý. Các thông tin này được enrichSourceFindings() bổ sung tự động, giúp người dùng xác định chính xác đoạn mã cần kiểm tra hoặc sửa lỗi.
+Hình 3.5.5: Chi tiết finding bảo mật trong mã nguồn
+Các kịch bản áp dụng cho thực nghiệm quét mã nguồn dự án
+Từ bảng kịch bản tổng quát ở mục 3.3.4, ba kịch bản được sử dụng cho thực nghiệm quét mã nguồn gồm TN04, TN05 và TN06.
+Mã kịch bản | Nội dung thực nghiệm | Mục đích
+TN04 | Thực hiện quét một dự án mã nguồn mẫu | Đánh giá khả năng phân tích cấu trúc và nội dung mã nguồn
+TN05 | Quét dự án có thư viện phụ thuộc hoặc cấu hình rủi ro | Đánh giá khả năng phát hiện các vấn đề bảo mật trong mã nguồn dự án
+TN06 | Xuất báo cáo sau khi quét | Đánh giá khả năng tổng hợp, trình bày và xuất kết quả thực nghiệm
+Bảng 3.5.1: Bảng kịch bản quét mã nguồn dự án
+Hình 3.5.6: Thực hiện quét dự án mã nguồn mẫu OWASP Juice Shop (TN04)
+Kịch bản này kiểm tra khả năng duyệt thư mục và phân tích nội dung file của SENTINEL. OWASP Juice Shop được chọn vì là codebase có lỗ hổng đã biết, giúp đánh giá khả năng phát hiện vấn đề của hệ thống. Kết quả thể hiện số file được quét, phân bố findings theo mức độ nghiêm trọng và các nhóm OWASP xuất hiện.
+Hình 3.5.7: Quét dự án có thư viện phụ thuộc hoặc cấu hình rủi ro (TN05) (1)
+Hình 3.5.8: Quét dự án có thư viện phụ thuộc hoặc cấu hình rủi ro (TN05) (2)
+Kịch bản này kiểm tra khả năng phát hiện các vấn đề bảo mật trong mã nguồn thực tế, tập trung vào các nhóm OWASP như A02, A03, A05, A07, A08 và A09. Hai dự án Pixel Vault và CafeShop được chọn vì là dự án sinh viên thực tế, không cố tình cài lỗ hổng, giúp đánh giá SENTINEL trên codebase bình thường.
+Hình 3.5.9: File báo cáo HTML của project-scan (TN06)
+Kịch bản này kiểm tra chức năng tổng hợp và xuất báo cáo HTML sau khi quét mã nguồn hoàn tất. Báo cáo đầu ra bao gồm findings được phân nhóm theo OWASP, mức độ nghiêm trọng, vị trí file và đề xuất xử lý, giúp người dùng chia sẻ kết quả mà không cần mở lại ứng dụng.
+Kết quả của ba kịch bản trên là cơ sở để phân tích và đối chiếu với các tiêu chí đánh giá ở mục tiếp theo.
+Phân tích kết quả thực nghiệm quét mã nguồn dự án
+Sau khi thực hiện các kịch bản TN04, TN05 và TN06 trên hai dự án, kết quả tổng hợp như sau:
+Website | Findings | Critical | High | Medium | Low | Điểm | Trạng thái
+OWOOWASP Juice Shop | 82 | 2 | 55 | 22 | 3 | 100/100 | Cần xử lý ngay
+PIXEL_VAULT | 32 | 1 | 0 | 29 | 2 | 100/100 | Cần xử lý ngay
+Bảng 3.5.2: Bảng kết quả đánh giá
+Cả hai dự án đều đạt mức “Nghiêm trọng — Cần xử lý ngay”, nhưng đặc điểm findings có sự khác biệt rõ rệt. OWASP Juice Shop ghi nhận 82 findings, trong đó có 55 findings mức High, phù hợp với đặc điểm của một codebase được thiết kế có chủ đích để chứa nhiều lỗ hổng nghiêm trọng.
+Trong khi đó, Pixel Vault ghi nhận 32 findings, chủ yếu ở mức Medium với 29 findings và không có finding mức High. Điều này cho thấy dự án tồn tại một số rủi ro bảo mật tiềm ẩn nhưng mức độ nghiêm trọng thấp hơn. SENTINEL cũng nhận diện Pixel Vault sử dụng PHP, quét 84 file và phát hiện các vấn đề đặc trưng của stack PHP/Laravel.
+Nhóm OWASP | OWASP Juice Shop | Pixel Vault | Nhận xét
+A01 - Broken Access Control | 15 | 0 | Juice Shop có nhiều vấn đề kiểm soát truy cập — đặc trưng của ứng dụng e-commerce có phân quyền phức tạp
+A02 - Cryptographic Failures | 2 | 4 | Cả hai đều thiếu cơ chế bảo vệ dữ liệu, Pixel Vault nhiều hơn do đặc thù PHP
+A03 - Injection | 34 | 0 | Chiếm 41% tổng findings của Juice Shop — phản ánh đúng bản chất ứng dụng Node.js có nhiều điểm nhận input
+A04 - Insecure Design | 1 | 0 | Xuất hiện nhỏ lẻ trên Juice Shop
+A05 - Security Misconfiguration | 9 | 0 | Juice Shop có nhiều cấu hình chưa an toàn trong file config và CI/CD
+A06 - Vulnerable Components | 8 | 3 | Cả hai đều có thư viện phụ thuộc chứa lỗ hổng đã biết
+A08 - Software Integrity Failures | 10 | 24 | Nhóm lớn nhất của Pixel Vault — 75% tổng findings
+A09 - Security Logging | 3 | 2 | Cả hai đều ghi log thông tin nhạy cảm
+Bảng 3.5.3: Bảng kết quả đánh giá
+Hai dự án cho thấy sự khác biệt rõ rệt về loại lỗ hổng được phát hiện. OWASP Juice Shop tập trung nhiều ở nhóm A03 - Injection với 34 findings và A01 - Broken Access Control với 15 findings, phù hợp với đặc điểm của một ứng dụng có nhiều điểm nhận input và logic phân quyền phức tạp.
+Ngược lại, Pixel Vault chủ yếu ghi nhận findings thuộc nhóm A08 - Software Integrity Failures với 24/32 findings. Điều này cho thấy các vấn đề của dự án tập trung nhiều vào dependency và cấu hình thư viện, thường gặp trong các dự án PHP/Laravel đang phát triển.
+Đáng chú ý, nhóm A03 - Injection không xuất hiện khi quét mã nguồn Pixel Vault, nhưng lại xuất hiện 20 findings khi quét URL. Kết quả này cho thấy hai phương pháp quét có cơ chế phát hiện khác nhau: URL Scan dựa trên phản hồi động từ website, còn Project Scan dựa trên pattern tĩnh trong mã nguồn.
+Đánh giá tổng hợp kết quả thực nghiệm
+Tổng hợp kết quả đạt được
+Sau khi hoàn tất thực nghiệm hai chức năng URL Scan và Project Scan, SENTINEL tổng hợp toàn bộ findings vào một checklist thống nhất. Dữ liệu từ hai luồng quét được gom lại, loại bỏ trùng lặp và sắp xếp theo mức độ ưu tiên.
+Hình 3.6.1: Checklist được tạo ra từ nguồn dữ liệu của hai chức năng
+Từ checklist tổng hợp, SENTINEL ghi nhận findings ở 9/10 nhóm OWASP Top 10. Nhóm duy nhất không xuất hiện ở chế độ Project Scan là A10 - SSRF, do loại lỗ hổng này chủ yếu cần kiểm thử động để xác nhận. Các nhóm có rủi ro cao được ưu tiên hiển thị trước, giúp người dùng nhanh chóng xác định vấn đề cần xử lý.
+Hình 3.6.2: Các nhóm lỗ hổng có rủi ro cao sẽ luôn được ưu tiên trước
+Ngoài ra, hệ thống gom các findings có hướng xử lý tương đồng vào cùng một nhóm checklist, thay vì liệt kê rời rạc từng finding. Cách trình bày này giúp người dùng tập trung vào hành động khắc phục chính. Với mỗi nhóm, người dùng có thể mở rộng để xem chi tiết từng finding và đề xuất xử lý cụ thể.
+Hình 3.6.3: Tại từng nhóm checklist người dùng có thể xem chi tiết và đề xuất xử lý
+Đánh giá dự án theo tiêu chí đã đề ra
+Kết quả thực nghiệm được đối chiếu với các tiêu chí và ngưỡng đạt đã xác định ở mục 3.3.5.
+Tiêu chí | Kết quả ghi nhận | Ngưỡng đạt | Đánh giá
+Khả năng quét | Hoàn thành toàn bộ 6 kịch bản, không crash | Không crash, kết quả trong 120 giây | Đạt
+Khả năng thu thập dữ liệu | Thu thập đủ header, cookie, form (URL) và dependency, config, secret (source) | Ghi nhận ít nhất các nhóm dữ liệu cơ bản | Đạt
+Khả năng phát hiện findings | 12 findings (Juice Shop URL), 43 findings (Pixel Vault URL), 82 findings (Juice Shop source), 32 findings (Pixel Vault source) | Ít nhất 1 finding trên mỗi kịch bản | Đạt
+Khả năng phân loại rủi ro | Mỗi finding có nhãn Critical / High / Medium / Low | Mỗi finding có nhãn phân loại | Đạt
+Khả năng ánh xạ OWASP | Ghi nhận 9/10 nhóm OWASP Top 10 | Mỗi finding có nhóm OWASP từ A01–A10 | Đạt
+Khả năng hiển thị kết quả | Findings hiển thị đủ tên, mức độ, mô tả, vị trí file và đề xuất xử lý | Hiển thị đủ 4 thành phần cơ bản | Đạt
+Khả năng xuất báo cáo | Xuất thành công báo cáo HTML và JSON hoàn chỉnh ở kịch bản TN06 | Xuất được file HTML hoàn chỉnh | Đạt
+Tính ổn định của hệ thống | 0 lần crash trong toàn bộ thực nghiệm | 0 lần crash | Đạt
+Bảng 3.6.1: Bảng đánh giá tiêu chí
+Kết quả cho thấy SENTINEL đáp ứng đầy đủ các tiêu chí đề ra. Hệ thống hoàn thành toàn bộ 6 kịch bản thực nghiệm, không xảy ra crash, thu thập được dữ liệu cần thiết từ cả URL Scan và Project Scan, đồng thời phát hiện findings trên từng kịch bản kiểm thử.
+Các findings đều được phân loại theo mức độ nghiêm trọng, ánh xạ với nhóm OWASP tương ứng và hiển thị đầy đủ thông tin như tên lỗi, mô tả, vị trí, mức độ rủi ro và đề xuất xử lý. Ngoài ra, chức năng xuất báo cáo HTML cũng hoạt động thành công ở kịch bản TN06.
+Một điểm cần lưu ý là một số findings thuộc nhóm A01 - Broken Access Control được phát hiện qua phân tích mã nguồn dựa trên pattern như id hoặc userId trong request, nhưng chưa thể xác nhận đầy đủ logic kiểm tra quyền. Do đó, các finding này cần được rà soát thủ công để đánh giá mức độ ảnh hưởng thực tế.
+Tóm lại, SENTINEL đáp ứng toàn bộ 8 tiêu chí đánh giá trong phạm vi thực nghiệm. Tuy nhiên, do kết quả được tạo từ quét tự động, một số nhóm như A10 - SSRF và A01 - Broken Access Control vẫn cần xác minh thủ công trước khi kết luận là lỗ hổng thực sự.
+Các hạn chế trong quá trình thực nghiệm
+Mặc dù quá trình thực nghiệm cho thấy SENTINEL có khả năng hỗ trợ phát hiện và phân loại nhiều vấn đề bảo mật theo nhóm OWASP, kết quả thu được vẫn còn một số hạn chế nhất định. Các hạn chế này chủ yếu đến từ phạm vi thực nghiệm, đặc điểm của quá trình quét tự động và khả năng xác minh ngữ cảnh thực tế của từng phát hiện bảo mật.
+Hạn chế | Mô tả
+Phạm vi đối tượng thực nghiệm còn giới hạn | Thực nghiệm chủ yếu được thực hiện trên OWASP Juice Shop và các dự án mẫu, chưa bao phủ trên nhiều loại hệ thống khác nhau
+Kết quả phụ thuộc vào bộ rule hiện có | SENTINEL phát hiện vấn đề bảo mật dựa trên các rule đã xây dựng dựa trên tài liệu OWASP Testing Guide. Vì vậy những lỗ hổng nằm ngoài phạm vi rule có thể không được ghi nhận
+Có khả năng xuất hiện cảnh báo sai | Một số phát hiện đặc biệt là các phát hiện dạng heuristic, chỉ mang tính cảnh báo và cần được kiểm tra thủ công để xác nhận mức độ ảnh hưởng thực tế
+Quét mã nguồn còn phụ thuộc vào mã nguồn cung cấp | Nếu dự án thiếu đi file cấu hình, dependency hoặc mã nguồn không đầy đủ, kết quả quét có thể chưa đầy đủ toàn bộ rủi ro bảo mật
+Không thể thay thế kiểm thử xâm nhập thủ công | SENTINEL đóng vai trò công cụ hỗ trợ rà soát và cảnh báo rủi ro ban đầu, chưa thể thay thế hoàn toàn quá trình pentest chuyên sâu của các chuyên gia bảo mật
+Bảng 3.6.2: Bảng đánh giá hạn chế
+Những hạn chế trên cho thấy SENTINEL phù hợp với vai trò công cụ hỗ trợ rà soát và cảnh báo rủi ro bảo mật ban đầu. Để đưa ra kết luận chính xác hơn, các phát hiện quan trọng vẫn cần được người dùng kiểm tra thủ công và kết hợp với ngữ cảnh thực tế của hệ thống.
+Hướng cải thiện của dự án
+Trong các phiên bản tiếp theo, SENTINEL có thể được cải thiện theo hướng mở rộng bộ rule phát hiện, giảm cảnh báo sai và nâng cấp chức năng phân tích mã nguồn. Việc bổ sung thêm rule cho các nhóm lỗ hổng OWASP, đặc biệt là các vấn đề liên quan đến phân quyền, xác thực, logic nghiệp vụ và cấu hình triển khai, sẽ giúp cho hệ thống phát hiện được nhiều rủi ro hơn.
+Bên cạnh đó, hệ thống cần cải thiện cơ chế xác minh findings bằng cách kết hợp nhiều tín hiệu phân tích và cung cấp thêm các bằng chứng rõ ràng hơn. Điều này giúp giảm các findings sai lệch và hỗ trợ người dùng đánh giá chính xác hơn mức độ ảnh hưởng của từng phát hiện.
+Đối với URL Scan, nhóm đề xuất nâng cấp khả năng thu thập endpoint, form, route ẩn và các nội dung động. Đối với Project Scan, nhóm sẽ tiếp tục nâng cấp để hệ thống có thể phân tích sâu hơn file cấu hình, secret, … hỗ trợ thêm nhiều ngôn ngữ lập trình khác.
+Bên cạnh các chức năng quét, SENTINEL cũng cần cải thiện chức năng AI hỗ trợ. Nhóm sẽ nâng cấp thêm thêm để AI có thể trả về các câu trả lời rõ ràng hơn, giải thích các findings, đề xuất khắc phục chuyên sâu và phù hợp cho từng loại lỗ hổng và nâng cao khả năng thấu hiểu ngữ cảnh tốt hơn. Đồng thời, hệ thống cần có thêm cơ chế kiểm soát chất lượng câu trả lời nhằm hạn chế các gợi ý chưa chính xác hoặc chưa phù hợp với mã nguồn đang quét.
+CHƯƠNG 4: KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN
+Kết quả đạt được
+Sau quá trình nghiên cứu và phân tích yêu cầu và triển khai dự án, nhóm đã hoàn thiện được các mục tiêu trọng tâm ban đầu mà đề tài đặt ra. Cụ thể, SENTINEL đã đạt được những kết quả như sau:
+Hoàn thiện thành công ứng dụng SENTINEL dưới dạng công cụ phầm mềm hoạt động ổn định trên môi trường Window, phục vụ mục đích hỗ trợ rà soát bảo mật cơ bản và học tập trong lĩnh vực an ninh mạng
+ Tích hợp đồng thời nhiều phương thức kiểm thử bảo mật gồm:
+Kiểm thử bảo mật tự động theo runtime (DAST) thông qua quét URL
+Phân tích mã nguồn tĩnh (SAST)
+Kiểm tra thành phần phụ thuộc (SCA) thông qua file quản lý package.
+Việc kết hợp nhiều hướng tiếp cận giúp hệ thống có thể phát hiện đa dạng dấu hiệu rủi ro hơn nếu sơ với công cụ chỉ sử dụng một kĩ thuật riêng lẻ.
+Xây dựng bộ luật phân tích và chuẩn hóa kết quả theo tiêu chuẩn top 10 OWASP. Các findings sau khi phát hiện sẽ được xếp vào từng nhóm lỗ hổng tương ứng nhằm hỗ trợ người dùng đánh giá mức độ nguy hiểm và độ ưu tiên để xử lí.
+Trong quá trình phát triển, nhóm đã tối ưu phần xử lý dữ liệu và giao diện bằng cách tận dụng cơ chế đa tiến trình của Electron, kết hợp giao tiếp IPC giữa Main Process và Renderer Process. Ngoài ra, ReactJS được sử dụng để xây dựng giao diện và Zustand hỗ trợ quản lý state toàn cục, giúp việc cập nhật findings theo thời gian thực diễn ra ổn định hơn. Nhờ đó, khi hệ thống xử lý số lượng findings lớn, giao diện vẫn giữ được độ mượt và hạn chế tình trạng giật hoặc treo ứng dụng.
+Hệ thống hỗ trợ phân loại findings theo nhiều mức độ nghiêm trọng khác nhau như Critical, High, Medium và Low để người dùng dễ theo dõi và đánh giá mức độ rủi ro. Bên cạnh đó, ứng dụng cũng hỗ trợ xuất kết quả quét ra file báo cáo nhằm phục vụ cho việc lưu trữ, phân tích hoặc sử dụng trong quá trình học tập và nghiên cứu.
+Nhóm đã tiến hành kiểm thử thực tế trên môi trường website mẫu OWASP Juice Shop để đánh giá khả năng hoạt động của hệ thống. Kết quả thu được cho thấy ứng dụng hoạt động đúng với mục tiêu ban đầu đề ra. Sau quá trình quét URL, hệ thống ghi nhận tổng cộng 12 findings với điểm đánh giá 48/100 và mức cảnh báo “Ưu tiên xử lý sớm”.
+Các lỗ hổng được phát hiện bao gồm:
+A02: Cryptographic Failures với 4 findings, 
+A01: Broken Access Control với 2 findings, 
+A05: Security Misconfiguration với 1 finding, 
+A10: Server-Side Request Forgery với 1 finding. 
+Kết quả này cho thấy hệ thống có khả năng phát hiện được một số nhóm lỗ hổng phổ biến thường xuất hiện trên các ứng dụng web hiện nay.
+Hạn chế của hệ thống
+Mặc dù hẹ thống đã hoàn thành được các chức năng chính như mục tiêu ban đầu đã đề ra ban đầu, trong quá trình thực hành và kiểm thử nhóm nhận thấ SENTINEL vẫn còn một số điểm để cải thiện
+Đầu tiên, SAST đang chủ yếu phân tích mã nguồn dựa trên cú pháp và luồng dữ liệu cơ bản nên một số trường hợp vẫn sẽ xuất hiện cảnh báo giả. Một số trường hợp dữ liệu đã được xử lý hoặc xóa bằng các hàm phức tạp nhưng hệ thống chưa thể phân tích đầy đủ, dẫn đến các cảnh báo chưa thật sự chính xác.
+Đối với chức năng URL Scan, hệ thống chủ yếu hoạt động theo hướng kiểm thử hộp đen và bán tự động. Vì vậy, SENTINEL vẫn chưa thể tự động nhận diện tốt được các lỗ hổng liên quan đến logic nghiệp vụ đặc thù của từng hệ thống, ví dụ như Broken Access Control nâng cao hoặc Insecure Design. Những trường hợp này vẫn cần người dùng kiểm tra và đánh giá thủ công thêm.
+Một số tính năng nâng cao liên quan đến trợ lý AI yêu cầu người dùng tự cấu hình API từ các nền tảng như Gemini, Groq Groq thông qua file env. Điều này khiến hệ thống phụ thuộc vào kết nối mạng cũng như giới hạn sử dụng từ các dịch vụ bên thứ ba.
+Hiện tại, SENTINEL chủ yếu hỗ trợ rà soát và phát hiện các dấu hiệu rủi ro ban đầu chứ chưa thực hiện các kỹ thuật khai thác chuyên sâu như trong quy trình pentest thực tế. Vì vậy, hệ thống chưa thể thay thế hoàn toàn cho việc kiểm thử bảo mật thủ công bởi chuyên gia.
+Định hướng phát triển lên Đồ án chuyên ngành
+Trong thời gian tới, nhóm dự định tiếp tục mở rộng và nâng cấp hệ thống SENTINEL để phát triển thành một đồ án chuyên ngành hoàn chỉnh hơn cả về chức năng lẫn hiệu năng.
+Nhóm định hướng sẽ tối ưu thêm cơ chế xử lý bất đồng bộ của Node.js cũng như giao tiếp IPC trong Electron nhằm hỗ trợ quét đồng thời nhiều URL hoặc các thư mục mã nguồn lớn mà vẫn đảm bảo hệ thống hoạt động ổn định.
+Trong giai đoạn tiếp theo, nhóm muốn phát triển thêm module tự động sinh Proof of Concept nhằm kiểm tra trực tiếp khả năng tồn tại của lỗ hổng. Điều này có thể giúp giảm số lượng cảnh báo giả và tăng độ chính xác của kết quả quét.
+Hệ thống sẽ được bổ sung thêm các kĩ thuật kiểm tra dữ liệu đầ vào nâng cao để có thể phân tích kĩ hơn các ô nhập liệu, biểu mẫu và các đường dẫn chức năng của hệ thống. Ngoài ra, nhóm cũng hướng mở rộng khả năng hỗ trợ đối với các ứng dụng web sử dụng giao tiếp dữ liệu theo kiểu API, GraphQL và kết nối thời gian thức như Websocket.
+Hiện tại hệ thống chủ yếu hỗ trợ phân tích mã nguồn viết bằng JavaScirpt và TypeScript. Trong thời gian tới, nhóm muốn mở rộng bộ luật phân tích để hệ thống có thể hỗ trợ thêm các ngôn ngữ phổ biến khác như PHP, Java và Python.
+Ngoài ra, nhóm cũng định hướng nghiên cứu các mô hình AI có các kích thước nhỏ, có thể chạy trực tiếp trên máy tính người dùng mà không cần kết nối các dịch vụ AI bên ngoài. Các mô hình này sẽ hỗ trợ phân tích kết quả quét và gợi ý hướng sửa lỗi phù hợp cho lập trình viên trong quá trình lập trình.
+Trong tương lai, SENTINEL có thể được phát triển thành công cụ chạy bằng dòng lệnh và chuẩn hóa dữ liệu đầu ra theo một định dạng thống nhất để dễ dàng tích hợp vào các hệ thống tự động kiểm tra phần mềm như GitHub Actions hoặc GitLab CI. Điều này giúp quá trình kiểm tra bảo mật được thực hiện liên tục trong suốt quá trình phát triển phần mềm thay vì chỉ kiểm tra khi dự án gần hoàn thành.
+Tài Liệu Kham Khảo
+A. Tiêu chuẩn Quốc tế & Phương pháp luận Bảo mật (Chương 1 & Chương 2)
+[1] ISO/IEC Joint Technical Committee, “Information technology — Security techniques — Application security — Part 1: Overview and concepts,” ISO/IEC Standard 27034-1:2011, 2011.
+[2] OWASP Foundation, “OWASP Top 10:2021 – The Ten Most Critical Web Application Security Risks”.
+[3] Verizon, “2024 Data Breach Investigations Report”, 2024.
+[4] M. Souppaya and K. Scarfone, “Technical Guide to Information Security Testing and Assessment,” National Institute of Standards and Technology (NIST), Gaithersburg, MD, USA, Special Publication (SP) 800-115, Sep. 2008.
+[5] OWASP Top 10 Project, “OWASP Top 10:2025 - The Ten Most Critical Web Application Security Risks,” Open Worldwide Application Security Project (OWASP), 2025. [Online]. Đường link kham khảo: https://owasp.org/Top10/2025/.
+[6] OWASP Foundation, “Web Security Testing Guide (WSTG),” Open Worldwide Application Security Project (OWASP). [Online]. Đường link kham khảo: https://owasp.org/www-project-web-security-testing-guide/.
+[7] OWASP Foundation, “Application Security Verification Standard (ASVS),” Open Worldwide Application Security Project (OWASP). [Online]. Đường link kham khảo: https://owasp.org/www-project-application-security-verification-standard/.
+[8] OWASP Cheat Sheet Series, “Developer-Focused Security Guidance,” Open Worldwide Application Security Project (OWASP). [Online]. Đường link kham khảo: https://cheatsheetseries.owasp.org.
+[9] MITRE Corporation, “Common Weakness Enumeration (CWE),” 2026. [Online]. Đường link kham khảo: https://cwe.mitre.org/.
+[10] PortSwigger, “Web Security Academy: Free, online web security training,” PortSwigger Ltd. [Online]. Đường link kham khảo: https://portswigger.net/web-security.
+B. Giao thức Mạng & Cơ chế Bảo mật Web phía Trình duyệt (Chương 2)
+[11] R. Fielding and J. Reschke, “Hypertext Transfer Protocol (HTTP/1.1): Message Syntax and Routing,” Internet Engineering Task Force (IETF), RFC 7230, Jun. 2014. [Online]. Đường link kham khảo: https://datatracker.ietf.org/doc/html/rfc7230.
+[12] A. Barth, “HTTP State Management Mechanism,” Internet Engineering Task Force (IETF), RFC 6265, Apr. 2011. [Online]. Đường link kham khảo: https://datatracker.ietf.org/doc/html/rfc6265.
+[13] MDN Web Docs, “Web Security - Security on the Web,” Mozilla Developer Network. [Online]. Đường link kham khảo: https://developer.mozilla.org/en-US/docs/Web/Security.
+C. Nền tảng Công nghệ & Hướng dẫn An toàn Framework (Chương 2 & Chương 3)
+[14] Node.js Project, “Node.js v22.x Official Documentation - The Node.js Event Loop, Timers, and Process,” Node.js Foundation, 2025. [Online]. Đường link kham khảo: https://nodejs.org/api/.
+[15] Electron Open Source Project, “Security, Native Capabilities, and Your Responsibility,” OpenJS Foundation. [Online]. Đường link kham khảo: https://www.electronjs.org/docs/latest/tutorial/security/.
+[16] Meta Open Source, “React Documentation - Preserving and Resetting State,” Meta Platforms, Inc., 2026. [Online]. Đường link kham khảo: https://react.dev/.
+[17] Zustand Contributors, “Zustand: Bear necessities for state management in React,” 2026. [Online]. Đường link kham khảo: https://zustand-demo.pmnd.rs/.
+D. Môi trường Thực nghiệm & Tối ưu hóa Hệ thống (Chương 3 & Chương 4)
+[18] OWASP Foundation, “OWASP Juice Shop: An intentionally insecure web application,” Open Worldwide Application Security Project (OWASP). [Online]. Đường link kham khảo: https://owasp.org/www-project-juice-shop/.
+[19] B. Brawner, “Pwning OWASP Juice Shop: The official guide to the OWASP Juice Shop,” 2025. [Online]. Đường link kham khảo: https://help.owasp-juice.shop.
+[20] Vitest Development Team, “Vitest: Blazing Fast Unit Test Framework,” 2026. [Online]. Đường link kham khảo: https://vitest.dev/.
+[21] S. Artzi, A. Kieżun, J. Dolby, and F. Tip, “Finding bugs in web applications using dynamic test generation,” in Proceedings of the 2008 International Symposium on Software Testing and Analysis (ISSTA), Seattle, WA, USA, 2008, pp. 111–122.
+[22] GitHub Actions Documentation, “Automating your workflow - Security hardening for GitHub Actions,” GitHub, Inc., 2026. [Online]. Đường link kham khảo: https://docs.github.com/en/actions.
+E. Các môi trường kham khảo và ý tưởng thực hiện demo (Chương 3)
+[23] URL website: https://juice-shop.herokuapp.com/#/
+[24] URL website: https://pixel-vault.gamer.gd/?i=1
+[25] Mã nguồn dự án mẫu: https://github.com/phamduongdinhhuy2005-ops/Pixel-Vault.git
+[26] Mã nguồn dự án mẫu: https://github.com/phamduongdinhhuy2005-ops/CafeShop.git
+[27] OWASP Juice Shop: https://owasp.org/www-project-juice-shop/
+[28] Pwning OWASP Juice Shop: https://help.owasp-juice.shop
+[29] OWASP Cheat Sheet Series: https://cheatsheetseries.owasp.org
+[30] MDN Web Security: https://developer.mozilla.org/en-US/docs/Web/Security

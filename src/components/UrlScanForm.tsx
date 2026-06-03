@@ -28,6 +28,7 @@ export const UrlScanForm: React.FC = () => {
     crawlDepth, setCrawlDepth, requestBudget, setRequestBudget,
   } = useStore();
   const [showAuth, setShowAuth] = useState(false);
+  const [showCoverage, setShowCoverage] = useState(false);
 
   const profile = getScanProfile(crawlDepth, requestBudget);
 
@@ -35,16 +36,24 @@ export const UrlScanForm: React.FC = () => {
     <>
       {/* ── Hướng dẫn nhanh ── */}
       <div className="onboarding-tip">
-        <strong>Bắt đầu nhanh:</strong> Nhập URL, giữ cài đặt mặc định và nhấn nút quét bên dưới.
-        Cài đặt mặc định phù hợp cho hầu hết trường hợp.
+        <strong>Bắt đầu nhanh:</strong> Nhập URL website, giữ cài đặt mặc định rồi bắt đầu quét.
+        Nếu mới dùng, bạn chưa cần chỉnh các tuỳ chọn nâng cao.
       </div>
 
       {/* ── Mục tiêu ── */}
-      <div className="scan-scope-notice">
+      <div className={`scan-scope-notice ${showCoverage ? 'is-open' : 'is-collapsed'}`}>
+        <button
+          type="button"
+          className="scan-scope-toggle"
+          onClick={() => setShowCoverage((value) => !value)}
+          aria-expanded={showCoverage}
+        >
+          {showCoverage ? 'Thu gọn' : 'OWASP'}
+        </button>
         <div>
-          <div className="scan-scope-title">URL Scan kiểm tra được những nhóm OWASP nào?</div>
+          <div className="scan-scope-title">Quét Website kiểm tra gì?</div>
           <p className="scan-scope-copy">
-            URL Scan quan sát website đang chạy, crawl/probe endpoint và fuzz input. Mode này phù hợp với lỗi nhìn thấy qua HTTP request/response, không thay thế Project Scan cho source/dependency.
+            Kiểm tra website đang chạy qua HTTP: header, endpoint, form/input và response công khai. Không đọc mã nguồn.
           </p>
         </div>
         <div className="owasp-chip-grid">
@@ -137,7 +146,7 @@ export const UrlScanForm: React.FC = () => {
           aria-expanded={showAuth}
         >
           <span>Xác thực <span className="optional-tag">không bắt buộc</span></span>
-          <span className={`collapsible-icon ${showAuth ? 'open' : ''}`}>▶</span>
+          <span className={`collapsible-icon ${showAuth ? 'open' : ''}`}>›</span>
         </button>
 
         {showAuth && (
@@ -195,7 +204,7 @@ export const UrlScanForm: React.FC = () => {
           {isLoading ? (
             <><span className="spinner-sm" style={{ borderColor: 'rgba(42,54,59,.2)', borderTopColor: 'var(--text)' }} /> Đang quét…</>
           ) : (
-            <>▶ Bắt đầu quét website</>
+            <>Bắt đầu quét website</>
           )}
         </button>
         {!urlInput.trim() && !isLoading && (
